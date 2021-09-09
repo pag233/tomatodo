@@ -1,0 +1,1 @@
+export type EmitFnType<T> = (event: string, ...args: T[]) => void

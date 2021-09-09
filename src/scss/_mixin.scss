@@ -1,0 +1,14 @@
+@mixin BorderRadius {
+  border-radius: 10px;
+}
+
+@mixin whenlandscape {
+  @media (orientation: landscape) {
+    @content;
+  }
+}
+@mixin whenportrait {
+  @media (orientation: portrait) {
+    @content;
+  }
+}
