@@ -5,7 +5,13 @@ import { throttle } from "underscore";
 import { PositionType, PositionKey, Position } from './thePanelSizeScale'
 
 type mousemoveHandlerType = (e: MouseEvent) => void
-
+/**
+ * 注册相关事件回调
+ * @param mouseMoveHandler
+ * @param clearMousemoveHandle
+ * @param registeeElem 
+ * @returns 
+ */
 function makeMouseDownHandler(
   mouseMoveHandler: mousemoveHandlerType,
   clearMousemoveHandler: () => void,
@@ -18,7 +24,12 @@ function makeMouseDownHandler(
     registeeElem.addEventListener('mouseleave', clearMousemoveHandler);
   }
 }
-
+/**
+ * 清除相关事件回调
+ * @param mouseMoveHandler 
+ * @param registeeElem 
+ * @returns 
+ */
 function makeClearMouseMoveHandle(
   mouseMoveHandler: mousemoveHandlerType,
   registeeElem: HTMLElement = getBodyElement(),
@@ -30,10 +41,18 @@ function makeClearMouseMoveHandle(
     registeeElem.removeEventListener('mouseleave', clearMouseMoveHandler);
   }
 }
-
+/**
+ * 生成不同方向的mousemove回调函数的高阶函数
+ * @param emitFn 
+ * @param emitType - emit event类型 
+ * @param direction - 位置方向
+ * @param isGtMinAxis - 判断是否到达最小宽高的临界位置的函数
+ * @param offset - 更新大小
+ * @returns 
+ */
 function makeMouseMoveHanler(
   emitFn: EmitFnType<SetStateArgsType<PositionType>>,
-  event: string,
+  emitType: string,
   direction: PositionKey,
   isGtMinAxis: (e: MouseEvent, pos: PositionType) => boolean,
   offset: (e: MouseEvent) => number,
@@ -41,7 +60,7 @@ function makeMouseMoveHanler(
   return throttle(function (e: MouseEvent): void {
     // console.log('x: ' + e.clientX);
     // console.log("y: " + e.clientY);
-    emitFn(event, (pos) => {
+    emitFn(emitType, (pos) => {
       return isGtMinAxis(e, pos) ? {
         ...pos,
         [direction]: offset(e)
@@ -49,12 +68,23 @@ function makeMouseMoveHanler(
     })
   }, 70)
 }
-
+/**
+ * 向父节点添加回调
+ * @param mouseMoveHandler 
+ */
 function MouseDownHandlerRegister(mouseMoveHandler: mousemoveHandlerType): mousemoveHandlerType {
   const clearMouseMoveHandler = makeClearMouseMoveHandle(mouseMoveHandler);
   return makeMouseDownHandler(mouseMoveHandler, clearMouseMoveHandler);
 }
 
+/**
+ * 返回各个方向的mousedown回调
+ * @param emit - emit方法
+ * @param minWidth 
+ * @param minHeigh 
+ * @param registeeElem 父节点
+ * @returns 各个方向的mousedown回调
+ */
 export function MouseDownHandlers(
   emit: EmitFnType<SetStateArgsType<PositionType>>,
   minWidth: number,
