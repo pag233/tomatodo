@@ -18,11 +18,11 @@ export type PositionKey = keyof PositionType
 
 const checkHorizontion = () => screen.orientation.type.includes('landscape')
 /**
- * 初始化Panel大小，所有值皆为相对于父节点维度的整数百分比
- * @param {number} width 初始宽度百分比
- * @param {number} height 初始高度百分比
+ * 初始化Panel大小，像素值
+ * @param {number} width 初始宽度
+ * @param {number} height 初始高度
  * @param {HTMLElement} root 父节点
- * @returns {typeof useRef<PositionType>} 代表坐标的响应式对象
+ * @returns 代表坐标的响应式对象
  */
 export function getInitPanelPosRef(
   width: number,
@@ -46,12 +46,12 @@ export function getInitPanelPosRef(
   })
 }
 /**
- * 初始化Panel最小大小，所有值皆为相对于父节点维度的整数百分比
- * @param width 初始宽度百分比 
- * @param height 初始高度百分比 
- * @param wfactor 相对于宽高的缩小系数
+ * 初始化Panel最小大小
+ * @param width 初始宽
+ * @param height 初始高
+ * @param wfactor 相对于宽的缩小系数
+ * @param hfactor 相对于高的缩小系数
  * @param root 父节点 
- * @returns 
  */
 export function getMinWidthHeight(
   width: number,

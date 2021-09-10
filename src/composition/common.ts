@@ -5,14 +5,18 @@ type TearDownType = void | (() => void);
 
 /**
  * 
- * @param setUp -在onMounted中调用，其返回值为在onUnmounted中调用
+ * @param setUp 在onMounted中调用，其返回值为在onUnmounted中调用
  */
 export function useMountUnmount(setUp: SetUpType): void {
   let tearDown: TearDownType;
   onMounted(() => {
+    console.log('mounted settingUp: ' + setUp)
     tearDown = setUp();
   })
-  onUnmounted(() => tearDown && tearDown())
+  onUnmounted(() => {
+    console.log('unmounted tearingDown: ' + tearDown)
+    tearDown && tearDown()
+  })
 }
 
 /**

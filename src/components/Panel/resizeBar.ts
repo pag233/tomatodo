@@ -1,55 +1,19 @@
 import { SetStateArgsType } from "@/composition/common";
 import { getBodyElement, getRemValue } from "@/helper";
+import { makeClearHandler, makeHandler } from "@/helper/dom_helper";
 import { EmitFnType } from '@/types/shared'
 import { throttle } from "underscore";
 import { PositionType, PositionKey, Position } from './thePanelSizeScale'
 
 type mousemoveHandlerType = (e: MouseEvent) => void
-/**
- * 注册相关事件回调
- * @param mouseMoveHandler
- * @param clearMousemoveHandle
- * @param registeeElem 
- * @returns 
- */
-function makeMouseDownHandler(
-  mouseMoveHandler: mousemoveHandlerType,
-  clearMousemoveHandler: () => void,
-  registeeElem: HTMLElement = getBodyElement(),
-): () => void {
-  return function mouseDownHandler() {
-    console.log("add");
-    registeeElem.style.cursor = 'grabbing';
-    registeeElem.addEventListener('mousemove', mouseMoveHandler);
-    registeeElem.addEventListener('mouseup', clearMousemoveHandler);
-    registeeElem.addEventListener('mouseleave', clearMousemoveHandler);
-  }
-}
-/**
- * 清除相关事件回调
- * @param mouseMoveHandler 
- * @param registeeElem 
- * @returns 
- */
-function makeClearMouseMoveHandle(
-  mouseMoveHandler: mousemoveHandlerType,
-  registeeElem: HTMLElement = getBodyElement(),
-): () => void {
-  return function clearMouseMoveHandler() {
-    console.log("clear");
-    registeeElem.style.cursor = 'default';
-    registeeElem.removeEventListener('mousemove', mouseMoveHandler);
-    registeeElem.removeEventListener('mouseup', clearMouseMoveHandler);
-    registeeElem.removeEventListener('mouseleave', clearMouseMoveHandler);
-  }
-}
+
 /**
  * 生成不同方向的mousemove回调函数的高阶函数
  * @param emitFn 
- * @param emitType - emit event类型 
- * @param direction - 位置方向
- * @param isLessThenBoundry - 判断是否到达最小宽高的临界位置的函数
- * @param offset - 更新大小
+ * @param emitType emit event类型 
+ * @param direction 位置方向
+ * @param isLessThenBoundry 判断是否到达最小宽高的临界位置的函数
+ * @param offset 更新大小
  * @returns 
  */
 function makeMouseMoveResizeHanler(
@@ -71,8 +35,9 @@ function makeMouseMoveResizeHanler(
     })
   }, 70)
 }
+
 /**
- * @param isOutOfBox - 判断边界是否出界
+ * @param isOutOfBox 边界检测
  */
 function makeMouseMoveRepositionHandler(
   emitFn: EmitFnType<SetStateArgsType<PositionType>>,
@@ -92,17 +57,27 @@ function makeMouseMoveRepositionHandler(
 }
 
 /**
- * 向父节点添加回调
+ * 生成并向父节点添加\注销回调
  * @param mouseMoveHandler 
  */
-function MouseDownHandlerRegister(mouseMoveHandler: mousemoveHandlerType): mousemoveHandlerType {
-  const clearMouseMoveHandler = makeClearMouseMoveHandle(mouseMoveHandler);
-  return makeMouseDownHandler(mouseMoveHandler, clearMouseMoveHandler);
+function makeResizeBarMouseDownHandlers(mouseMoveHandler: mousemoveHandlerType): mousemoveHandlerType {
+
+  const clearMouseMoveHandler = makeClearHandler((elem) => {
+    elem.removeEventListener('mousemove', mouseMoveHandler);
+    elem.removeEventListener('mouseup', clearMouseMoveHandler);
+    elem.removeEventListener('mouseleave', clearMouseMoveHandler);
+  }, (elem) => elem.style.cursor = 'default');
+
+  return makeHandler((elem) => {
+    elem.addEventListener('mousemove', mouseMoveHandler);
+    elem.addEventListener('mouseup', clearMouseMoveHandler);
+    elem.addEventListener('mouseleave', clearMouseMoveHandler);
+  }, (elem) => elem.style.cursor = 'grabbing');
 }
 
 /**
  * 返回各个方向的mousedown回调
- * @param emit - emit方法
+ * @param emit emit方法
  * @param minWidth 
  * @param minHeigh 
  * @param registeeElem 父节点
@@ -120,7 +95,7 @@ export function MouseDownHandlers(
   bottom: (e: MouseEvent) => void,
 } {
   const boxBoundryOffset = getRemValue();
-  const left = MouseDownHandlerRegister(
+  const left = makeResizeBarMouseDownHandlers(
     makeMouseMoveResizeHanler(
       emit,
       Position.emitType,
@@ -130,7 +105,7 @@ export function MouseDownHandlers(
       (e) => e.clientX
     )
   )
-  const right = MouseDownHandlerRegister(
+  const right = makeResizeBarMouseDownHandlers(
     makeMouseMoveResizeHanler(
       emit,
       Position.emitType,
@@ -140,7 +115,7 @@ export function MouseDownHandlers(
       (e) => registeeElem.clientWidth - e.clientX
     )
   )
-  const top = MouseDownHandlerRegister(
+  const top = makeResizeBarMouseDownHandlers(
     makeMouseMoveRepositionHandler(
       emit,
       Position.emitType,
@@ -163,7 +138,7 @@ export function MouseDownHandlers(
       }
     )
   )
-  const bottom = MouseDownHandlerRegister(
+  const bottom = makeResizeBarMouseDownHandlers(
     makeMouseMoveResizeHanler(
       emit,
       Position.emitType,

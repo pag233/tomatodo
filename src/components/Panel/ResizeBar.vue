@@ -5,7 +5,9 @@
   <div class="right-bar" @mousedown="rightBarOnMouseDown">
     <div class="inner-right-background"></div>
   </div>
-  <div class="top-bar move-bar" @mousedown="topBarOnMouseDown"></div>
+  <div class="top-bar move-bar" @mousedown="topBarOnMouseDown">
+    <div class="inner-top-background"></div>
+  </div>
   <div class="bottom-bar" @mousedown="bottomBarOnMouseDown">
     <div class="inner-bottom-background"></div>
   </div>
@@ -62,28 +64,31 @@ $barRadius: $radius * 1px;
 .top-bar,
 .bottom-bar {
   position: absolute;
-  // cursor: grab;
   background-color: $black;
   transition: opacity 0.2s ease-out;
   border-radius: $barRadius;
-  opacity: 0.5;
+  opacity: 0.3;
   &:hover {
     opacity: 0.5;
     cursor: grabbing;
   }
+  //居中，并分别设置top, left, bottom, right 为-100%调整至合适的位置
   inset: 0 0 0 0;
   margin: auto;
 }
 
+// 控制条高度自适应自身维度
 .left-bar,
 .right-bar {
   width: 2 * $barWidth;
   height: calc(100% - 40 * #{$barWidth});
+  min-height: 8 * $barWidth;
 }
-.top-bar,
+// .top-bar,
 .bottom-bar {
   height: 2 * $barWidth;
   width: calc(100% - 40 * #{$barWidth});
+  min-width: 8 * $barWidth;
 }
 
 .left-bar {
@@ -111,7 +116,13 @@ $barRadius: $radius * 1px;
 .top-bar {
   top: -100%;
   // border-top-left-radius: $barRadius;
-  // border-top-right-radius: $barRadius;
+  // border-top-right-radius: $barRadius
+  .inner-top-background {
+    width: 100%;
+    height: 50%;
+    background-color: $white;
+    transform: translateY(100%);
+  }
 }
 .move-bar {
   height: 4 * $barWidth;

@@ -34,6 +34,7 @@ ul {
 }
 body {
   background-color: $leaf;
+  user-select: none;
 }
 main {
   position: relative;

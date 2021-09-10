@@ -9,6 +9,7 @@
       @update:pos="setPos"
       :minWidth="minWidth"
       :minHeight="minHeight"
+      v-if="deskDevice"
     />
     <slot></slot>
   </div>
@@ -56,6 +57,16 @@ export default defineComponent({
       setPos,
       minWidth,
       minHeight,
+    };
+  },
+  methods: {
+    showResizeBar(): void {
+      this.deskDevice = !this.deskDevice;
+    },
+  },
+  data() {
+    return {
+      deskDevice: true,
     };
   },
 });
