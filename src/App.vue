@@ -17,6 +17,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@import "@/scss/_colors.scss";
+
 html,
 body,
 p,
@@ -26,7 +28,7 @@ ul {
   list-style: none;
 }
 body {
-  background-color: tan;
+  background-color: $leaf;
 }
 main {
   position: relative;

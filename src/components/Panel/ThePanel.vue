@@ -3,8 +3,6 @@
     class="panel"
     :style="{
       ...position,
-      minWidth: minWidth + 'px',
-      minHeight: minHeight + 'px',
     }"
   >
     <ResizeBar
@@ -21,7 +19,7 @@
 import { computed, defineComponent } from "vue";
 import { getInitPanelPosRef, getMinWidthHeight } from "./thePanelSizeScale";
 import ResizeBar from "./ResizeBar.vue";
-import { checkZeroToHundred } from "@/helper";
+import { gtZero } from "@/helper";
 export default defineComponent({
   name: "Panel",
 
@@ -31,14 +29,14 @@ export default defineComponent({
   props: {
     width: {
       type: Number,
-      default: 60,
-      validator: checkZeroToHundred,
+      default: 600,
+      validator: gtZero,
     },
 
     height: {
       type: Number,
-      default: 80,
-      validator: checkZeroToHundred,
+      default: 800,
+      validator: gtZero,
     },
   },
 
@@ -65,10 +63,11 @@ export default defineComponent({
 
 
 <style lang="scss" scoped>
-@import "@/scss/_mixin.scss";
+@import "@/scss/_common.scss";
+@import "@/scss/_colors.scss";
 .panel {
   position: absolute;
-  background-color: tomato;
+  background-color: $white;
   margin: auto;
   width: auto;
   height: auto;

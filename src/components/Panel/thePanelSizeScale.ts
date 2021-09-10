@@ -30,9 +30,13 @@ export function getInitPanelPosRef(
   root: HTMLElement = getdocElement(),
 ): UseRefReturnType<PositionType> {
   const isHorizontion = checkHorizontion();
-  const top = root.clientHeight * (50 - Math.floor((isHorizontion ? width : height) / 2)) * 0.01;
+  if (isHorizontion) {
+    [width, height] = [height, width];
+  }
+  const isFit = height < root.clientHeight && width < root.clientWidth
+  const top = isFit ? Math.floor((root.clientHeight - height) / 2) : 0;
   const bottom = top;
-  const left = root.clientWidth * (50 - Math.floor((!isHorizontion ? width : height) / 2)) * 0.01;
+  const left = isFit ? Math.floor((root.clientWidth - width) / 2) : 0;
   const right = left;
   return useRef<PositionType>({
     top,
@@ -45,21 +49,21 @@ export function getInitPanelPosRef(
  * 初始化Panel最小大小，所有值皆为相对于父节点维度的整数百分比
  * @param width 初始宽度百分比 
  * @param height 初始高度百分比 
- * @param factor 相对于宽高的缩小系数
+ * @param wfactor 相对于宽高的缩小系数
  * @param root 父节点 
  * @returns 
  */
 export function getMinWidthHeight(
   width: number,
   height: number,
-  factor = 0.8,
-  root: HTMLElement = getdocElement()
+  wfactor = 0.5,
+  hfactor = 0.5,
 ): {
   minWidth: number,
   minHeight: number,
 } {
   return {
-    minWidth: Math.floor(root.clientWidth * width * factor * 0.01),
-    minHeight: Math.floor(root.clientHeight * height * factor * 0.01),
+    minWidth: Math.floor(width * wfactor),
+    minHeight: Math.floor(height * hfactor),
   }
 }

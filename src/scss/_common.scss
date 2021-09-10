@@ -1,5 +1,7 @@
+$radius: 20;
+
 @mixin BorderRadius {
-  border-radius: 10px;
+  border-radius: $radius * 1px;
 }
 
 @mixin whenlandscape {

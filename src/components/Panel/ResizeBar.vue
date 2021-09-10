@@ -1,7 +1,7 @@
 <template>
   <div class="left-bar" @mousedown="leftBarOnMouseDown"></div>
   <div class="right-bar" @mousedown="rightBarOnMouseDown"></div>
-  <div class="top-bar" @mousedown="topBarOnMouseDown"></div>
+  <div class="top-bar move-bar" @mousedown="topBarOnMouseDown"></div>
   <div class="bottom-bar" @mousedown="bottomBarOnMouseDown"></div>
 </template>
 
@@ -12,7 +12,7 @@ import { defineComponent } from "vue";
 import { PositionType, Position } from "./thePanelSizeScale";
 import { MouseDownHandlers } from "./resizeBar";
 export default defineComponent({
-  name: "VerticalResizeBar",
+  name: "ResizeBar",
 
   emits: {
     [Position.emitType](pos: PositionType) {
@@ -46,31 +46,62 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "@/scss/_common.scss";
+@import "@/scss/_colors.scss";
+
+$barWidth: 0.5rem;
+$barRadius: $radius * 1px;
 .left-bar,
 .right-bar,
 .top-bar,
 .bottom-bar {
   position: absolute;
-  cursor: grab;
-  background-color: teal;
+  // cursor: grab;
+  background-color: $black;
+  transition: opacity 0.2s ease-out;
+  border-radius: $barRadius;
+  opacity: 0.5;
+  &:hover {
+    opacity: 0.5;
+  }
+  inset: 0 0 0 0;
+  margin: auto;
 }
+
 .left-bar,
 .right-bar {
-  width: 1rem;
-  height: 100%;
-}
-.right-bar {
-  right: 0;
+  width: $barWidth;
+  height: calc(100% - 40 * #{$barWidth});
 }
 .top-bar,
 .bottom-bar {
-  height: 1rem;
-  width: 100%;
+  height: $barWidth;
+  width: calc(100% - 40 * #{$barWidth});
+}
+
+.left-bar {
+  left: -100%;
+  // border-top-left-radius: $barRadius;
+  // border-bottom-left-radius: $barRadius;
+}
+.right-bar {
+  right: -100%;
+  // border-top-right-radius: $barRadius;
+  // border-bottom-right-radius: $barRadius;
 }
 .top-bar {
-  top: 0;
+  top: -100%;
+  // border-top-left-radius: $barRadius;
+  // border-top-right-radius: $barRadius;
+}
+.move-bar {
+  height: 4 * $barWidth;
+  width: 4 * $barWidth;
+  cursor: grabbing;
 }
 .bottom-bar {
-  bottom: 0;
+  bottom: -100%;
+  // border-bottom-left-radius: $barRadius;
+  // border-bottom-right-radius: $barRadius;
 }
 </style>
