@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="theme-tomato">
     <Panel></Panel>
   </main>
 </template>
@@ -33,7 +33,9 @@ ul {
   list-style: none;
 }
 body {
-  background-color: $leaf;
+  @include ToTheme($theme-tomato) {
+    background-color: $leaf;
+  }
   user-select: none;
 }
 main {

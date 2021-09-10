@@ -78,10 +78,13 @@ export default defineComponent({
 @import "@/scss/_colors.scss";
 .panel {
   position: absolute;
-  background-color: $white;
   margin: auto;
   width: auto;
   height: auto;
+
   @include BorderRadius;
+  @include ToTheme($theme-tomato) {
+    background-color: $white;
+  }
 }
 </style>

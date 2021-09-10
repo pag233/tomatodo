@@ -1,15 +1,15 @@
 <template>
-  <div class="left-bar" @mousedown="leftBarOnMouseDown">
-    <div class="inner-left-background"></div>
+  <div class="resize-bar left-bar" @mousedown="leftBarOnMouseDown">
+    <div class="resize-inner-cover-color inner-left"></div>
   </div>
-  <div class="right-bar" @mousedown="rightBarOnMouseDown">
-    <div class="inner-right-background"></div>
+  <div class="resize-bar right-bar" @mousedown="rightBarOnMouseDown">
+    <div class="resize-inner-cover-color inner-right"></div>
   </div>
-  <div class="top-bar move-bar" @mousedown="topBarOnMouseDown">
-    <div class="inner-top-background"></div>
+  <div class="resize-bar top-bar move-bar" @mousedown="topBarOnMouseDown">
+    <div class="resize-inner-cover-color inner-top"></div>
   </div>
-  <div class="bottom-bar" @mousedown="bottomBarOnMouseDown">
-    <div class="inner-bottom-background"></div>
+  <div class="resize-bar bottom-bar" @mousedown="bottomBarOnMouseDown">
+    <div class="resize-inner-cover-color inner-bottom"></div>
   </div>
 </template>
 
@@ -59,15 +59,15 @@ export default defineComponent({
 
 $barWidth: 0.5rem;
 $barRadius: $radius * 1px;
-.left-bar,
-.right-bar,
-.top-bar,
-.bottom-bar {
+
+.resize-bar {
   position: absolute;
-  background-color: $black;
+  @include ToTheme($theme-tomato) {
+    background-color: $black;
+  }
   transition: opacity 0.2s ease-out;
   border-radius: $barRadius;
-  opacity: 0.3;
+  opacity: 0.5;
   &:hover {
     opacity: 0.5;
     cursor: grabbing;
@@ -75,6 +75,11 @@ $barRadius: $radius * 1px;
   //居中，并分别设置top, left, bottom, right 为-100%调整至合适的位置
   inset: 0 0 0 0;
   margin: auto;
+  .resize-inner-cover-color {
+    @include ToTheme($theme-tomato) {
+      background-color: $white;
+    }
+  }
 }
 
 // 控制条高度自适应自身维度
@@ -95,7 +100,7 @@ $barRadius: $radius * 1px;
   left: -100%;
   // border-top-left-radius: $barRadius;
   // border-bottom-left-radius: $barRadius;
-  .inner-left-background {
+  .inner-left {
     transform: translateX(100%);
     width: 50%;
     height: 100%;
@@ -106,7 +111,7 @@ $barRadius: $radius * 1px;
   right: -100%;
   // border-top-right-radius: $barRadius;
   // border-bottom-right-radius: $barRadius;
-  .inner-right-background {
+  .inner-right {
     // position: absolute;
     width: 50%;
     height: 100%;
@@ -117,7 +122,7 @@ $barRadius: $radius * 1px;
   top: -100%;
   // border-top-left-radius: $barRadius;
   // border-top-right-radius: $barRadius
-  .inner-top-background {
+  .inner-top {
     width: 100%;
     height: 50%;
     background-color: $white;
@@ -132,10 +137,9 @@ $barRadius: $radius * 1px;
   bottom: -100%;
   // border-bottom-left-radius: $barRadius;
   // border-bottom-right-radius: $barRadius;
-  .inner-bottom-background {
+  .inner-bottom {
     width: 100%;
     height: 50%;
-    background-color: $white;
   }
 }
 </style>

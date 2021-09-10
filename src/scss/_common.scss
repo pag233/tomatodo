@@ -4,13 +4,22 @@ $rem-size: 16;
   border-radius: $radius * 1px;
 }
 
-@mixin whenlandscape {
+@mixin WhenLandscape {
   @media (orientation: landscape) {
     @content;
   }
 }
-@mixin whenportrait {
+@mixin WhenPortrait {
   @media (orientation: portrait) {
     @content;
+  }
+}
+
+$theme-tomato: "theme-tomato";
+@mixin ToTheme($theme-name, $root: &) {
+  .#{$theme-name} {
+    @at-root #{$root} {
+      @content;
+    }
   }
 }
