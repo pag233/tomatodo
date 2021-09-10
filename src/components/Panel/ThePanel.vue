@@ -3,6 +3,7 @@
     class="panel"
     :style="{
       ...position,
+      display,
     }"
   >
     <ResizeBar
@@ -39,6 +40,11 @@ export default defineComponent({
       default: 800,
       validator: gtZero,
     },
+
+    display: {
+      type: String,
+      default: "flex",
+    },
   },
 
   setup(props) {
@@ -59,6 +65,10 @@ export default defineComponent({
       minHeight,
     };
   },
+
+  /**
+   * @todo 实现终端类型判断
+   */
   methods: {
     showResizeBar(): void {
       this.deskDevice = !this.deskDevice;
@@ -81,7 +91,6 @@ export default defineComponent({
   margin: auto;
   width: auto;
   height: auto;
-
   @include BorderRadius;
   @include ToTheme($theme-tomato) {
     background-color: $white;

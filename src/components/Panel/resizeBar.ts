@@ -1,7 +1,7 @@
 import { SetStateArgsType } from "@/composition/common";
 import { getBodyElement, getRemValue } from "@/helper";
 import { makeClearHandler, makeHandler } from "@/helper/dom_helper";
-import { EmitFnType } from '@/types/shared'
+import { EmitFnType } from '@/composition/types';
 import { throttle } from "underscore";
 import { PositionType, PositionKey, Position } from './thePanelSizeScale'
 

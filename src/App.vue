@@ -1,6 +1,6 @@
 <template>
   <main class="theme-tomato">
-    <Panel></Panel>
+    <Panel> </Panel>
   </main>
 </template>
 
