@@ -29,3 +29,5 @@ const makeCheckRange: MakeCheckRangeType = (min: number, max: number) => (num: n
 
 export const checkZeroToHundred = makeCheckRange(0, 100);
 export const gtZero = makeCheckRange(0, Infinity);
+
+export const getRemValue = (): number => parseInt(window.getComputedStyle(document.documentElement).fontSize)

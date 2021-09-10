@@ -1,5 +1,5 @@
 import { SetStateArgsType } from "@/composition/common";
-import { getBodyElement } from "@/helper";
+import { getBodyElement, getRemValue } from "@/helper";
 import { EmitFnType } from '@/types/shared'
 import { throttle } from "underscore";
 import { PositionType, PositionKey, Position } from './thePanelSizeScale'
@@ -19,6 +19,7 @@ function makeMouseDownHandler(
 ): () => void {
   return function mouseDownHandler() {
     console.log("add");
+    registeeElem.style.cursor = 'grabbing';
     registeeElem.addEventListener('mousemove', mouseMoveHandler);
     registeeElem.addEventListener('mouseup', clearMousemoveHandler);
     registeeElem.addEventListener('mouseleave', clearMousemoveHandler);
@@ -36,6 +37,7 @@ function makeClearMouseMoveHandle(
 ): () => void {
   return function clearMouseMoveHandler() {
     console.log("clear");
+    registeeElem.style.cursor = 'default';
     registeeElem.removeEventListener('mousemove', mouseMoveHandler);
     registeeElem.removeEventListener('mouseup', clearMouseMoveHandler);
     registeeElem.removeEventListener('mouseleave', clearMouseMoveHandler);
@@ -69,7 +71,9 @@ function makeMouseMoveResizeHanler(
     })
   }, 70)
 }
-
+/**
+ * @param isOutOfBox - 判断边界是否出界
+ */
 function makeMouseMoveRepositionHandler(
   emitFn: EmitFnType<SetStateArgsType<PositionType>>,
   emitType: string,
@@ -115,7 +119,7 @@ export function MouseDownHandlers(
   top: (e: MouseEvent) => void,
   bottom: (e: MouseEvent) => void,
 } {
-  const boxBoundryOffset = 16;
+  const boxBoundryOffset = getRemValue();
   const left = MouseDownHandlerRegister(
     makeMouseMoveResizeHanler(
       emit,
@@ -140,16 +144,21 @@ export function MouseDownHandlers(
     makeMouseMoveRepositionHandler(
       emit,
       Position.emitType,
-      () => true,
+      (e, pos) => e.clientY > boxBoundryOffset &&
+        (pos.bottom + pos.top - e.clientY > boxBoundryOffset || e.clientY < pos.top) &&
+        (e.clientX - (registeeElem.clientWidth - pos.right - pos.left) / 2) > boxBoundryOffset &&
+        (registeeElem.clientWidth + pos.left + pos.right - 2 * e.clientX) / 2 > boxBoundryOffset
+      // registeeElem.clientWidth - (e.clientX + (registeeElem.clientWidth - pos.right - pos.left) / 2) > boxBoundryOffset
+      ,
       (e, pos) => {
         const mid_line = (registeeElem.clientWidth - pos.left - pos.right) / 2 + pos.left;
-        const horizontal_offset = e.clientY - pos.top;
-        const vertical_offset = e.clientX - mid_line;
+        const vertical_offset = e.clientY - pos.top;
+        const horizontal_offset = e.clientX - mid_line;
         return {
-          top: pos.top + horizontal_offset,
-          bottom: pos.bottom - horizontal_offset,
-          left: pos.left + vertical_offset,
-          right: pos.right - vertical_offset,
+          top: pos.top + vertical_offset,
+          bottom: pos.bottom - vertical_offset,
+          left: pos.left + horizontal_offset,
+          right: pos.right - horizontal_offset,
         }
       }
     )

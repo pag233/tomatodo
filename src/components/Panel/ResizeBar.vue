@@ -1,8 +1,14 @@
 <template>
-  <div class="left-bar" @mousedown="leftBarOnMouseDown"></div>
-  <div class="right-bar" @mousedown="rightBarOnMouseDown"></div>
+  <div class="left-bar" @mousedown="leftBarOnMouseDown">
+    <div class="inner-left-background"></div>
+  </div>
+  <div class="right-bar" @mousedown="rightBarOnMouseDown">
+    <div class="inner-right-background"></div>
+  </div>
   <div class="top-bar move-bar" @mousedown="topBarOnMouseDown"></div>
-  <div class="bottom-bar" @mousedown="bottomBarOnMouseDown"></div>
+  <div class="bottom-bar" @mousedown="bottomBarOnMouseDown">
+    <div class="inner-bottom-background"></div>
+  </div>
 </template>
 
 
@@ -63,6 +69,7 @@ $barRadius: $radius * 1px;
   opacity: 0.5;
   &:hover {
     opacity: 0.5;
+    cursor: grabbing;
   }
   inset: 0 0 0 0;
   margin: auto;
@@ -70,12 +77,12 @@ $barRadius: $radius * 1px;
 
 .left-bar,
 .right-bar {
-  width: $barWidth;
+  width: 2 * $barWidth;
   height: calc(100% - 40 * #{$barWidth});
 }
 .top-bar,
 .bottom-bar {
-  height: $barWidth;
+  height: 2 * $barWidth;
   width: calc(100% - 40 * #{$barWidth});
 }
 
@@ -83,11 +90,23 @@ $barRadius: $radius * 1px;
   left: -100%;
   // border-top-left-radius: $barRadius;
   // border-bottom-left-radius: $barRadius;
+  .inner-left-background {
+    transform: translateX(100%);
+    width: 50%;
+    height: 100%;
+    background-color: $white;
+  }
 }
 .right-bar {
   right: -100%;
   // border-top-right-radius: $barRadius;
   // border-bottom-right-radius: $barRadius;
+  .inner-right-background {
+    // position: absolute;
+    width: 50%;
+    height: 100%;
+    background-color: $white;
+  }
 }
 .top-bar {
   top: -100%;
@@ -97,11 +116,15 @@ $barRadius: $radius * 1px;
 .move-bar {
   height: 4 * $barWidth;
   width: 4 * $barWidth;
-  cursor: grabbing;
 }
 .bottom-bar {
   bottom: -100%;
   // border-bottom-left-radius: $barRadius;
   // border-bottom-right-radius: $barRadius;
+  .inner-bottom-background {
+    width: 100%;
+    height: 50%;
+    background-color: $white;
+  }
 }
 </style>
