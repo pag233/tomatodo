@@ -3,7 +3,6 @@
     class="panel"
     :style="{
       ...position,
-      display,
     }"
   >
     <ResizeBar
@@ -40,11 +39,6 @@ export default defineComponent({
       default: 800,
       validator: gtZero,
     },
-
-    display: {
-      type: String,
-      default: "flex",
-    },
   },
 
   setup(props) {
@@ -53,6 +47,7 @@ export default defineComponent({
       props.width,
       props.height
     );
+
     return {
       position: computed(() => ({
         top: pos.value.top + "px",
@@ -91,9 +86,9 @@ export default defineComponent({
   margin: auto;
   width: auto;
   height: auto;
-  @include BorderRadius;
+  border-radius: $border-radius;
   @include ToTheme($theme-tomato) {
-    background-color: $white;
+    border: 1px solid $black;
   }
 }
 </style>

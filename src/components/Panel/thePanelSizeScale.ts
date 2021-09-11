@@ -1,5 +1,5 @@
 import { useRef, UseRefReturnType } from "@/composition/common";
-import { getdocElement } from '@/helper/dom_helper';
+import { getDocElement } from '@/helper/dom';
 
 export enum Position {
   left = 'left',
@@ -27,7 +27,7 @@ const checkHorizontion = () => screen.orientation.type.includes('landscape')
 export function getInitPanelPosRef(
   width: number,
   height: number,
-  root: HTMLElement = getdocElement(),
+  root: HTMLElement = getDocElement(),
   ref: typeof useRef = useRef,
 ): UseRefReturnType<PositionType> {
   const isHorizontion = checkHorizontion();

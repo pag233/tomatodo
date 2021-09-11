@@ -25,8 +25,6 @@ export const makeCheckRange: MakeCheckRangeType = (min: number, max: number) =>
 export const checkZeroToHundred = makeCheckRange(0, 100);
 export const gtZero = makeCheckRange(0, Infinity);
 
-export const getRemValue = (): number => parseInt(window.getComputedStyle(document.documentElement).fontSize)
-
 /* eslint-disable */
 type MapCallbackType<T> = (item: T, index?: number, arr?: T[]) => T
 type FilterCallbackType<T> = (item: T) => boolean

@@ -39,10 +39,14 @@ export function makeClearHandler(
   }
 }
 
-export function getdocElement(): HTMLElement {
+export function getDocElement(): HTMLElement {
   return document.documentElement;
 }
 
 export function getBodyElement(): HTMLElement {
   return document.body;
+}
+
+export function getRemSize(): number {
+  return parseInt(window.getComputedStyle(getDocElement()).fontSize);
 }

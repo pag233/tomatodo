@@ -1,6 +1,5 @@
 import { SetStateArgsType } from "@/composition/common";
-import { getRemValue } from "@/helper";
-import { makeClearHandler, makeHandler, getBodyElement } from "@/helper/dom_helper";
+import { makeClearHandler, makeHandler, getBodyElement, getRemSize } from "@/helper/dom";
 import { EmitFnType } from '@/composition/types';
 import { throttle } from 'lodash'
 import { PositionType, PositionKey, Position } from './thePanelSizeScale'
@@ -95,7 +94,7 @@ export function MouseDownHandlers(
   top: MousemoveHandlerType,
   bottom: MousemoveHandlerType,
 } {
-  const boxBoundryOffset = getRemValue();
+  const boxBoundryOffset = getRemSize();
   const left = makeResizeBarMouseDownHandlers(
     makeMouseMoveResizeHanler(
       emit,

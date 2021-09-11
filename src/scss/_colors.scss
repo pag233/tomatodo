@@ -1,4 +1,13 @@
+@import "./common.scss";
+
 $tomato: #bf0a2b;
 $leaf: #65bfaf;
 $white: #f1f2d8;
 $black: #262523;
+
+%left-bar-color {
+  @include ToTheme($theme-tomato) {
+    background-color: $black;
+    opacity: 0.3;
+  }
+}
