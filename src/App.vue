@@ -1,17 +1,28 @@
 <template>
   <main class="theme-tomato">
-    <Panel> </Panel>
+    <Panel>
+      <FlexContainer>
+        <SideBar />
+        <ContentBlock />
+      </FlexContainer>
+    </Panel>
   </main>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Panel from "./components/Panel/ThePanel.vue";
+import Panel from "@/components/Panel/ThePanel.vue";
+import SideBar from "@/components/SideBar/SideBar.vue";
+import FlexContainer from "@/components/Container/FlexContainer.vue";
+import ContentBlock from "@/components/ContentBlock/ContentBlock.vue";
 
 export default defineComponent({
   name: "App",
   components: {
     Panel,
+    FlexContainer,
+    SideBar,
+    ContentBlock,
   },
 });
 </script>
