@@ -1,5 +1,8 @@
 import { useRef, UseRefReturnType } from "@/composition/common";
-import { getDocElement } from '@/helper/dom';
+import { getDocElement, getRemSize } from '@/helper/dom';
+
+//Panel最大延伸位置
+export const BoxBoundryOffset: number = getRemSize();
 
 export enum Position {
   left = 'left',

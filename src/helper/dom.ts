@@ -17,18 +17,18 @@ export function makeHandler(
 }
 /**
  * 注销回调
- * @param RegisteeremoveEventListeners 
- * @param RegisteeResetStyle
+ * @param registeeRemoveEventListeners 
+ * @param registeeResetStyle
  * @returns 
  */
 export function makeClearHandler(
-  RegisteeremoveEventListeners: (registeeElem: HTMLElement) => void,
-  RegisteeResetStyle: (registeeElem: HTMLElement) => void,
+  registeeRemoveEventListeners: (registeeElem: HTMLElement) => void,
+  registeeResetStyle: (registeeElem: HTMLElement) => void,
   registeeElem: HTMLElement = getBodyElement(),
 ): () => void {
   function clear() {
-    RegisteeremoveEventListeners(registeeElem);
-    RegisteeResetStyle(registeeElem);
+    registeeRemoveEventListeners(registeeElem);
+    registeeResetStyle(registeeElem);
   }
   onUnmounted(() => {
     // console.log('remove event listeners: ' + clear);

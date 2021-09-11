@@ -1,12 +1,13 @@
 import { SetStateArgsType } from "@/composition/common";
-import { makeClearHandler, makeHandler, getBodyElement, getRemSize } from "@/helper/dom";
+import { makeClearHandler, makeHandler, getBodyElement } from "@/helper/dom";
 import { EmitFnType } from '@/composition/types';
 import { throttle } from 'lodash'
-import { PositionType, PositionKey, Position } from './thePanelSizeScale'
+import { PositionType, PositionKey, Position, BoxBoundryOffset } from './thePanel.compo'
 
 type MousemoveHandlerType = (e: MouseEvent) => void
 
 type BoundryCheckerType = (e: MouseEvent, pos: PositionType) => boolean
+
 /**
  * 生成不同方向的mousemove回调函数的高阶函数
  * @param emitFn 
@@ -18,12 +19,12 @@ type BoundryCheckerType = (e: MouseEvent, pos: PositionType) => boolean
  */
 function makeMouseMoveResizeHanler(
   emitFn: EmitFnType<SetStateArgsType<PositionType>>,
-  emitType: string,
   direction: PositionKey,
   isLessThenBoundry: BoundryCheckerType,
   isOutOfBox: BoundryCheckerType,
   offset: (e: MouseEvent) => number,
-): MousemoveHandlerType {
+  emitType: string = Position.emitType,
+) {
   return throttle(function (e: MouseEvent) {
     // console.log('x: ' + e.clientX);
     // console.log("y: " + e.clientY);
@@ -41,10 +42,10 @@ function makeMouseMoveResizeHanler(
  */
 function makeMouseMoveRepositionHandler(
   emitFn: EmitFnType<SetStateArgsType<PositionType>>,
-  emitType: string,
   isOutOfBox: BoundryCheckerType,
   positiion: (e: MouseEvent, pos: PositionType) => PositionType,
-): MousemoveHandlerType {
+  emitType = Position.emitType,
+) {
   return throttle(function (e: MouseEvent) {
     // console.log('x: ' + e.clientX);
     // console.log("y: " + e.clientY);
@@ -60,12 +61,13 @@ function makeMouseMoveRepositionHandler(
  * 生成并向父节点添加\注销回调
  * @param mouseMoveHandler 
  */
-function makeResizeBarMouseDownHandlers(mouseMoveHandler: MousemoveHandlerType): MousemoveHandlerType {
+function makeResizeBarMouseDownHandlers(mouseMoveHandler: ReturnType<typeof throttle>) {
 
   const clearMouseMoveHandler = makeClearHandler((elem) => {
     elem.removeEventListener('mousemove', mouseMoveHandler);
     elem.removeEventListener('mouseup', clearMouseMoveHandler);
     elem.removeEventListener('mouseleave', clearMouseMoveHandler);
+    mouseMoveHandler.cancel();
   }, (elem) => elem.style.cursor = 'default');
 
   return makeHandler((elem) => {
@@ -83,46 +85,44 @@ function makeResizeBarMouseDownHandlers(mouseMoveHandler: MousemoveHandlerType):
  * @param registeeElem 父节点
  * @returns 各个方向的mousedown回调
  */
-export function MouseDownHandlers(
+
+export function makeMouseDownHandlers(
   emit: EmitFnType<SetStateArgsType<PositionType>>,
   minWidth: number,
   minHeigh: number,
   registeeElem: HTMLElement = getBodyElement(),
+  boxBoundry: number = BoxBoundryOffset,
 ): {
   left: MousemoveHandlerType,
   right: MousemoveHandlerType
   top: MousemoveHandlerType,
   bottom: MousemoveHandlerType,
 } {
-  const boxBoundryOffset = getRemSize();
   const left = makeResizeBarMouseDownHandlers(
     makeMouseMoveResizeHanler(
       emit,
-      Position.emitType,
       Position.left,
       (e, pos) => registeeElem.clientWidth - pos.right - minWidth - e.clientX > 0,
-      (e) => e.clientX > boxBoundryOffset,
+      (e) => e.clientX > boxBoundry,
       (e) => e.clientX
     )
   )
   const right = makeResizeBarMouseDownHandlers(
     makeMouseMoveResizeHanler(
       emit,
-      Position.emitType,
       Position.right,
       (e, pos) => e.clientX - pos.left - minWidth > 0,
-      (e) => registeeElem.clientWidth - boxBoundryOffset - e.clientX > 0,
+      (e) => registeeElem.clientWidth - boxBoundry - e.clientX > 0,
       (e) => registeeElem.clientWidth - e.clientX
     )
   )
   const top = makeResizeBarMouseDownHandlers(
     makeMouseMoveRepositionHandler(
       emit,
-      Position.emitType,
-      (e, pos) => e.clientY > boxBoundryOffset &&
-        (pos.bottom + pos.top - e.clientY > boxBoundryOffset || e.clientY < pos.top) &&
-        (e.clientX - (registeeElem.clientWidth - pos.right - pos.left) / 2) > boxBoundryOffset &&
-        (registeeElem.clientWidth + pos.left + pos.right - 2 * e.clientX) / 2 > boxBoundryOffset
+      (e, pos) => e.clientY > boxBoundry &&
+        (pos.bottom + pos.top - e.clientY > boxBoundry || e.clientY < pos.top) &&
+        (e.clientX - (registeeElem.clientWidth - pos.right - pos.left) / 2) > boxBoundry &&
+        (registeeElem.clientWidth + pos.left + pos.right - 2 * e.clientX) / 2 > boxBoundry
       // registeeElem.clientWidth - (e.clientX + (registeeElem.clientWidth - pos.right - pos.left) / 2) > boxBoundryOffset
       ,
       (e, pos) => {
@@ -141,10 +141,9 @@ export function MouseDownHandlers(
   const bottom = makeResizeBarMouseDownHandlers(
     makeMouseMoveResizeHanler(
       emit,
-      Position.emitType,
       Position.bottom,
       (e, pos) => e.clientY - pos.top - minHeigh > 0,
-      (e) => registeeElem.clientHeight - boxBoundryOffset - e.clientY > 0,
+      (e) => registeeElem.clientHeight - boxBoundry - e.clientY > 0,
       (e) => registeeElem.clientHeight - e.clientY
     )
   )

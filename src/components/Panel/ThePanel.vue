@@ -11,6 +11,7 @@
       :minHeight="minHeight"
       v-if="deskDevice"
     />
+    <MaximumButton @update:pos="setPos" />
     <slot></slot>
   </div>
 </template>
@@ -18,15 +19,18 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import { getInitPanelPosRef, getMinWidthHeight } from "./thePanelSizeScale";
+import { getInitPanelPosRef, getMinWidthHeight } from "./thePanel.compo";
 import ResizeBar from "./ResizeBar.vue";
+import MaximumButton from "./MaximumButton.vue";
 import { gtZero } from "@/helper";
 export default defineComponent({
   name: "Panel",
 
   components: {
     ResizeBar,
+    MaximumButton,
   },
+
   props: {
     width: {
       type: Number,
@@ -47,7 +51,6 @@ export default defineComponent({
       props.width,
       props.height
     );
-
     return {
       position: computed(() => ({
         top: pos.value.top + "px",
@@ -89,6 +92,7 @@ export default defineComponent({
   border-radius: $border-radius;
   @include ToTheme($theme-tomato) {
     border: 1px solid $black;
+    box-shadow: 1px 1px 4px 0px;
   }
 }
 </style>

@@ -9,8 +9,8 @@
 <script lang="ts">
 import { gtZero } from "@/helper";
 import { defineComponent } from "vue";
-import { PositionType, Position } from "./thePanelSizeScale";
-import { MouseDownHandlers } from "./resizeBar";
+import { makeMouseDownHandlers } from "./resizeBar.comp";
+import { PositionType, Position } from "./thePanel.compo";
 export default defineComponent({
   name: "ResizeBar",
 
@@ -34,7 +34,11 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const handlers = MouseDownHandlers(emit, props.minWidth, props.minHeight);
+    const handlers = makeMouseDownHandlers(
+      emit,
+      props.minWidth,
+      props.minHeight
+    );
     return {
       leftBarOnMouseDown: handlers.left,
       rightBarOnMouseDown: handlers.right,

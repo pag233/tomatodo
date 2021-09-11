@@ -16,7 +16,7 @@ export default defineComponent({
 
 .side-bar {
   @include ToTheme($theme-tomato) {
-    color: wheat;
+    color: $white;
     border: 1px solid $white;
   }
   flex: 0 0 10rem;
