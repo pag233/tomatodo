@@ -22,11 +22,13 @@ export function useMountUnmount(setUp: SetUpType): void {
 /**
  * setState方法支持的基本数据类型
  */
-export type BaseStateType = {
-  [index: string]: string | number | boolean | symbol | BaseStateType
-}
+type BaseValueType = string | number | boolean | symbol
 
-export type SetStateArgsType<T> = T | ((state: T) => T)
+export type BaseStateType = {
+  [index: string]: BaseValueType | BaseStateType
+} | BaseValueType
+
+export type SetStateArgsType<T> = UnwrapRef<T> | ((state: UnwrapRef<T>) => UnwrapRef<T>)
 export type SetStateType<T> = (args: SetStateArgsType<T>) => void
 
 export type UseRefReturnType<T> = [Ref<UnwrapRef<T>>, SetStateType<T>]
@@ -35,10 +37,11 @@ export type UseRefReturnType<T> = [Ref<UnwrapRef<T>>, SetStateType<T>]
  * @param value 响应式原始值
  * @returns 返回一个ref(value)，与一个setState，setState支持直接或回调式更新
  */
+
 export function useRef<T extends BaseStateType>(value: T): UseRefReturnType<T> {
   const oldState = ref(value);
 
-  function setState(stateOrCallback: SetStateArgsType<T>): void {
+  function setState(stateOrCallback: SetStateArgsType<T>) {
     if (typeof stateOrCallback === 'function') {
       oldState.value = stateOrCallback(oldState.value)
       return;

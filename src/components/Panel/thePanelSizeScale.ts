@@ -1,5 +1,5 @@
 import { useRef, UseRefReturnType } from "@/composition/common";
-import { getdocElement } from '@/helper';
+import { getdocElement } from '@/helper/dom_helper';
 
 export enum Position {
   left = 'left',
@@ -28,6 +28,7 @@ export function getInitPanelPosRef(
   width: number,
   height: number,
   root: HTMLElement = getdocElement(),
+  ref: typeof useRef = useRef,
 ): UseRefReturnType<PositionType> {
   const isHorizontion = checkHorizontion();
   if (isHorizontion) {
@@ -38,7 +39,7 @@ export function getInitPanelPosRef(
   const bottom = top;
   const left = isFit ? Math.floor((root.clientWidth - width) / 2) : 0;
   const right = left;
-  return useRef<PositionType>({
+  return ref<PositionType>({
     top,
     bottom,
     left,

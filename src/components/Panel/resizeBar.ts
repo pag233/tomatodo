@@ -1,12 +1,13 @@
 import { SetStateArgsType } from "@/composition/common";
-import { getBodyElement, getRemValue } from "@/helper";
-import { makeClearHandler, makeHandler } from "@/helper/dom_helper";
+import { getRemValue } from "@/helper";
+import { makeClearHandler, makeHandler, getBodyElement } from "@/helper/dom_helper";
 import { EmitFnType } from '@/composition/types';
-import { throttle } from "underscore";
+import { throttle } from 'lodash'
 import { PositionType, PositionKey, Position } from './thePanelSizeScale'
 
-type mousemoveHandlerType = (e: MouseEvent) => void
+type MousemoveHandlerType = (e: MouseEvent) => void
 
+type BoundryCheckerType = (e: MouseEvent, pos: PositionType) => boolean
 /**
  * 生成不同方向的mousemove回调函数的高阶函数
  * @param emitFn 
@@ -20,11 +21,11 @@ function makeMouseMoveResizeHanler(
   emitFn: EmitFnType<SetStateArgsType<PositionType>>,
   emitType: string,
   direction: PositionKey,
-  isLessThenBoundry: (e: MouseEvent, pos: PositionType) => boolean,
-  isOutOfBox: (e: MouseEvent, pos: PositionType) => boolean,
+  isLessThenBoundry: BoundryCheckerType,
+  isOutOfBox: BoundryCheckerType,
   offset: (e: MouseEvent) => number,
-): mousemoveHandlerType {
-  return throttle(function (e: MouseEvent): void {
+): MousemoveHandlerType {
+  return throttle(function (e: MouseEvent) {
     // console.log('x: ' + e.clientX);
     // console.log("y: " + e.clientY);
     emitFn(emitType, (pos) => {
@@ -42,10 +43,10 @@ function makeMouseMoveResizeHanler(
 function makeMouseMoveRepositionHandler(
   emitFn: EmitFnType<SetStateArgsType<PositionType>>,
   emitType: string,
-  isOutOfBox: (e: MouseEvent, pos: PositionType) => boolean,
+  isOutOfBox: BoundryCheckerType,
   positiion: (e: MouseEvent, pos: PositionType) => PositionType,
-): mousemoveHandlerType {
-  return throttle(function (e: MouseEvent): void {
+): MousemoveHandlerType {
+  return throttle(function (e: MouseEvent) {
     // console.log('x: ' + e.clientX);
     // console.log("y: " + e.clientY);
     emitFn(emitType, (pos) => {
@@ -60,7 +61,7 @@ function makeMouseMoveRepositionHandler(
  * 生成并向父节点添加\注销回调
  * @param mouseMoveHandler 
  */
-function makeResizeBarMouseDownHandlers(mouseMoveHandler: mousemoveHandlerType): mousemoveHandlerType {
+function makeResizeBarMouseDownHandlers(mouseMoveHandler: MousemoveHandlerType): MousemoveHandlerType {
 
   const clearMouseMoveHandler = makeClearHandler((elem) => {
     elem.removeEventListener('mousemove', mouseMoveHandler);
@@ -89,10 +90,10 @@ export function MouseDownHandlers(
   minHeigh: number,
   registeeElem: HTMLElement = getBodyElement(),
 ): {
-  left: (e: MouseEvent) => void,
-  right: (e: MouseEvent) => void,
-  top: (e: MouseEvent) => void,
-  bottom: (e: MouseEvent) => void,
+  left: MousemoveHandlerType,
+  right: MousemoveHandlerType
+  top: MousemoveHandlerType,
+  bottom: MousemoveHandlerType,
 } {
   const boxBoundryOffset = getRemValue();
   const left = makeResizeBarMouseDownHandlers(

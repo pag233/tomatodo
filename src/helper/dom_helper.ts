@@ -1,5 +1,4 @@
 import { onUnmounted } from "@vue/runtime-dom";
-import { getBodyElement } from ".";
 /**
  * 组合回调
  * @param RegisteeAddEventListeners
@@ -38,4 +37,12 @@ export function makeClearHandler(
   return function () {
     clear();
   }
+}
+
+export function getdocElement(): HTMLElement {
+  return document.documentElement;
+}
+
+export function getBodyElement(): HTMLElement {
+  return document.body;
 }
