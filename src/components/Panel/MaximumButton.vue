@@ -1,16 +1,59 @@
 <template>
-  <button class="maximum-button" @click="maximumPanel"></button>
+  <PanelButton>
+    <button v-if="!isMaximum" class="maximum-button" @click="maximumPanel">
+      <ExpandTextInput
+        class="icon"
+        theme="outline"
+        size="14"
+        fill="#f1f2d8"
+        :strokeWidth="6"
+      />
+    </button>
+    <button v-else class="maximum-button" @click="restorePanel">
+      <CollapseTextInput
+        class="icon"
+        theme="outline"
+        size="14"
+        fill="#f1f2d8"
+        :strokeWidth="6"
+      />
+    </button>
+  </PanelButton>
 </template>
 
 <script lang='ts'>
 import { defineComponent } from "vue";
-import { makeMaximumPanelHandler } from "./maximumButton.comp";
+import { PositionEmitType, MaximumEmitType } from "./thePanel.compo";
+
+import { ExpandTextInput, CollapseTextInput } from "@icon-park/vue-next";
+import PanelButton from "./PanelButton.vue";
+
 export default defineComponent({
   name: "MaximumButton",
 
+  emits: {
+    [MaximumEmitType.update]() {
+      return true;
+    },
+    [PositionEmitType.restore]() {
+      return true;
+    },
+  },
+
+  props: {
+    isMaximum: Boolean,
+  },
+
+  components: {
+    PanelButton,
+    ExpandTextInput,
+    CollapseTextInput,
+  },
+
   setup(props, { emit }) {
     return {
-      maximumPanel: makeMaximumPanelHandler(emit),
+      maximumPanel: () => emit(MaximumEmitType.update),
+      restorePanel: () => emit(PositionEmitType.restore),
     };
   },
 });
@@ -22,6 +65,10 @@ export default defineComponent({
 
 .maximum-button {
   @include ToTheme($theme-tomato) {
+    background-color: $tomato;
+  }
+  .icon {
+    transform: rotateZ(90deg);
   }
 }
 </style>

@@ -1,5 +1,6 @@
 import { useRef, UseRefReturnType } from "@/composition/common";
 import { getDocElement, getRemSize } from '@/helper/dom';
+import { watch } from "@vue/runtime-core";
 
 //Panel最大延伸位置
 export const BoxBoundryOffset: number = getRemSize();
@@ -9,8 +10,18 @@ export enum Position {
   right = 'right',
   top = 'top',
   bottom = 'bottom',
-  emitType = 'update:pos'
 }
+
+export enum PositionEmitType {
+  update = "pos:update",
+  save = "pos:save",
+  restore = "pos:restore"
+}
+
+export enum MaximumEmitType {
+  update = "maximum:update",
+}
+
 export type PositionType = {
   top: number;
   left: number;
@@ -32,22 +43,70 @@ export function getInitPanelPosRef(
   height: number,
   root: HTMLElement = getDocElement(),
   ref: typeof useRef = useRef,
-): UseRefReturnType<PositionType> {
+): {
+  pos: UseRefReturnType<PositionType>,
+  maximum: UseRefReturnType<boolean>,
+  savePos: () => void,
+  restorePos: () => void,
+} {
   const isHorizontion = checkHorizontion();
   if (isHorizontion) {
     [width, height] = [height, width];
   }
   const isFit = height < root.clientHeight && width < root.clientWidth
-  const top = isFit ? Math.floor((root.clientHeight - height) / 2) : 0;
+  // isFit && setMaximum();
+
+  const top = isFit ? Math.floor((root.clientHeight - height) / 2) : BoxBoundryOffset;
   const bottom = top;
-  const left = isFit ? Math.floor((root.clientWidth - width) / 2) : 0;
+  const left = isFit ? Math.floor((root.clientWidth - width) / 2) : BoxBoundryOffset;
   const right = left;
-  return ref<PositionType>({
+
+  const pos = ref<PositionType>({
     top,
     bottom,
     left,
     right,
   })
+
+  const [posState, setPos] = pos;
+
+  const maximum = ref(!isFit);
+
+  const [maximumState, setMaximum] = maximum;
+
+
+  const [savedPos, setSavedPos] = ref<PositionType>({
+    top,
+    bottom,
+    left,
+    right,
+  })
+
+  const savePos = () => setSavedPos(posState.value);
+
+  const restorePos = () => {
+    setMaximum(false);
+    setPos(savedPos.value);
+  }
+
+  watch(maximumState, () => {
+    if (maximumState.value) {
+      savePos()
+      setPos({
+        top: BoxBoundryOffset,
+        bottom: BoxBoundryOffset,
+        left: BoxBoundryOffset,
+        right: BoxBoundryOffset,
+      })
+    }
+  })
+
+  return {
+    pos,
+    maximum,
+    savePos,
+    restorePos,
+  }
 }
 /**
  * 初始化Panel最小大小

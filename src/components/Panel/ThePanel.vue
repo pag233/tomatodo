@@ -6,20 +6,31 @@
     }"
   >
     <ResizeBar
-      @update:pos="setPos"
       :minWidth="minWidth"
       :minHeight="minHeight"
       v-if="deskDevice"
+      @[PositionEmitType.update]="setPos"
+      @[MaximumEmitType.update]="setMaximum(false)"
+      @[PositionEmitType.save]="savePos"
     />
-    <MaximumButton @update:pos="setPos" />
+    <MaximumButton
+      :isMaximum="isMaximum"
+      @[PositionEmitType.update]="setPos"
+      @[MaximumEmitType.update]="setMaximum(true)"
+      @[PositionEmitType.restore]="resotrePos"
+    />
     <slot></slot>
   </div>
 </template>
 
-
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import { getInitPanelPosRef, getMinWidthHeight } from "./thePanel.compo";
+import {
+  getInitPanelPosRef,
+  getMinWidthHeight,
+  PositionEmitType,
+  MaximumEmitType,
+} from "./thePanel.compo";
 import ResizeBar from "./ResizeBar.vue";
 import MaximumButton from "./MaximumButton.vue";
 import { gtZero } from "@/helper";
@@ -46,11 +57,15 @@ export default defineComponent({
   },
 
   setup(props) {
-    const [pos, setPos] = getInitPanelPosRef(props.width, props.height);
+    const posRef = getInitPanelPosRef(props.width, props.height);
+    const [pos, setPos] = posRef.pos;
+    const [isMaximum, setMaximum] = posRef.maximum;
+
     const { minWidth, minHeight } = getMinWidthHeight(
       props.width,
       props.height
     );
+
     return {
       position: computed(() => ({
         top: pos.value.top + "px",
@@ -61,6 +76,10 @@ export default defineComponent({
       setPos,
       minWidth,
       minHeight,
+      isMaximum,
+      setMaximum,
+      savePos: posRef.savePos,
+      resotrePos: posRef.restorePos,
     };
   },
 
@@ -75,6 +94,8 @@ export default defineComponent({
   data() {
     return {
       deskDevice: true,
+      PositionEmitType,
+      MaximumEmitType,
     };
   },
 });

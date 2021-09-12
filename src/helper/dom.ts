@@ -1,41 +1,33 @@
 import { onUnmounted } from "@vue/runtime-dom";
 /**
- * 组合回调
- * @param RegisteeAddEventListeners
- * @param RegisteeUpdateStyle
+ * 向父元素注册回调
  */
 export function makeHandler(
-  RegisteeAddEventListeners: (registeeElem: HTMLElement) => void,
-  RegisteeUpdateStyle: (registeeElem: HTMLElement) => void,
+  listeners: (registeeElem: HTMLElement) => void,
   registeeElem: HTMLElement = getBodyElement(),
 ): () => void {
   return function () {
     // console.log("add");
-    RegisteeUpdateStyle(registeeElem);
-    RegisteeAddEventListeners(registeeElem);
+    listeners(registeeElem);
   }
 }
 /**
- * 注销回调
- * @param registeeRemoveEventListeners 
- * @param registeeResetStyle
- * @returns 
+ * 向父元素注销回调
+ * @param needUnmountedListeners 需要放入onUnmounted中的listeners
+ * @param injectFn 不需要放入onUnmounted中的listeners
  */
 export function makeClearHandler(
-  registeeRemoveEventListeners: (registeeElem: HTMLElement) => void,
-  registeeResetStyle: (registeeElem: HTMLElement) => void,
+  needUnmountedListeners: (registeeElem: HTMLElement) => void,
+  injectFn?: (registeeElem: HTMLElement) => void,
   registeeElem: HTMLElement = getBodyElement(),
 ): () => void {
-  function clear() {
-    registeeRemoveEventListeners(registeeElem);
-    registeeResetStyle(registeeElem);
-  }
   onUnmounted(() => {
     // console.log('remove event listeners: ' + clear);
-    clear();
+    needUnmountedListeners(registeeElem);
   })
   return function () {
-    clear();
+    injectFn && injectFn(registeeElem);
+    needUnmountedListeners(registeeElem);
   }
 }
 

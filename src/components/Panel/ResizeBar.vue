@@ -10,13 +10,23 @@
 import { gtZero } from "@/helper";
 import { defineComponent } from "vue";
 import { makeMouseDownHandlers } from "./resizeBar.comp";
-import { PositionType, Position } from "./thePanel.compo";
+import {
+  PositionType,
+  PositionEmitType,
+  MaximumEmitType,
+} from "./thePanel.compo";
 export default defineComponent({
   name: "ResizeBar",
 
   emits: {
-    [Position.emitType](pos: PositionType) {
+    [PositionEmitType.update](pos: PositionType) {
       return Object.values(pos).every((value) => typeof value === "number");
+    },
+    [MaximumEmitType.update]() {
+      return true;
+    },
+    [PositionEmitType.save]() {
+      return true;
     },
   },
 
