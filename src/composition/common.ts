@@ -1,4 +1,10 @@
-import { onMounted, onUnmounted, Ref, UnwrapRef, ref } from "vue";
+import {
+  onMounted,
+  onUnmounted,
+  Ref,
+  UnwrapRef,
+  ref,
+} from "vue";
 
 type SetUpType = () => (void | (() => void))
 type TearDownType = void | (() => void);
@@ -22,7 +28,7 @@ export function useMountUnmount(setUp: SetUpType): void {
 /**
  * setState方法支持的基本数据类型
  */
-type BaseValueType = string | number | boolean | symbol
+type BaseValueType = string | number | boolean
 
 export type BaseStateType = {
   [index: string]: BaseValueType | BaseStateType
@@ -38,7 +44,7 @@ export type UseRefReturnType<T> = [Ref<UnwrapRef<T>>, SetStateType<T>]
  * @returns 返回一个ref(value)，与一个setState，setState支持直接或回调式更新
  */
 
-export function useRef<T extends BaseStateType>(value: T): UseRefReturnType<T> {
+export function useRef<T extends BaseStateType | BaseStateType[]>(value: T): UseRefReturnType<T> {
   const oldState = ref(value);
 
   function setState(stateOrCallback: SetStateArgsType<T>) {

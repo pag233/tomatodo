@@ -13,20 +13,22 @@
       @[MaximumEmitType.update]="setMaximum(false)"
       @[PositionEmitType.save]="savePos"
     />
-    <MaximumButton
-      :isMaximum="isMaximum"
-      @[PositionEmitType.update]="setPos"
-      @[MaximumEmitType.update]="setMaximum(true)"
-      @[PositionEmitType.restore]="resotrePos"
-    />
-    <slot></slot>
+    <div class="btn-container">
+      <MaximumButton
+        :isMaximum="isMaximum"
+        @[PositionEmitType.update]="setPos"
+        @[MaximumEmitType.update]="setMaximum(true)"
+        @[PositionEmitType.restore]="resotrePos"
+      />
+    </div>
+    <slot :sideBarBreakPoint="sideBarBreakPoint"></slot>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import {
-  getInitPanelPosRef,
+  initPanelPosInfo,
   getMinWidthHeight,
   PositionEmitType,
   MaximumEmitType,
@@ -54,12 +56,17 @@ export default defineComponent({
       default: 800,
       validator: gtZero,
     },
+
+    sideBarBreakPoint: {
+      type: Number,
+      default: 400,
+    },
   },
 
   setup(props) {
-    const posRef = getInitPanelPosRef(props.width, props.height);
-    const [pos, setPos] = posRef.pos;
-    const [isMaximum, setMaximum] = posRef.maximum;
+    const posInfo = initPanelPosInfo(props.width, props.height);
+    const [pos, setPos] = posInfo.pos;
+    const [isMaximum, setMaximum] = posInfo.maximum;
 
     const { minWidth, minHeight } = getMinWidthHeight(
       props.width,
@@ -78,8 +85,8 @@ export default defineComponent({
       minHeight,
       isMaximum,
       setMaximum,
-      savePos: posRef.savePos,
-      resotrePos: posRef.restorePos,
+      savePos: posInfo.savePos,
+      resotrePos: posInfo.restorePos,
     };
   },
 
@@ -114,6 +121,12 @@ export default defineComponent({
   @include ToTheme($theme-tomato) {
     border: 1px solid $black;
     box-shadow: 1px 1px 4px 0px;
+  }
+
+  .btn-container {
+    position: absolute;
+    top: 0;
+    z-index: 1;
   }
 }
 </style>

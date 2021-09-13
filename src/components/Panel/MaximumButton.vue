@@ -26,6 +26,7 @@ import { defineComponent } from "vue";
 import { PositionEmitType, MaximumEmitType } from "./thePanel.compo";
 
 import { ExpandTextInput, CollapseTextInput } from "@icon-park/vue-next";
+
 import PanelButton from "./PanelButton.vue";
 
 export default defineComponent({
@@ -67,8 +68,14 @@ export default defineComponent({
   @include ToTheme($theme-tomato) {
     background-color: $tomato;
   }
+  &:hover {
+    .icon {
+      visibility: visible;
+    }
+  }
   .icon {
     transform: rotateZ(90deg);
+    visibility: hidden;
   }
 }
 </style>

@@ -1,12 +1,26 @@
 <template>
-  <section class="side-bar"></section>
+  <section class="side-bar" v-if="!isBreak"></section>
 </template>
 
 <script lang='ts'>
 import { defineComponent } from "vue";
-
+import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak.compo";
 export default defineComponent({
   name: "SideBar",
+
+  props: {
+    breakPoint: {
+      type: Number,
+      required: true,
+    },
+  },
+
+  setup(props) {
+    const isBreak = useWatchSideBarBreak(props.breakPoint);
+    return {
+      isBreak,
+    };
+  },
 });
 </script>
 

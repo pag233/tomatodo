@@ -1,12 +1,25 @@
 <template>
-  <section class="content-block"></section>
+  <section class="content-block" :class="{ 'round-corner': isBreak }"></section>
 </template>
 
 <script lang='ts'>
 import { defineComponent } from "vue";
+import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak.compo";
 
 export default defineComponent({
   name: "ContentBlock",
+  props: {
+    sideBarBreakPoint: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup(props) {
+    const isBreak = useWatchSideBarBreak(props.sideBarBreakPoint);
+    return {
+      isBreak,
+    };
+  },
 });
 </script>
 
@@ -20,5 +33,8 @@ export default defineComponent({
   @include ToTheme($theme-tomato) {
     background-color: $white;
   }
+}
+.round-corner {
+  border-radius: $border-radius;
 }
 </style>

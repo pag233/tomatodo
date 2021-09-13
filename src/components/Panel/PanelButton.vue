@@ -12,13 +12,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/scss/_common.scss";
-@import "@/scss/_colors.scss";
-
-.panel-button {
-  position: absolute;
-  z-index: 1;
-}
 .panel-button button {
   outline: none;
   padding: 0;

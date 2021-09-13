@@ -1,10 +1,12 @@
 <template>
   <main class="theme-tomato">
     <Panel>
-      <FlexContainer>
-        <SideBar />
-        <ContentBlock />
-      </FlexContainer>
+      <template #default="{ sideBarBreakPoint }">
+        <FlexContainer>
+          <SideBar :breakPoint="sideBarBreakPoint" />
+          <ContentBlock :sideBarBreakPoint="sideBarBreakPoint" />
+        </FlexContainer>
+      </template>
     </Panel>
   </main>
 </template>
