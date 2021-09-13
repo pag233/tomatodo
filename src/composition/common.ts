@@ -35,6 +35,7 @@ export type BaseStateType = {
 } | BaseValueType
 
 export type SetStateArgsType<T> = UnwrapRef<T> | ((state: UnwrapRef<T>) => UnwrapRef<T>)
+
 export type SetStateType<T> = (args: SetStateArgsType<T>) => void
 
 export type UseRefReturnType<T> = [Ref<UnwrapRef<T>>, SetStateType<T>]

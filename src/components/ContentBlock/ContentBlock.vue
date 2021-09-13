@@ -3,19 +3,22 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak";
+import { PanelBreakPointsType } from "../Panel/thePanelBreakPoint";
 
 export default defineComponent({
   name: "ContentBlock",
+
   props: {
-    sideBarBreakPoint: {
-      type: Number,
+    breakPoints: {
+      type: Object as PropType<PanelBreakPointsType>,
       required: true,
     },
   },
+
   setup(props) {
-    const isBreak = useWatchSideBarBreak(props.sideBarBreakPoint);
+    const isBreak = useWatchSideBarBreak(props.breakPoints.sidebar);
     return {
       isBreak,
     };

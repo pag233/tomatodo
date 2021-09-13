@@ -10,7 +10,7 @@ export type PositionType = {
   left: number;
   bottom: number;
   right: number;
-};
+}
 
 export type PositionKey = keyof PositionType
 

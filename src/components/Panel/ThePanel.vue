@@ -21,7 +21,7 @@
         @[PositionEmitType.restore]="resotrePos"
       />
     </div>
-    <slot :sideBarBreakPoint="sideBarBreakPoint"></slot>
+    <slot :breakPoints="breakPoints"></slot>
   </div>
 </template>
 
@@ -33,9 +33,12 @@ import {
   PositionEmitType,
   MaximumEmitType,
 } from "./thePanelPosInfo";
+import { panelBreakPoints } from "./thePanelBreakPoint";
+
+import { gtZero } from "@/helper";
 import ResizeBar from "./ResizeBar.vue";
 import MaximumButton from "./MaximumButton.vue";
-import { gtZero } from "@/helper";
+
 export default defineComponent({
   name: "Panel",
 
@@ -55,11 +58,6 @@ export default defineComponent({
       type: Number,
       default: 800,
       validator: gtZero,
-    },
-
-    sideBarBreakPoint: {
-      type: Number,
-      default: 400,
     },
   },
 
@@ -87,6 +85,7 @@ export default defineComponent({
       setMaximum,
       savePos: posInfo.savePos,
       resotrePos: posInfo.restorePos,
+      breakPoints: panelBreakPoints,
     };
   },
 
