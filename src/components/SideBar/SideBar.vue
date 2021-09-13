@@ -4,7 +4,7 @@
 
 <script lang='ts'>
 import { defineComponent } from "vue";
-import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak.compo";
+import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak";
 export default defineComponent({
   name: "SideBar",
 

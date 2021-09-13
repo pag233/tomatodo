@@ -23,7 +23,7 @@
 
 <script lang='ts'>
 import { defineComponent } from "vue";
-import { PositionEmitType, MaximumEmitType } from "./thePanel.compo";
+import { PositionEmitType, MaximumEmitType } from "./thePanelPosInfo";
 
 import { ExpandTextInput, CollapseTextInput } from "@icon-park/vue-next";
 

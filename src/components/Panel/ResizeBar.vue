@@ -5,16 +5,15 @@
   <div class="resize-bar bottom-bar" @mousedown="bottomBarOnMouseDown"></div>
 </template>
 
-
 <script lang="ts">
 import { gtZero } from "@/helper";
 import { defineComponent } from "vue";
-import { makeMouseDownHandlers } from "./resizeBar.comp";
+import { makeMouseDownHandlers } from "./resizeBar";
 import {
   PositionType,
   PositionEmitType,
   MaximumEmitType,
-} from "./thePanel.compo";
+} from "./thePanelPosInfo";
 export default defineComponent({
   name: "ResizeBar",
 

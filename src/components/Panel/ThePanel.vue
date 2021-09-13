@@ -32,7 +32,7 @@ import {
   getMinWidthHeight,
   PositionEmitType,
   MaximumEmitType,
-} from "./thePanel.compo";
+} from "./thePanelPosInfo";
 import ResizeBar from "./ResizeBar.vue";
 import MaximumButton from "./MaximumButton.vue";
 import { gtZero } from "@/helper";

@@ -7,7 +7,7 @@ import {
   Ref,
 } from "vue";
 
-import { PanelWidthInjectKey } from "./thePanel.compo";
+import { PanelWidthInjectKey } from "./thePanelPosInfo"
 
 export function useWatchSideBarBreak(breakPoint: number): Ref<boolean> {
   const isBreak = ref(false);

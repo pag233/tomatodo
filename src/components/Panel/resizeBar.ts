@@ -2,7 +2,7 @@ import { SetStateArgsType } from "@/composition/common";
 import { makeClearHandler, makeHandler, getBodyElement } from "@/helper/dom";
 import { EmitFnType } from '@/composition/types';
 import { throttle } from 'lodash'
-import { PositionType, PositionKey, Position, PositionEmitType, MaximumEmitType, BoxBoundryOffset } from './thePanel.compo'
+import { PositionType, PositionKey, Position, PositionEmitType, MaximumEmitType, BoxBoundryOffset } from './thePanelPosInfo'
 
 type MousemoveHandlerType = (e: MouseEvent) => void
 
