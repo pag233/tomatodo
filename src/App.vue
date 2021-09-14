@@ -1,14 +1,16 @@
 <template>
-  <main class="theme-tomato">
-    <Panel>
-      <template #default="{ breakPoints }">
-        <FlexContainer>
-          <SideBar :breakPoints="breakPoints" />
-          <ContentBlock :breakPoints="breakPoints" />
-        </FlexContainer>
-      </template>
-    </Panel>
-  </main>
+  <div class="theme-tomato">
+    <main>
+      <Panel>
+        <template #default="{ breakPoints, posLeft }">
+          <FlexContainer>
+            <SideBar :breakPoints="breakPoints" :posLeft="posLeft" />
+            <ContentBlock :breakPoints="breakPoints" />
+          </FlexContainer>
+        </template>
+      </Panel>
+    </main>
+  </div>
 </template>
 
 <script lang="ts">
@@ -46,14 +48,14 @@ ul {
   list-style: none;
 }
 body {
-  @include ToTheme($theme-tomato) {
-    background-color: $leaf;
-  }
   user-select: none;
 }
 main {
   position: relative;
   width: 100vw;
   height: 100vh;
+  @include ToTheme($theme-tomato) {
+    background-color: $leaf;
+  }
 }
 </style>

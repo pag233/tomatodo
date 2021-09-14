@@ -16,10 +16,11 @@ $border-radius: 0.5rem;
 }
 
 $theme-tomato: "theme-tomato";
-@mixin ToTheme($theme-name, $root: &) {
-  .#{$theme-name} {
-    @at-root #{$root} {
-      @content;
-    }
+@mixin ToTheme($theme-name) {
+  .#{$theme-name} & {
+    @content;
   }
 }
+
+$icon-top-offset: 6;
+$icon-left-offset: 8;

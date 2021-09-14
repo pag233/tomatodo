@@ -1,5 +1,5 @@
-import { useRef, UseRefReturnType } from "@/composition/common";
-import { getDocElement, getRemSize } from '@/helper/dom';
+import { useRef } from "@/composition/common";
+import { getDocElement, getRemSize } from '@/composition/dom';
 import { computed, watch, provide, readonly } from "@vue/runtime-core";
 
 //Panel最大延伸位置
@@ -43,17 +43,13 @@ const checkHorizontion = () => screen.orientation.type.includes('landscape')
 export type PanelPosInfo = ReturnType<typeof initPanelPosInfo>
 
 export const PanelWidthInjectKey = Symbol('posInfo');
+export const PanelPosLeftInjectKey = Symbol('posLeft');
 
 export function initPanelPosInfo(
   width: number,
   height: number,
   root: HTMLElement = getDocElement(),
-): {
-  pos: UseRefReturnType<PositionType>,
-  maximum: UseRefReturnType<boolean>,
-  savePos: () => void,
-  restorePos: () => void,
-} {
+): typeof posInfo {
   const isHorizontion = checkHorizontion();
   if (isHorizontion) {
     [width, height] = [height, width];
@@ -108,6 +104,8 @@ export function initPanelPosInfo(
 
   const panelWidth = computed(() => (getDocElement().clientWidth - posState.value.left - posState.value.right))
 
+  const posLeft = computed(() => posState.value.left);
+
   const posInfo = {
     pos,
     maximum,
@@ -116,6 +114,8 @@ export function initPanelPosInfo(
   }
 
   provide(PanelWidthInjectKey, readonly(panelWidth));
+  provide(PanelPosLeftInjectKey, readonly(posLeft));
+
 
   return posInfo
 }

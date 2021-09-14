@@ -36,7 +36,7 @@ import {
 import { panelBreakPoints } from "./thePanelBreakPoint";
 
 import { gtZero } from "@/helper";
-import ResizeBar from "./ResizeBar.vue";
+import ResizeBar from "./PanelResizeBar.vue";
 import MaximumButton from "./MaximumButton.vue";
 
 export default defineComponent({
@@ -118,10 +118,9 @@ export default defineComponent({
   height: auto;
   border-radius: $border-radius;
   @include ToTheme($theme-tomato) {
-    border: 1px solid $black;
+    border: 1px solid black;
     box-shadow: 1px 1px 4px 0px;
   }
-
   .btn-container {
     position: absolute;
     top: 0;

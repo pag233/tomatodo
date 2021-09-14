@@ -3,12 +3,13 @@
 $tomato: #bf0a2b;
 $leaf: #65bfaf;
 $white: #f1f2d8;
-$black: #262523;
+$opacity-white: #ffffff9e;
+$black: #26252380;
+$gray: #d0d0d05c;
 $yellow: #c7aa57;
 
 %left-bar-color {
   @include ToTheme($theme-tomato) {
     background-color: $black;
-    opacity: 0.3;
   }
 }

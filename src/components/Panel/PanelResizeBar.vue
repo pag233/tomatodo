@@ -8,7 +8,7 @@
 <script lang="ts">
 import { gtZero } from "@/helper";
 import { defineComponent } from "vue";
-import { makeMouseDownHandlers } from "./resizeBar";
+import { getResizeBarMouseDownHandlers } from "./panelResizeBar";
 import {
   PositionType,
   PositionEmitType,
@@ -43,7 +43,7 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const handlers = makeMouseDownHandlers(
+    const handlers = getResizeBarMouseDownHandlers(
       emit,
       props.minWidth,
       props.minHeight
@@ -69,7 +69,7 @@ export default defineComponent({
   transition: opacity 0.2s ease-out;
   opacity: 0.3;
   &:hover {
-    opacity: 0.5;
+    opacity: 0.7;
     cursor: grabbing;
   }
   //居中，并分别设置top, left, bottom, right 为-100%调整至合适的位置

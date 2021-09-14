@@ -1,13 +1,17 @@
-//切换语言
+import { Module } from 'vuex';
+import { RootStateType } from './index'
 
-export interface I18nState {
+
+export interface I18nStateType {
   currentLocale: 'en-us' | 'zh-cn' | 'zh-tw',
 }
-const state: I18nState = {
+export const I18nState: I18nStateType = {
   currentLocale: 'en-us'
 }
-const store = {
-  state
-}
 
-export default store
+export const I18nStore: Module<I18nStateType, RootStateType> = {
+  namespaced: true,
+  state() {
+    return I18nState
+  }
+}
