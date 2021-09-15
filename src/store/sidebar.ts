@@ -23,7 +23,7 @@ const userCreateListSetItemCount = (items: SideBarListItemType[], listType: stri
   items.filter(item => item.listType === listType).length
 )
 
-interface SideBarListItemType {
+export interface SideBarListItemType {
   title: string,
   listType: ListsTypes,
   step?: string[],
@@ -96,10 +96,20 @@ export const SideBarState: SideBarStateType = {
   ],
   items: [
     {
+      title: 'foo',
+      listType: ListsTypes.tomato,
+      isOnTomato: true,
+    },
+    {
+      title: 'bar',
+      listType: ListsTypes.tomato,
+      isOnTomato: true,
+    },
+    {
       title: 'foobar',
       listType: ListsTypes.tomato,
       isOnTomato: true,
-    }
+    },
   ],
   select: {
     listType: ListsTypes.tomato,
@@ -117,6 +127,9 @@ export const SideBarStore: Module<SideBarStateType, RootStateType> = {
     },
     getUserCreateLists(state) {
       return state.userCreateList;
+    },
+    getTomato(state) {
+      return state.items.filter(item => item.isOnTomato)
     }
   },
   mutations: {

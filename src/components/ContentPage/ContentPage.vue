@@ -1,14 +1,21 @@
 <template>
-  <section class="content-block" :class="{ 'round-corner': isBreak }"></section>
+  <section class="content-page" :class="{ 'round-corner': isBreak }">
+    <component :is="selectListType"></component>
+  </section>
 </template>
 
 <script lang='ts'>
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak";
 import { PanelBreakPointsType } from "../Panel/thePanelBreakPoint";
 
+import { ListsTypes } from "../../store/sidebar";
+import TomatoPage from "./pages/Tomato.vue";
+
+import { useStore } from "@/store";
+
 export default defineComponent({
-  name: "ContentBlock",
+  name: "ContentPage",
 
   props: {
     breakPoints: {
@@ -17,10 +24,18 @@ export default defineComponent({
     },
   },
 
+  components: {
+    [ListsTypes.tomato]: TomatoPage,
+  },
+
   setup(props) {
     const isBreak = useWatchSideBarBreak(props.breakPoints.sidebar);
+    const store = useStore();
+    const selectListType = computed(() => store.state.sidebar.select.listType);
     return {
       isBreak,
+      selectListType,
+      ListsTypes,
     };
   },
 });
@@ -30,11 +45,16 @@ export default defineComponent({
 @import "@/scss/_common.scss";
 @import "@/scss/_colors.scss";
 
-.content-block {
+.content-page {
   flex: 1 0 200px;
   border-radius: 0 $border-radius $border-radius 0;
+  padding: 2rem 1rem 1rem 1rem;
   @include ToTheme($theme-tomato) {
-    background-color: $white;
+    background-color: $black-dim;
+  }
+  .content-container {
+    width: 100%;
+    height: 100%;
   }
 }
 .round-corner {
