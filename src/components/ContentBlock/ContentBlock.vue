@@ -31,7 +31,7 @@ export default defineComponent({
 @import "@/scss/_colors.scss";
 
 .content-block {
-  flex: 1 0 240px;
+  flex: 1 0 200px;
   border-radius: 0 $border-radius $border-radius 0;
   @include ToTheme($theme-tomato) {
     background-color: $white;

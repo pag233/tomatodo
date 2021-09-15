@@ -1,10 +1,10 @@
 <template>
   <div class="search-box">
-    <Search class="search-icon" :size="14" />
+    <Search class="search-icon" :size="16" />
     <input
       type="text"
       class="search-box-input"
-      placeholder="搜索"
+      placeholder="Search"
       :value="value"
       @change="setSearchValue({ value: $event.target.value })"
     />
@@ -36,14 +36,18 @@ export default defineComponent({
 @import "@/scss/_common.scss";
 @import "@/scss/_colors.scss";
 
-$text-indent: 30px;
+@import "@/scss/sidebar.scss";
+
 .search-box {
   position: relative;
+  margin: 10px 0;
+  padding: 0 20px;
   .search-icon {
     position: absolute;
-    top: 0;
-    padding-top: $icon-top-offset * 1px;
-    margin-left: $icon-left-offset * 1px;
+    top: 50%;
+    left: 26px;
+    transform: translateY(-50%);
+    margin: auto;
   }
   .search-box-input {
     width: 100%;
@@ -54,18 +58,18 @@ $text-indent: 30px;
 
     border: none;
     border-radius: 0.35 * $rem-size * 1px;
-    border-bottom: 0.1px solid #ffffff9e;
 
-    text-indent: $text-indent;
+    text-indent: $text-indent * 1px;
+    font-weight: 400;
 
     @include ToTheme("theme-tomato") {
       background-color: $gray;
       color: white;
-      font-weight: 400;
+      border-bottom: 0.1px solid #ffffff9e;
     }
     &::placeholder {
       color: white;
-      text-indent: $text-indent;
+      text-indent: $text-indent * 1px;
     }
   }
 }

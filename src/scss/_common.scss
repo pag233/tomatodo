@@ -1,3 +1,5 @@
+@import "./sidebar.scss";
+
 $rem-size: 16;
 $border-radius: 0.5rem;
 @mixin BorderRadius {
@@ -21,6 +23,3 @@ $theme-tomato: "theme-tomato";
     @content;
   }
 }
-
-$icon-top-offset: 6;
-$icon-left-offset: 8;

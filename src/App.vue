@@ -2,9 +2,9 @@
   <div class="theme-tomato">
     <main>
       <Panel>
-        <template #default="{ breakPoints, posLeft }">
+        <template #default="{ breakPoints }">
           <FlexContainer>
-            <SideBar :breakPoints="breakPoints" :posLeft="posLeft" />
+            <SideBar :breakPoints="breakPoints" />
             <ContentBlock :breakPoints="breakPoints" />
           </FlexContainer>
         </template>
