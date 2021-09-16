@@ -3,11 +3,32 @@ a<template>
     <span class="is-complete">
       <Round theme="outline" size="18" fill="#ffffff72" />
     </span>
-    <span class="item-title">
-      {{ item.title }}
-    </span>
+    <div class="item-info">
+      <span class="item-title">
+        {{ item.title }}
+      </span>
+      <div class="item-remind-icon">
+        {{ item.listType }}
+        {{ item.isOnTomato && "OnTomato" }}
+        <!-- {{ item.isOnTomato && selectListType !== "tomato" && "OnTomato" }} -->
+        <span
+          class="remind-date"
+          :style="{
+            color: themeColor,
+          }"
+        >
+          {{ item.remindDate }}
+          {{ item.repeat }}
+        </span>
+        {{ item.deadLine }}
+      </div>
+    </div>
     <span class="is-important">
-      <Star theme="filled" size="18" :fill="themeColor"></Star>
+      <Star
+        :theme="item.isImportant ? 'filled' : 'outline'"
+        size="18"
+        :fill="themeColor"
+      ></Star>
     </span>
   </div>
 </template>
@@ -16,6 +37,7 @@ a<template>
 import { defineComponent, PropType } from "vue";
 import { SideBarListItemType } from "@/store/sidebar";
 import { Round, Star } from "@icon-park/vue-next";
+import { useSelectListType } from "@/composition/common";
 export default defineComponent({
   name: "PageListItem",
   props: {
@@ -31,6 +53,12 @@ export default defineComponent({
   components: {
     Round,
     Star,
+  },
+  setup() {
+    const selectListType = useSelectListType();
+    return {
+      selectListType,
+    };
   },
 });
 </script>
@@ -52,10 +80,17 @@ export default defineComponent({
   @include ToTheme($theme-tomato) {
     background-color: $opacity-white-dim;
   }
-  .item-title {
+  .item-info {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    word-spacing: 0.5rem;
     @include ToTheme($theme-tomato) {
       color: $white;
+    }
+    .item-remind-icon {
+      font-size: 0.5rem;
+      color: $opacity-white;
     }
   }
   .is-important {

@@ -5,14 +5,14 @@
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent, PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak";
 import { PanelBreakPointsType } from "../Panel/thePanelBreakPoint";
 
 import { ListsTypes } from "../../store/sidebar";
 import TomatoPage from "./pages/Tomato.vue";
 
-import { useStore } from "@/store";
+import { useSelectListType } from "@/composition/common";
 
 export default defineComponent({
   name: "ContentPage",
@@ -30,8 +30,7 @@ export default defineComponent({
 
   setup(props) {
     const isBreak = useWatchSideBarBreak(props.breakPoints.sidebar);
-    const store = useStore();
-    const selectListType = computed(() => store.state.sidebar.select.listType);
+    const selectListType = useSelectListType();
     return {
       isBreak,
       selectListType,

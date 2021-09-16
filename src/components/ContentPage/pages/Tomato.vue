@@ -12,9 +12,10 @@
 
 <script lang="ts">
 import { useStore } from "@/store";
-import { computed, defineComponent } from "vue";
+import { defineComponent } from "vue";
 import PageTitle from "./PageTitle.vue";
 import PageList from "./PageList.vue";
+import { useSelectListType } from "@/composition/common";
 export default defineComponent({
   name: "PageTomato",
   components: {
@@ -23,7 +24,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const selectListType = computed(() => store.state.sidebar.select.listType);
+    const selectListType = useSelectListType();
 
     const getTomato = store.getters["sidebar/getTomato"];
     return {
@@ -37,7 +38,4 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "@/scss/_colors.scss";
-
-.page-tomato {
-}
 </style>

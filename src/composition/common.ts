@@ -1,9 +1,13 @@
+import { useStore } from "@/store";
+import { ListsTypes } from "@/store/sidebar";
 import {
   onMounted,
   onUnmounted,
   Ref,
   UnwrapRef,
   ref,
+  computed,
+  ComputedRef,
 } from "vue";
 
 type SetUpType = () => (void | (() => void))
@@ -57,4 +61,10 @@ export function useRef<T extends BaseStateType | BaseStateType[]>(value: T): Use
   }
 
   return [oldState, setState]
+}
+
+export function useSelectListType(): ComputedRef<ListsTypes> {
+  const store = useStore();
+  const selectListType = computed(() => store.state.sidebar.select.listType);
+  return selectListType
 }

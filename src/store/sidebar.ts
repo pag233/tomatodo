@@ -30,8 +30,8 @@ export interface SideBarListItemType {
   isComplete?: boolean,
   isImportant?: boolean,
   isOnTomato?: boolean,
-  remindDate?: Date,
-  deadLine?: Date,
+  remindDate?: number,
+  deadLine?: number,
   repeat?: "day" | "week" | "month" | "year" | "workday",
   note?: string,
 }
@@ -97,17 +97,20 @@ export const SideBarState: SideBarStateType = {
   items: [
     {
       title: 'foo',
-      listType: ListsTypes.tomato,
+      listType: ListsTypes.tasks,
       isOnTomato: true,
+      remindDate: Date.now(),
+      deadLine: Date.now(),
+      repeat: 'day',
     },
     {
       title: 'bar',
-      listType: ListsTypes.tomato,
+      listType: ListsTypes.tasks,
       isOnTomato: true,
     },
     {
       title: 'foobar',
-      listType: ListsTypes.tomato,
+      listType: ListsTypes.tasks,
       isOnTomato: true,
     },
   ],
