@@ -66,7 +66,7 @@ export default defineComponent({
 
 .maximum-button {
   @include ToTheme($theme-tomato) {
-    background-color: $tomato;
+    background-color: $orange;
   }
   &:hover {
     .icon {

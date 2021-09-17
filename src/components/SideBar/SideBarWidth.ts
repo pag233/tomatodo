@@ -20,8 +20,8 @@ function makeSideBarWidthMouseMoveHandler(
 ) {
   return throttle(
     function (e: MouseEvent) {
-      const sideBarWidth = e.clientX - posLeft.value;
-      emitFn(emitType, sideBarWidth > 0 ? sideBarWidth : 0);
+      const width = e.clientX - posLeft.value;
+      emitFn(emitType, width);
     }
     , 70);
 }

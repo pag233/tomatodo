@@ -10,13 +10,10 @@ import { throttle } from 'lodash'
 import { PositionType, PositionKey, Position, PositionEmitType, MaximumEmitType, BoxBoundryOffset } from './thePanelPosInfo'
 
 type BoundryCheckerType = (e: MouseEvent, pos: PositionType) => boolean
-
 /**
  * 生成不同方向的mousemove回调函数
  * @param emitFn 
  * @param direction 位置方向
- * @param isLessThenBoundry 判断是否到达最小宽高的临界位置的函数
- * @param isOutOfBox 判断是否达到窗体临界位置的函数
  * @param offset 设置相应direction位置属性大小的函数
  * @param updatePosEmitType emit event类型 
  * @param maximumEmitType emit event类型 
@@ -24,9 +21,7 @@ type BoundryCheckerType = (e: MouseEvent, pos: PositionType) => boolean
 function makeResizeBarResizeMouseMoveHandler(
   emitFn: EmitFnType<SetStateArgsType<PositionType>>,
   direction: PositionKey,
-  isLessThenBoundry: BoundryCheckerType,
-  isOutOfBox: BoundryCheckerType,
-  offset: (e: MouseEvent) => number,
+  offset: (e: MouseEvent, pos: PositionType) => number,
   updatePosEmitType: string = PositionEmitType.update,
   maximumEmitType: string = MaximumEmitType.update,
 ) {
@@ -34,10 +29,10 @@ function makeResizeBarResizeMouseMoveHandler(
     // console.log('x: ' + e.clientX);
     // console.log("y: " + e.clientY);
     emitFn(updatePosEmitType, (pos) => {
-      return isLessThenBoundry(e, pos) && isOutOfBox(e, pos) ? {
+      return ({
         ...pos,
-        [direction]: offset(e)
-      } : { ...pos }
+        [direction]: offset(e, pos)
+      })
     });
     emitFn(maximumEmitType);
   }, 70)
@@ -56,11 +51,11 @@ function makeResizeBarRepositionMouseMoveHandler(
   return throttle(function (e: MouseEvent) {
     // console.log('x: ' + e.clientX);
     // console.log("y: " + e.clientY);
-    emitFn(emitType, (pos) => {
-      return isOutOfBox(e, pos) ? {
+    emitFn(emitType, (pos) =>
+      isOutOfBox(e, pos) ? {
         ...positiion(e, pos)
       } : { ...pos }
-    })
+    )
   }, 70)
 }
 
@@ -105,19 +100,30 @@ export function getResizeBarMouseDownHandlers(
       emit,
       Position.left,
       //是否达到最小宽度临界
-      (e, pos) => registeeElem.clientWidth - pos.right - minWidth - e.clientX > 0,
-      //是否溢出视口
-      (e) => e.clientX > boxBoundry,
-      (e) => e.clientX
+      (e, pos) => {
+        if (registeeElem.clientWidth - pos.right - minWidth > e.clientX && e.clientX > boxBoundry) {
+          return e.clientX
+        } else if (e.clientX <= boxBoundry) {
+          return boxBoundry
+        } else {
+          return registeeElem.clientWidth - pos.right - minWidth
+        }
+      }
     ),
   )
   const right = makeResizeBarMouseDownHandler(
     makeResizeBarResizeMouseMoveHandler(
       emit,
       Position.right,
-      (e, pos) => e.clientX - pos.left - minWidth > 0,
-      (e) => registeeElem.clientWidth - boxBoundry - e.clientX > 0,
-      (e) => registeeElem.clientWidth - e.clientX
+      (e, pos) => {
+        if (pos.left + minWidth < e.clientX && registeeElem.clientWidth - boxBoundry > e.clientX) {
+          return registeeElem.clientWidth - e.clientX
+        } else if (registeeElem.clientWidth - boxBoundry <= e.clientX) {
+          return boxBoundry
+        } else {
+          return registeeElem.clientWidth - pos.left - minWidth;
+        }
+      }
     ),
   )
   const top = makeResizeBarMouseDownHandler(
@@ -148,9 +154,15 @@ export function getResizeBarMouseDownHandlers(
     makeResizeBarResizeMouseMoveHandler(
       emit,
       Position.bottom,
-      (e, pos) => e.clientY - pos.top - minHeigh > 0,
-      (e) => registeeElem.clientHeight - boxBoundry - e.clientY > 0,
-      (e) => registeeElem.clientHeight - e.clientY
+      (e, pos) => {
+        if (pos.top + minHeigh < e.clientY && registeeElem.clientHeight - boxBoundry > e.clientY) {
+          return registeeElem.clientHeight - e.clientY
+        } else if (registeeElem.clientHeight - boxBoundry <= e.clientY) {
+          return boxBoundry
+        } else {
+          return pos.top + minHeigh
+        }
+      }
     ),
   )
   return {

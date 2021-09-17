@@ -21,7 +21,11 @@
         @[PositionEmitType.restore]="resotrePos"
       />
     </div>
-    <slot :breakPoints="breakPoints"></slot>
+    <slot
+      :breakPoints="breakPoints"
+      :barWidth="barWidth"
+      :setBarWidth="setBarWidth"
+    ></slot>
   </div>
 </template>
 
@@ -32,6 +36,7 @@ import {
   getMinWidthHeight,
   PositionEmitType,
   MaximumEmitType,
+  useSideBarWidth,
 } from "./thePanelPosInfo";
 import { panelBreakPoints } from "./thePanelBreakPoint";
 
@@ -71,6 +76,8 @@ export default defineComponent({
       props.height
     );
 
+    const [barWidth, setBarWidth] = useSideBarWidth();
+
     return {
       position: computed(() => ({
         top: pos.value.top + "px",
@@ -86,6 +93,8 @@ export default defineComponent({
       savePos: posInfo.savePos,
       resotrePos: posInfo.restorePos,
       breakPoints: panelBreakPoints,
+      barWidth,
+      setBarWidth,
     };
   },
 

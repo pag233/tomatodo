@@ -13,8 +13,8 @@ import {
 export default defineComponent({
   name: "SideBarResizeBar",
   emits: {
-    [BarWidthEmitType.update](width: number) {
-      return typeof width === "number";
+    [BarWidthEmitType.update](barWidth: number) {
+      return typeof barWidth === "number";
     },
   },
   data() {

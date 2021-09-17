@@ -1,6 +1,6 @@
 import { useRef } from "@/composition/common";
 import { getDocElement, getRemSize } from '@/composition/dom';
-import { computed, watch, provide, readonly } from "@vue/runtime-core";
+import { computed, watch, provide, readonly, Ref } from "@vue/runtime-core";
 
 //Panel最大延伸位置
 export const BoxBoundryOffset: number = getRemSize();
@@ -140,4 +140,23 @@ export function getMinWidthHeight(
     minWidth: Math.floor(width * wfactor),
     minHeight: Math.floor(height * hfactor),
   }
+}
+
+export function useSideBarWidth(initalWidth = 200, barMinWidth = 180, barMaxWidth = 600): [Ref<number>, (width: number) => void] {
+  provide('barMinMaxWidth', [barMinWidth, barMaxWidth]);
+  const [barWidth, setWidth] = useRef(initalWidth as number);
+  const setBarWidth = (width: number) => {
+    if (width < barMaxWidth && width > barMinWidth) {
+      setWidth(width);
+      return;
+    }
+    if (width > barMaxWidth) {
+      setWidth(barMaxWidth)
+    } else {
+      setWidth(barMinWidth)
+    }
+  }
+  return [
+    barWidth, setBarWidth
+  ]
 }

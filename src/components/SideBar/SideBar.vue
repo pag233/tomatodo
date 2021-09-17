@@ -34,7 +34,7 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, PropType } from "vue";
+import { defineComponent, inject, PropType } from "vue";
 import { mapGetters } from "vuex";
 
 import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak";
@@ -55,6 +55,13 @@ export default defineComponent({
       type: Object as PropType<PanelBreakPointsType>,
       required: true,
     },
+    barWidth: {
+      type: Number,
+      required: true,
+    },
+    setBarWidth: {
+      type: Function as PropType<(width: number) => void>,
+    },
   },
 
   components: {
@@ -67,24 +74,16 @@ export default defineComponent({
 
   setup(props) {
     const isBreak = useWatchSideBarBreak(props.breakPoints.sidebar);
+    const [minBarWidth, maxBarWidth] = inject("barMinMaxWidth", [0, 0]);
     return {
       isBreak,
+      minBarWidth,
+      maxBarWidth,
     };
-  },
-
-  methods: {
-    setBarWidth(barWidth: number) {
-      if (barWidth > this.minBarWidth && barWidth < this.maxBarWidth) {
-        this.barWidth = barWidth;
-      }
-    },
   },
 
   data() {
     return {
-      barWidth: 200,
-      minBarWidth: 150,
-      maxBarWidth: 600,
       BarWidthEmitType,
       ...mapGetters("sidebar", ["getLists", "getUserCreateLists"]),
     };

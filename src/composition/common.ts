@@ -42,14 +42,17 @@ export type SetStateArgsType<T> = UnwrapRef<T> | ((state: UnwrapRef<T>) => Unwra
 
 export type SetStateType<T> = (args: SetStateArgsType<T>) => void
 
-export type UseRefReturnType<T> = [Ref<UnwrapRef<T>>, SetStateType<T>]
+export type UseRefType<T> = [Ref<UnwrapRef<T>>, SetStateType<T>]
 /**
  * 使用ref包装一个原始值并返回一个数组其中包括该响应式对象以及更新该对象的方法
  * @param value 响应式原始值
  * @returns 返回一个ref(value)，与一个setState，setState支持直接或回调式更新
  */
 
-export function useRef<T extends BaseStateType | BaseStateType[]>(value: T): UseRefReturnType<T> {
+export function useRef<T extends BaseStateType | BaseStateType[]>(
+  value: T,
+): UseRefType<T> {
+
   const oldState = ref(value);
 
   function setState(stateOrCallback: SetStateArgsType<T>) {

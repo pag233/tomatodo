@@ -2,10 +2,14 @@
   <div class="theme-tomato">
     <main>
       <Panel>
-        <template #default="{ breakPoints }">
+        <template #default="{ breakPoints, barWidth, setBarWidth }">
           <FlexContainer>
-            <SideBar :breakPoints="breakPoints" />
-            <ContentPage :breakPoints="breakPoints" />
+            <SideBar
+              :breakPoints="breakPoints"
+              :barWidth="barWidth"
+              :setBarWidth="setBarWidth"
+            />
+            <ContentPage :breakPoints="breakPoints" :barWidth="barWidth" />
           </FlexContainer>
         </template>
       </Panel>

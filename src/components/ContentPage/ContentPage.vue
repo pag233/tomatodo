@@ -22,6 +22,10 @@ export default defineComponent({
       type: Object as PropType<PanelBreakPointsType>,
       required: true,
     },
+    barWidth: {
+      type: Number,
+      required: true,
+    },
   },
 
   components: {
@@ -46,6 +50,7 @@ export default defineComponent({
 
 .content-page {
   flex: 1 0 180px;
+  box-sizing: border-box;
   border-radius: 0 $border-radius $border-radius 0;
   padding: 2rem 1rem 1rem 1rem;
   @include ToTheme($theme-tomato) {
