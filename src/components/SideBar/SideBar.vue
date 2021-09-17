@@ -4,7 +4,8 @@
     v-show="!isBreak"
     :style="{
       flexBasis: barWidth + 'px',
-      minWidth: minBarWidth,
+      minWidth: minBarWidth + 'px',
+      maxWidth: maxBarWidth + 'px',
     }"
   >
     <SideBarResizeBar @[BarWidthEmitType.update]="setBarWidth" />
@@ -73,14 +74,17 @@ export default defineComponent({
 
   methods: {
     setBarWidth(barWidth: number) {
-      this.barWidth = barWidth;
+      if (barWidth > this.minBarWidth && barWidth < this.maxBarWidth) {
+        this.barWidth = barWidth;
+      }
     },
   },
 
   data() {
     return {
       barWidth: 200,
-      minBarWidth: 100,
+      minBarWidth: 150,
+      maxBarWidth: 600,
       BarWidthEmitType,
       ...mapGetters("sidebar", ["getLists", "getUserCreateLists"]),
     };
@@ -96,8 +100,6 @@ export default defineComponent({
   position: relative;
   box-sizing: border-box;
   padding-top: 2rem;
-  min-width: 150px;
-  max-width: 600px;
   flex: 0 1;
   border-radius: 8px 0 0 $border-radius;
   @include ToTheme($theme-tomato) {

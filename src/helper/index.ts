@@ -56,6 +56,56 @@ export const applyReducers = <T>(
 )
 /* eslint-enable */
 
+export function dateToDay(date?: Date): string | undefined {
+  if (!date) return undefined
+  const now = new Date();
+  const day = now.getDate() - date.getDate();
+  if (day == 0) return 'today'
+  else if (day == 1) return 'tomorrow'
+  else if (day == 2) return 'day after tomorrow'
+  else return new Date(date).toLocaleDateString()
+}
+
+interface FilterFnType<T> {
+  (item: T): boolean
+}
+export function join2Filters<T>(filterA: FilterFnType<T>): (filterB: FilterFnType<T>) => FilterFnType<T> {
+  return function (filterB: FilterFnType<T>) {
+    const filters = [filterA, filterB]
+    return function (item: T) {
+      return filters.every(f => f(item))
+    }
+  }
+}
+
+// interface LocaleDateStringFormat {
+//   date: string,
+//   month: string,
+//   year: string,
+//   day: string,
+// }
+
+interface getLocaleDateString {
+  (day: Date): string
+}
+
+const getDefaultLocaleDateString: getLocaleDateString = (date) => {
+  const dayToString = ['Sun', 'Mon', 'Tue', 'Wen', "Thu", "Fri", "Sat"];
+  return date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + dayToString[date.getDay()]
+}
+
+const getZhCnLocaleDateString: getLocaleDateString = (date) => {
+  const dayToString = ['日', '一', '二', '三', "四", "五", "六"];
+  return `${date.getFullYear()}年${date.getMonth()}月${date.getDate()}日 星期${dayToString[date.getDay()]}`
+}
+
+function parseDateToLocaleDateString(date: Date, getDateString: getLocaleDateString): string {
+  return getDateString(date)
+}
+
+export const parseDateToDefaultDateString = (date: Date): string => parseDateToLocaleDateString(date, getDefaultLocaleDateString)
+export const parseDateToZhCnDateString = (date: Date): string => parseDateToLocaleDateString(date, getZhCnLocaleDateString)
+
 function square(index: number): number {
   return Math.pow(index, 2)
 }

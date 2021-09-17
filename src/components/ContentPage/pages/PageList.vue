@@ -1,25 +1,23 @@
 <template>
   <div class="page-list">
-    <PageListItem
-      v-for="(item, key) in items"
-      :key="key"
-      :item="item"
-      :themeColor="themeColor"
-    />
+    <TomatoPageListItem :items="items" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import PageListItem from "./PageListItem.vue";
+import { defineComponent, PropType } from "vue";
+// import PageListItem from "./PageListItem.vue";
+import { SideBarListItemType } from "@/store/sidebar";
+import TomatoPageListItem from "./TomatoPageListItem.vue";
 export default defineComponent({
   name: "PageList",
   components: {
-    PageListItem,
+    // PageListItem,
+    TomatoPageListItem,
   },
   props: {
     items: {
-      type: Object,
+      type: Object as PropType<SideBarListItemType[]>,
       required: true,
     },
     themeColor: {

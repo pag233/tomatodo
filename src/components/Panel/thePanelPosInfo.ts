@@ -55,7 +55,6 @@ export function initPanelPosInfo(
     [width, height] = [height, width];
   }
   const isFit = height < root.clientHeight && width < root.clientWidth
-  // isFit && setMaximum();
 
   const top = isFit ? Math.floor((root.clientHeight - height) / 2) : BoxBoundryOffset;
   const bottom = top;

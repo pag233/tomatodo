@@ -11,11 +11,13 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
-import { defineComponent } from "vue";
+import { useSelectListType } from "@/composition/common";
+
 import PageTitle from "./PageTitle.vue";
 import PageList from "./PageList.vue";
-import { useSelectListType } from "@/composition/common";
+
 export default defineComponent({
   name: "PageTomato",
   components: {
@@ -26,16 +28,12 @@ export default defineComponent({
     const store = useStore();
     const selectListType = useSelectListType();
 
-    const getTomato = store.getters["sidebar/getTomato"];
+    const items = computed(() => store.getters["sidebar/getTomato"]);
     return {
       selectListType,
-      items: getTomato,
+      items,
       themeColor: "#bf0a2b",
     };
   },
 });
 </script>
-
-<style lang="scss" scoped>
-@import "@/scss/_colors.scss";
-</style>

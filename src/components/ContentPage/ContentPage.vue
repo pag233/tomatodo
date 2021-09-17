@@ -45,7 +45,7 @@ export default defineComponent({
 @import "@/scss/_colors.scss";
 
 .content-page {
-  flex: 1 0 200px;
+  flex: 1 0 180px;
   border-radius: 0 $border-radius $border-radius 0;
   padding: 2rem 1rem 1rem 1rem;
   @include ToTheme($theme-tomato) {

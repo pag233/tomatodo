@@ -1,6 +1,6 @@
 import { Module } from 'vuex';
 import { RootStateType } from './index'
-
+import { join2Filters } from '@/helper'
 
 interface SideBarListType {
   listType: ListsTypes,
@@ -24,16 +24,18 @@ const userCreateListSetItemCount = (items: SideBarListItemType[], listType: stri
 )
 
 export interface SideBarListItemType {
+  id: number,
   title: string,
   listType: ListsTypes,
+  createdDate: Date,
   step?: string[],
   isComplete?: boolean,
   isImportant?: boolean,
   isOnTomato?: boolean,
-  remindDate?: number,
-  deadLine?: number,
+  remindDate?: Date,
+  deadLine?: Date,
   repeat?: "day" | "week" | "month" | "year" | "workday",
-  note?: string,
+  note?: Date,
 }
 
 interface selectType {
@@ -55,13 +57,22 @@ export enum ListsTypes {
   user = 'user',
 }
 
+function noCompleteFilter(item: SideBarListItemType): boolean {
+  return !item.isComplete
+}
+const withNoCompleteFiter = join2Filters(noCompleteFilter);
+
+const getTomatoItems = (items: SideBarListItemType[]) =>
+  items.filter(withNoCompleteFiter(item => item.isOnTomato ? true : false))
+
+
 export const SideBarState: SideBarStateType = {
   lists: [
     {
       listType: ListsTypes.tomato,
       name: ListsTypes.tomato,
       setItemCount(items: SideBarListItemType[]): number {
-        return items.filter(item => item.isOnTomato).length
+        return getTomatoItems(items).length
       },
     },
     {
@@ -96,21 +107,29 @@ export const SideBarState: SideBarStateType = {
   ],
   items: [
     {
+      id: 1,
       title: 'foo',
       listType: ListsTypes.tasks,
+      createdDate: new Date(),
       isOnTomato: true,
-      remindDate: Date.now(),
-      deadLine: Date.now(),
+      isComplete: true,
+      isImportant: true,
+      remindDate: new Date(),
+      deadLine: new Date(),
       repeat: 'day',
     },
     {
+      id: 2,
       title: 'bar',
       listType: ListsTypes.tasks,
-      isOnTomato: true,
+      createdDate: new Date(),
+      // isOnTomato: true,
     },
     {
+      id: 3,
       title: 'foobar',
       listType: ListsTypes.tasks,
+      createdDate: new Date(),
       isOnTomato: true,
     },
   ],
@@ -119,6 +138,12 @@ export const SideBarState: SideBarStateType = {
   }
 }
 
+
+function getItemById(items: SideBarListItemType[], id: number): SideBarListItemType {
+  const result = items.find(item => item.id === id)
+  if (!result) throw new Error("Can't find item while setting attribute")
+  return result
+}
 export const SideBarStore: Module<SideBarStateType, RootStateType> = {
   namespaced: true,
   state() {
@@ -132,12 +157,20 @@ export const SideBarStore: Module<SideBarStateType, RootStateType> = {
       return state.userCreateList;
     },
     getTomato(state) {
-      return state.items.filter(item => item.isOnTomato)
-    }
+      return getTomatoItems(state.items);
+    },
   },
   mutations: {
     setSelectName(state, payload) {
       state.select.listType = payload.listType
+    },
+    setItemComplete(state, payload) {
+      const item = getItemById(state.items, payload.id);
+      item.isComplete = payload.isComplete;
+    },
+    setItemImportant(state, payload) {
+      const item = getItemById(state.items, payload.id);
+      item.isImportant = payload.isImportant;
     }
   }
 }

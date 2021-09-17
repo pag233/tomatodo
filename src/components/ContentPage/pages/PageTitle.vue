@@ -7,6 +7,8 @@
 
 <script>
 import { defineComponent } from "vue";
+
+import { parseDateToDefaultDateString } from "@/helper";
 export default defineComponent({
   name: "PageHeader",
   props: {
@@ -18,7 +20,7 @@ export default defineComponent({
   data() {
     const now = new Date();
     return {
-      date: now.toLocaleDateString(),
+      date: parseDateToDefaultDateString(now),
     };
   },
 });
