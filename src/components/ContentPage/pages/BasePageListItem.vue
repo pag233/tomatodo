@@ -16,7 +16,7 @@
         <span class="check-mark" v-if="item.isComplete">✓</span>
       </div>
     </span>
-    <div class="item-info" @click="setShowDrawer(true)">
+    <div class="item-info" @click="!drawerBreak && setShowDrawer(true)">
       <span class="item-title">
         {{ item.title }}
       </span>
@@ -76,10 +76,11 @@ import {
   Dot,
   Remind,
 } from "@icon-park/vue-next";
-import { SideBarListItemType } from "@/store/sidebar";
-
-import { dateToDay } from "@/helper";
 import { mapMutations } from "vuex";
+
+import { SideBarListItemType } from "@/store/sidebar";
+import { dateToDay } from "@/helper";
+import { getInjectDrawerBreak } from "@/components/Panel/thePanelPosInfo";
 
 export default defineComponent({
   name: "PageListItem",
@@ -99,7 +100,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    showDrawer:Boolean,
+    showDrawer: Boolean,
     setShowDrawer: {
       type: Function as PropType<(value: boolean) => void>,
       required: true,
@@ -108,6 +109,12 @@ export default defineComponent({
   methods: {
     dateToDay,
     ...mapMutations("sidebar", ["setItemComplete", "setItemImportant"]),
+  },
+  setup() {
+    const drawerBreak = getInjectDrawerBreak("BasePagelistItem");
+    return {
+      drawerBreak,
+    };
   },
 });
 </script>

@@ -10,7 +10,6 @@
 </template>
 
 <script lang="ts">
-import { useSelectListType } from "@/composition/common";
 import { useStore } from "@/store";
 import { computed, defineComponent, PropType } from "vue";
 import BasePage from "./BasePage.vue";
@@ -31,11 +30,8 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const selectListType = useSelectListType();
     const items = computed(() => store.getters["sidebar/getTomato"]);
-
     return {
-      selectListType,
       items,
     };
   },

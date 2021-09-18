@@ -1,7 +1,11 @@
+import { ref, Ref, ComputedRef } from "vue";
+import { computed, watch, provide, readonly, inject } from "@vue/runtime-core";
 import { useRef } from "@/composition/common";
 import { getDocElement, getRemSize } from '@/composition/dom';
-import { computed, watch, provide, readonly } from "@vue/runtime-core";
-import { Ref } from "vue";
+import { useWatchBreakPoint } from "@/composition/useWatchBreakPoint";
+
+import { panelBreakPoints } from "./thePanelBreakPoint";
+
 
 //Panel最大延伸位置
 export const BoxBoundryOffset: number = getRemSize();
@@ -148,7 +152,9 @@ export function getMinWidthHeight(
 }
 
 export const BarMinMaxWidthInjectkey = Symbol('barMinMaxWidth');
-
+/**
+ * 调整左侧SideBar宽度，并设置最大最小调整范围
+ */
 export function useSideBarWidth(initalWidth = 200, barMinWidth = 180, barMaxWidth = 600): [Ref<number>, (width: number) => void] {
   provide(BarMinMaxWidthInjectkey, [barMinWidth, barMaxWidth]);
   const [barWidth, setWidth] = useRef(initalWidth as number);
@@ -166,4 +172,50 @@ export function useSideBarWidth(initalWidth = 200, barMinWidth = 180, barMaxWidt
   return [
     barWidth, setBarWidth
   ]
+}
+
+export const ShowDrawerKey = Symbol('ShowDrawer');
+/**
+ * 
+ * @param panelWidth Panel宽度，以判断出Draewr何时折叠。
+ * @returns 
+ */
+export function initDrawerDisplayInfo(panelWidth: ComputedRef<number>): typeof drawerDisplayInfo {
+
+  const breakPoints = panelBreakPoints;
+
+  const drawerBreak = useWatchBreakPoint(
+    breakPoints.content,
+    panelWidth
+  );
+
+  provide(ShowDrawerKey, drawerBreak);
+
+  const showDrawer = ref(false);
+
+  function setShowDrawer(value: boolean) {
+    showDrawer.value = value;
+  }
+
+  watch(drawerBreak, () => {
+    if (drawerBreak.value) {
+      showDrawer.value = false;
+    }
+  });
+
+  const drawerDisplayInfo = {
+    showDrawer,
+    setShowDrawer,
+  }
+
+  return drawerDisplayInfo
+}
+/**
+ * @param errMsg 当inject返回undefinded时抛出的错误信息
+ * @returns {boolean} 返回drawer是否折叠
+ */
+export function getInjectDrawerBreak(errMsg?: string): boolean {
+  const drawerBreak = inject(ShowDrawerKey);
+  if (!drawerBreak) throw new Error(errMsg ? errMsg + " " : "" + 'component provide value undefined using key: ' + ShowDrawerKey.description);
+  return drawerBreak as boolean
 }

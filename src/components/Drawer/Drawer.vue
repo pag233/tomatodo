@@ -14,14 +14,11 @@
 import { defineComponent, PropType, ref } from "vue";
 
 import { getDrawerMouseDownHandler } from "./Drawer";
+import { getInjectDrawerBreak } from "../Panel/thePanelPosInfo";
 
 export default defineComponent({
   name: "Drawer",
   props: {
-    drawerBreak: {
-      type: Boolean,
-      required: true,
-    },
     showDrawer: Boolean,
     setShowDrawer: {
       type: Function as PropType<(value: boolean) => void>,
@@ -41,7 +38,9 @@ export default defineComponent({
       minDrawerWidth,
       maxDrawerWidth
     );
+    const drawerBreak = getInjectDrawerBreak("Drawer");
     return {
+      drawerBreak,
       drawerWidth,
       mouseDownHandler,
     };

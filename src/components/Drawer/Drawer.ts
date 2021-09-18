@@ -3,7 +3,6 @@ import { ComputedRef, inject, Ref } from '@vue/runtime-core';
 import { throttle } from 'lodash';
 import { PanelPosRightInjectKey } from '../Panel/thePanelPosInfo';
 
-
 function makeDrawerMouseMoveHandler(
   setWidth: (e: MouseEvent, clientWidth: number) => void,
   rootElem = getDocElement(),
@@ -16,7 +15,6 @@ function makeDrawerMouseMoveHandler(
 }
 
 export function getDrawerMouseDownHandler(
-  // setDrawerWidth: (width: number) => void,
   width: Ref<number>,
   minWidth: number,
   maxWidth: number,

@@ -3,26 +3,15 @@
     <main>
       <Panel>
         <template
-          #default="{
-            barWidth,
-            setBarWidth,
-            drawerBreak,
-            showDrawer,
-            setShowDrawer,
-          }"
+          #default="{ barWidth, setBarWidth, showDrawer, setShowDrawer }"
         >
           <FlexContainer>
             <SideBar :barWidth="barWidth" :setBarWidth="setBarWidth" />
             <ContentPage
               :showDrawer="showDrawer"
-              :drawerBreak="drawerBreak"
               :setShowDrawer="setShowDrawer"
             />
-            <Drawer
-              :drawerBreak="drawerBreak"
-              :showDrawer="showDrawer"
-              :setShowDrawer="setShowDrawer"
-            />
+            <Drawer :showDrawer="showDrawer" :setShowDrawer="setShowDrawer" />
           </FlexContainer>
         </template>
       </Panel>

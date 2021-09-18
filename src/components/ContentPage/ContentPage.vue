@@ -1,12 +1,13 @@
 <template>
   <section
     class="content-page"
+    @click.self.stop="setShowDrawer(false)"
     :class="{ 'round-corner': sideBarBreak, 'not-round-corner': !drawerBreak }"
   >
     <component
       :is="selectListType"
-      :showDrawer="showDrawer"
       :themeColor="themeColors[selectListType]"
+      :showDrawer="showDrawer"
       :setShowDrawer="setShowDrawer"
     ></component>
   </section>
@@ -20,16 +21,13 @@ import { useSelectListType } from "@/composition/common";
 import { ListsTypes } from "../../store/sidebar";
 
 import TomatoPage from "./pages/TomatoPage.vue";
+import { getInjectDrawerBreak } from "../Panel/thePanelPosInfo";
 
 export default defineComponent({
   name: "ContentPage",
 
   props: {
-    showDrawer:Boolean,
-    drawerBreak: {
-      type: Boolean,
-      required: true,
-    },
+    showDrawer: Boolean,
     setShowDrawer: {
       type: Function as PropType<(value: boolean) => void>,
       required: true,
@@ -43,6 +41,7 @@ export default defineComponent({
   setup() {
     const breakPoints = panelBreakPoints;
     const sideBarBreak = useWatchBreakPoint(breakPoints.sidebar);
+    //返回当前选择的列表类型以控制componment渲染不同的Pages
     const selectListType = useSelectListType();
     const themeColors = reactive({
       [ListsTypes.tomato]: "#bf0a2b",
@@ -51,11 +50,15 @@ export default defineComponent({
       [ListsTypes.plains]: "#bf0a2b",
       [ListsTypes.user]: "#bf0a2b",
     });
+    //控制Drawer控价何时折叠
+    const drawerBreak = getInjectDrawerBreak("ContentPage");
+
     return {
       sideBarBreak,
       selectListType,
       ListsTypes,
       themeColors,
+      drawerBreak,
     };
   },
 });

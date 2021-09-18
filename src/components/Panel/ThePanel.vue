@@ -24,7 +24,6 @@
     <slot
       :barWidth="barWidth"
       :setBarWidth="setBarWidth"
-      :drawerBreak="drawerBreak"
       :showDrawer="showDrawer"
       :setShowDrawer="setShowDrawer"
     ></slot>
@@ -32,21 +31,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { computed, defineComponent } from "vue";
 import {
   initPanelPosInfo,
   getMinWidthHeight,
   PositionEmitType,
   MaximumEmitType,
   useSideBarWidth,
+  initDrawerDisplayInfo,
 } from "./thePanelPosInfo";
-
-import { panelBreakPoints } from "./thePanelBreakPoint";
 
 import { gtZero } from "@/helper";
 import ResizeBar from "./PanelResizeBar.vue";
 import MaximumButton from "./MaximumButton.vue";
-import { useWatchBreakPoint } from "@/composition/useWatchBreakPoint";
 
 export default defineComponent({
   name: "Panel",
@@ -82,23 +79,9 @@ export default defineComponent({
 
     const [barWidth, setBarWidth] = useSideBarWidth();
 
-    const breakPoints = panelBreakPoints;
-    const drawerBreak = useWatchBreakPoint(
-      breakPoints.content,
+    const { showDrawer, setShowDrawer } = initDrawerDisplayInfo(
       posInfo.panelWidth
     );
-
-    const showDrawer = ref(false);
-
-    watch(drawerBreak, () => {
-      if (drawerBreak.value) {
-        showDrawer.value = false;
-      }
-    });
-
-    function setShowDrawer(value: boolean) {
-      showDrawer.value = value;
-    }
 
     return {
       position: computed(() => ({
@@ -116,7 +99,6 @@ export default defineComponent({
       resotrePos: posInfo.restorePos,
       barWidth,
       setBarWidth,
-      drawerBreak,
       showDrawer,
       setShowDrawer,
     };
