@@ -1,20 +1,23 @@
 <template>
-  <div class="page-list">
-    <TomatoPageListItem :items="items" />
-  </div>
+  <BasePageList>
+    <TomatoPageListItem
+      :items="items"
+      :themeColor="themeColor"
+      :showDrawer="showDrawer"
+      :setShowDrawer="setShowDrawer"
+    ></TomatoPageListItem>
+  </BasePageList>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-// import PageListItem from "./PageListItem.vue";
 import { SideBarListItemType } from "@/store/sidebar";
+import { defineComponent, PropType } from "vue";
+
 import TomatoPageListItem from "./TomatoPageListItem.vue";
+import BasePageList from "./BasePageList.vue";
+
 export default defineComponent({
   name: "PageList",
-  components: {
-    // PageListItem,
-    TomatoPageListItem,
-  },
   props: {
     items: {
       type: Object as PropType<SideBarListItemType[]>,
@@ -24,6 +27,15 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    showDrawer: Boolean,
+    setShowDrawer: {
+      type: Function as PropType<(value: boolean) => void>,
+      required: true,
+    },
+  },
+  components: {
+    TomatoPageListItem,
+    BasePageList,
   },
 });
 </script>

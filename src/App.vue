@@ -2,14 +2,27 @@
   <div class="theme-tomato">
     <main>
       <Panel>
-        <template #default="{ breakPoints, barWidth, setBarWidth }">
+        <template
+          #default="{
+            barWidth,
+            setBarWidth,
+            drawerBreak,
+            showDrawer,
+            setShowDrawer,
+          }"
+        >
           <FlexContainer>
-            <SideBar
-              :breakPoints="breakPoints"
-              :barWidth="barWidth"
-              :setBarWidth="setBarWidth"
+            <SideBar :barWidth="barWidth" :setBarWidth="setBarWidth" />
+            <ContentPage
+              :showDrawer="showDrawer"
+              :drawerBreak="drawerBreak"
+              :setShowDrawer="setShowDrawer"
             />
-            <ContentPage :breakPoints="breakPoints" :barWidth="barWidth" />
+            <Drawer
+              :drawerBreak="drawerBreak"
+              :showDrawer="showDrawer"
+              :setShowDrawer="setShowDrawer"
+            />
           </FlexContainer>
         </template>
       </Panel>
@@ -23,6 +36,7 @@ import Panel from "@/components/Panel/ThePanel.vue";
 import SideBar from "@/components/SideBar/SideBar.vue";
 import FlexContainer from "@/components/Container/FlexContainer.vue";
 import ContentPage from "@/components/ContentPage/ContentPage.vue";
+import Drawer from "@/components/Drawer/Drawer.vue";
 
 export default defineComponent({
   name: "App",
@@ -31,6 +45,7 @@ export default defineComponent({
     FlexContainer,
     SideBar,
     ContentPage,
+    Drawer,
   },
 });
 </script>
@@ -38,7 +53,6 @@ export default defineComponent({
 <style lang="scss">
 @import "@/scss/_colors.scss";
 @import "@/scss/_common.scss";
-
 html {
   font-size: $rem-size * 1px;
 }

@@ -16,7 +16,7 @@
         <span class="check-mark" v-if="item.isComplete">✓</span>
       </div>
     </span>
-    <div class="item-info">
+    <div class="item-info" @click="setShowDrawer(true)">
       <span class="item-title">
         {{ item.title }}
       </span>
@@ -97,6 +97,11 @@ export default defineComponent({
     },
     themeColor: {
       type: String,
+      required: true,
+    },
+    showDrawer:Boolean,
+    setShowDrawer: {
+      type: Function as PropType<(value: boolean) => void>,
       required: true,
     },
   },

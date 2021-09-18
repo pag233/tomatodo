@@ -1,29 +1,37 @@
 <template>
-  <section class="content-page" :class="{ 'round-corner': isBreak }">
-    <component :is="selectListType"></component>
+  <section
+    class="content-page"
+    :class="{ 'round-corner': sideBarBreak, 'not-round-corner': !drawerBreak }"
+  >
+    <component
+      :is="selectListType"
+      :showDrawer="showDrawer"
+      :themeColor="themeColors[selectListType]"
+      :setShowDrawer="setShowDrawer"
+    ></component>
   </section>
 </template>
 
 <script lang='ts'>
-import { defineComponent, PropType } from "vue";
-import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak";
-import { PanelBreakPointsType } from "../Panel/thePanelBreakPoint";
-
-import { ListsTypes } from "../../store/sidebar";
-import TomatoPage from "./pages/Tomato.vue";
-
+import { defineComponent, reactive, PropType } from "vue";
+import { useWatchBreakPoint } from "../../composition/useWatchBreakPoint";
+import { panelBreakPoints } from "../Panel/thePanelBreakPoint";
 import { useSelectListType } from "@/composition/common";
+import { ListsTypes } from "../../store/sidebar";
+
+import TomatoPage from "./pages/TomatoPage.vue";
 
 export default defineComponent({
   name: "ContentPage",
 
   props: {
-    breakPoints: {
-      type: Object as PropType<PanelBreakPointsType>,
+    showDrawer:Boolean,
+    drawerBreak: {
+      type: Boolean,
       required: true,
     },
-    barWidth: {
-      type: Number,
+    setShowDrawer: {
+      type: Function as PropType<(value: boolean) => void>,
       required: true,
     },
   },
@@ -32,13 +40,22 @@ export default defineComponent({
     [ListsTypes.tomato]: TomatoPage,
   },
 
-  setup(props) {
-    const isBreak = useWatchSideBarBreak(props.breakPoints.sidebar);
+  setup() {
+    const breakPoints = panelBreakPoints;
+    const sideBarBreak = useWatchBreakPoint(breakPoints.sidebar);
     const selectListType = useSelectListType();
+    const themeColors = reactive({
+      [ListsTypes.tomato]: "#bf0a2b",
+      [ListsTypes.tasks]: "#bf0a2b",
+      [ListsTypes.important]: "#bf0a2b",
+      [ListsTypes.plains]: "#bf0a2b",
+      [ListsTypes.user]: "#bf0a2b",
+    });
     return {
-      isBreak,
+      sideBarBreak,
       selectListType,
       ListsTypes,
+      themeColors,
     };
   },
 });
@@ -56,10 +73,9 @@ export default defineComponent({
   @include ToTheme($theme-tomato) {
     background-color: $black-dim;
   }
-  .content-container {
-    width: 100%;
-    height: 100%;
-  }
+}
+.not-round-corner {
+  border-radius: 0;
 }
 .round-corner {
   border-radius: $border-radius;

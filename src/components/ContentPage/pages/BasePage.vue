@@ -1,38 +1,35 @@
 <template>
   <div
-    class="page-tomato"
+    class="base-page"
     :style="{
       color: themeColor,
     }"
   >
     <PageTitle :selectListType="selectListType" />
-    <PageList :items="items" :themeColor="themeColor" />
+    <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
-import { useStore } from "@/store";
+import { defineComponent } from "vue";
 import { useSelectListType } from "@/composition/common";
 
 import PageTitle from "./PageTitle.vue";
-import PageList from "./PageList.vue";
 
 export default defineComponent({
   name: "PageTomato",
   components: {
     PageTitle,
-    PageList,
   },
-  setup() {
-    const store = useStore();
-    const selectListType = useSelectListType();
 
-    const items = computed(() => store.getters["sidebar/getTomato"]);
+  props: {
+    themeColor: String,
+  },
+
+  setup() {
+    const selectListType = useSelectListType();
     return {
       selectListType,
-      items,
-      themeColor: "#bf0a2b",
     };
   },
 });

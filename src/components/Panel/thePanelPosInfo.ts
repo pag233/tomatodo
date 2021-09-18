@@ -1,6 +1,7 @@
 import { useRef } from "@/composition/common";
 import { getDocElement, getRemSize } from '@/composition/dom';
-import { computed, watch, provide, readonly, Ref } from "@vue/runtime-core";
+import { computed, watch, provide, readonly } from "@vue/runtime-core";
+import { Ref } from "vue";
 
 //Panel最大延伸位置
 export const BoxBoundryOffset: number = getRemSize();
@@ -42,8 +43,9 @@ const checkHorizontion = () => screen.orientation.type.includes('landscape')
 
 export type PanelPosInfo = ReturnType<typeof initPanelPosInfo>
 
-export const PanelWidthInjectKey = Symbol('posInfo');
+export const PanelWidthInjectKey = Symbol('posWidth');
 export const PanelPosLeftInjectKey = Symbol('posLeft');
+export const PanelPosRightInjectKey = Symbol('posRight');
 
 export function initPanelPosInfo(
   width: number,
@@ -104,16 +106,19 @@ export function initPanelPosInfo(
   const panelWidth = computed(() => (getDocElement().clientWidth - posState.value.left - posState.value.right))
 
   const posLeft = computed(() => posState.value.left);
+  const posRight = computed(() => posState.value.right);
 
   const posInfo = {
     pos,
     maximum,
     savePos,
     restorePos,
+    panelWidth,
   }
 
   provide(PanelWidthInjectKey, readonly(panelWidth));
   provide(PanelPosLeftInjectKey, readonly(posLeft));
+  provide(PanelPosRightInjectKey, readonly(posRight));
 
 
   return posInfo
@@ -142,8 +147,10 @@ export function getMinWidthHeight(
   }
 }
 
+export const BarMinMaxWidthInjectkey = Symbol('barMinMaxWidth');
+
 export function useSideBarWidth(initalWidth = 200, barMinWidth = 180, barMaxWidth = 600): [Ref<number>, (width: number) => void] {
-  provide('barMinMaxWidth', [barMinWidth, barMaxWidth]);
+  provide(BarMinMaxWidthInjectkey, [barMinWidth, barMaxWidth]);
   const [barWidth, setWidth] = useRef(initalWidth as number);
   const setBarWidth = (width: number) => {
     if (width < barMaxWidth && width > barMinWidth) {

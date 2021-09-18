@@ -1,22 +1,23 @@
 <template>
-  <PageListItem
+  <BasePageListItem
     v-for="(item, index) in items"
     :key="index"
     :item="item"
     :themeColor="themeColor"
+    :showDrawer="showDrawer"
+    :setShowDrawer="setShowDrawer"
   >
     <template #tomato>
       {{ undefined }}
     </template>
-  </PageListItem>
+  </BasePageListItem>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { SideBarListItemType } from "@/store/sidebar";
-import { useSelectListType } from "@/composition/common";
 
-import PageListItem from "./PageListItem.vue";
+import BasePageListItem from "./BasePageListItem.vue";
 
 export default defineComponent({
   name: "TomatoPageListItem",
@@ -25,20 +26,18 @@ export default defineComponent({
       type: Object as PropType<SideBarListItemType[]>,
       required: true,
     },
+    themeColor: {
+      type: String,
+      required: true,
+    },
+    showDrawer: Boolean,
+    setShowDrawer: {
+      type: Function as PropType<(value: boolean) => void>,
+      required: true,
+    },
   },
   components: {
-    PageListItem,
-  },
-  setup() {
-    const selectListType = useSelectListType();
-    return {
-      selectListType,
-    };
-  },
-  data() {
-    return {
-      themeColor: "tomato",
-    };
+    BasePageListItem,
   },
 });
 </script>

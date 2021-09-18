@@ -37,8 +37,8 @@
 import { defineComponent, inject, PropType } from "vue";
 import { mapGetters } from "vuex";
 
-import { useWatchSideBarBreak } from "../Panel/useWatchSideBarBreak";
-import { PanelBreakPointsType } from "../Panel/thePanelBreakPoint";
+import { useWatchBreakPoint } from "../../composition/useWatchBreakPoint";
+import { panelBreakPoints } from "../Panel/thePanelBreakPoint";
 import { BarWidthEmitType } from "./SideBarWidth";
 
 import SideBarResizeBar from "./SideBarResizeBar.vue";
@@ -46,15 +46,12 @@ import SideBarListItem from "./SideBarListItem.vue";
 import SearchBox from "./SearchBox.vue";
 import SideBarFooter from "./SideBarFooter.vue";
 import SideBarFooterAddList from "./SideBarFooterAddList.vue";
+import { BarMinMaxWidthInjectkey } from "../Panel/thePanelPosInfo";
 
 export default defineComponent({
   name: "SideBar",
 
   props: {
-    breakPoints: {
-      type: Object as PropType<PanelBreakPointsType>,
-      required: true,
-    },
     barWidth: {
       type: Number,
       required: true,
@@ -72,9 +69,10 @@ export default defineComponent({
     SideBarFooterAddList,
   },
 
-  setup(props) {
-    const isBreak = useWatchSideBarBreak(props.breakPoints.sidebar);
-    const [minBarWidth, maxBarWidth] = inject("barMinMaxWidth", [0, 0]);
+  setup() {
+    const breakPoints = panelBreakPoints;
+    const isBreak = useWatchBreakPoint(breakPoints.sidebar);
+    const [minBarWidth, maxBarWidth] = inject(BarMinMaxWidthInjectkey, [0, 0]);
     return {
       isBreak,
       minBarWidth,
