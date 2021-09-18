@@ -63,7 +63,7 @@ export default defineComponent({
     font-weight: 400;
 
     @include ToTheme("theme-tomato") {
-      background-color: $gray;
+      background-color: $opacity-white-dim;
       color: white;
       border-bottom: 0.1px solid #ffffff9e;
     }

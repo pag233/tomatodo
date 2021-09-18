@@ -214,8 +214,8 @@ export function initDrawerDisplayInfo(panelWidth: ComputedRef<number>): typeof d
  * @param errMsg 当inject返回undefinded时抛出的错误信息
  * @returns {boolean} 返回drawer是否折叠
  */
-export function getInjectDrawerBreak(errMsg?: string): boolean {
-  const drawerBreak = inject(ShowDrawerKey);
+export function getInjectDrawerBreak(errMsg?: string): Ref<boolean> {
+  const drawerBreak = inject<Ref<boolean>>(ShowDrawerKey);
   if (!drawerBreak) throw new Error(errMsg ? errMsg + " " : "" + 'component provide value undefined using key: ' + ShowDrawerKey.description);
-  return drawerBreak as boolean
+  return drawerBreak
 }

@@ -18,7 +18,7 @@ import { defineComponent, reactive, PropType } from "vue";
 import { useWatchBreakPoint } from "../../composition/useWatchBreakPoint";
 import { panelBreakPoints } from "../Panel/thePanelBreakPoint";
 import { useSelectListType } from "@/composition/common";
-import { ListsTypes } from "../../store/sidebar";
+import { ListsTypes } from "../../store/list";
 
 import TomatoPage from "./pages/TomatoPage.vue";
 import { getInjectDrawerBreak } from "../Panel/thePanelPosInfo";
@@ -71,7 +71,7 @@ export default defineComponent({
 .content-page {
   flex: 1 0 180px;
   box-sizing: border-box;
-  border-radius: 0 $border-radius $border-radius 0;
+  border-radius: 0 $corner-border-radius $corner-border-radius 0;
   padding: 2rem 1rem 1rem 1rem;
   @include ToTheme($theme-tomato) {
     background-color: $black-dim;
@@ -81,6 +81,6 @@ export default defineComponent({
   border-radius: 0;
 }
 .round-corner {
-  border-radius: $border-radius;
+  border-radius: $corner-border-radius;
 }
 </style>

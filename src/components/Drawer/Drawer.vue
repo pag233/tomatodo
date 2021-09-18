@@ -6,7 +6,9 @@
       flexBasis: drawerWidth + 'px',
     }"
   >
-    <div class="drawer-move-bar" @mousedown="mouseDownHandler"></div>
+    <transition name="drawer-slide">
+      <div class="drawer-move-bar" @mousedown="mouseDownHandler"></div>
+    </transition>
   </div>
 </template>
 
@@ -31,8 +33,8 @@ export default defineComponent({
   },
   setup(props) {
     const drawerWidth = ref(props.width);
-    const minDrawerWidth = 200;
-    const maxDrawerWidth = 400;
+    const minDrawerWidth = 300;
+    const maxDrawerWidth = 600;
     const mouseDownHandler = getDrawerMouseDownHandler(
       drawerWidth,
       minDrawerWidth,
@@ -49,17 +51,24 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "@/scss/_common.scss";
+@import "@/scss/_colors.scss";
 .drawer {
   flex: 0 1 120px;
-  background-color: tomato;
   position: relative;
+  border-radius: 0 $corner-border-radius $corner-border-radius 0;
+  @include ToTheme($theme-tomato) {
+    background-color: $gray;
+  }
   .drawer-move-bar {
     position: absolute;
     left: 0;
     height: 100%;
     width: 20px;
-    background-color: tan;
+    cursor: ew-resize;
     transform: translateX(-50%);
   }
 }
+// .drawer-slide-enter {
+// }
 </style>

@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { SideBarListItemType } from "@/store/sidebar";
+import { ListItemType } from "@/store/list";
 
 import BasePageListItem from "./BasePageListItem.vue";
 
@@ -23,7 +23,7 @@ export default defineComponent({
   name: "TomatoPageListItem",
   props: {
     items: {
-      type: Object as PropType<SideBarListItemType[]>,
+      type: Object as PropType<ListItemType[]>,
       required: true,
     },
     themeColor: {

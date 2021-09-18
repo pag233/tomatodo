@@ -9,7 +9,7 @@ interface SideBarListType {
 }
 
 export interface SetItemCountType {
-  (items: SideBarListItemType[]): number
+  (items: ListItemType[]): number
 }
 
 interface SideBarUserCreateListType {
@@ -19,11 +19,11 @@ interface SideBarUserCreateListType {
   isDeletable: true
 }
 
-const userCreateListSetItemCount = (items: SideBarListItemType[], listType: string): number => (
+const userCreateListSetItemCount = (items: ListItemType[], listType: string): number => (
   items.filter(item => item.listType === listType).length
 )
 
-export interface SideBarListItemType {
+export interface ListItemType {
   id: number,
   title: string,
   listType: ListsTypes,
@@ -39,13 +39,14 @@ export interface SideBarListItemType {
 }
 
 interface selectType {
-  listType: ListsTypes
+  listType: ListsTypes,
+  item: ListItemType | null,
 }
 
-export interface SideBarStateType {
+export interface ListStateType {
   lists: SideBarListType[]
   userCreateList: SideBarUserCreateListType[];
-  items: SideBarListItemType[]
+  items: ListItemType[]
   select: selectType
 }
 
@@ -57,42 +58,42 @@ export enum ListsTypes {
   user = 'user',
 }
 
-function noCompleteFilter(item: SideBarListItemType): boolean {
+function noCompleteFilter(item: ListItemType): boolean {
   return !item.isComplete
 }
 const withNoCompleteFiter = join2Filters(noCompleteFilter);
 
-const getTomatoItems = (items: SideBarListItemType[]) =>
+const getTomatoItems = (items: ListItemType[]) =>
   items.filter(withNoCompleteFiter(item => item.isOnTomato ? true : false))
 
 
-export const SideBarState: SideBarStateType = {
+export const ListState: ListStateType = {
   lists: [
     {
       listType: ListsTypes.tomato,
       name: ListsTypes.tomato,
-      setItemCount(items: SideBarListItemType[]): number {
+      setItemCount(items: ListItemType[]): number {
         return getTomatoItems(items).length
       },
     },
     {
       listType: ListsTypes.tasks,
       name: ListsTypes.tasks,
-      setItemCount(items: SideBarListItemType[]): number {
+      setItemCount(items: ListItemType[]): number {
         return items.length
       },
     },
     {
       listType: ListsTypes.important,
       name: ListsTypes.important,
-      setItemCount(items: SideBarListItemType[]): number {
+      setItemCount(items: ListItemType[]): number {
         return items.filter(item => item.isImportant).length
       },
     },
     {
       listType: ListsTypes.plains,
       name: ListsTypes.plains,
-      setItemCount(items: SideBarListItemType[]): number {
+      setItemCount(items: ListItemType[]): number {
         return items.filter(item => item.remindDate || item.deadLine || item.repeat).length
       },
     },
@@ -135,19 +136,19 @@ export const SideBarState: SideBarStateType = {
   ],
   select: {
     listType: ListsTypes.tomato,
-  }
+    item: null,
+  },
 }
 
-
-function getItemById(items: SideBarListItemType[], id: number): SideBarListItemType {
+function getItemById(items: ListItemType[], id: number): ListItemType {
   const result = items.find(item => item.id === id)
   if (!result) throw new Error("Can't find item while setting attribute")
   return result
 }
-export const SideBarStore: Module<SideBarStateType, RootStateType> = {
+export const ListStore: Module<ListStateType, RootStateType> = {
   namespaced: true,
   state() {
-    return SideBarState
+    return ListState
   },
   getters: {
     getLists(state) {
@@ -158,6 +159,9 @@ export const SideBarStore: Module<SideBarStateType, RootStateType> = {
     },
     getTomato(state) {
       return getTomatoItems(state.items);
+    },
+    getSelectItem(state) {
+      return state.select.item;
     },
   },
   mutations: {
@@ -171,6 +175,10 @@ export const SideBarStore: Module<SideBarStateType, RootStateType> = {
     setItemImportant(state, payload) {
       const item = getItemById(state.items, payload.id);
       item.isImportant = payload.isImportant;
-    }
+    },
+    setSelectItem(state, payload) {
+      const item = getItemById(state.items, payload.id);
+      state.select.item = item;
+    },
   }
 }

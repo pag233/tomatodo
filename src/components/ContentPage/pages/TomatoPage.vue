@@ -1,8 +1,8 @@
 <template>
   <BasePage :themeColor="themeColor">
     <TomatoPageList
-      :themeColor="themeColor"
       :items="items"
+      :themeColor="themeColor"
       :showDrawer="showDrawer"
       :setShowDrawer="setShowDrawer"
     />
@@ -30,7 +30,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const items = computed(() => store.getters["sidebar/getTomato"]);
+    const items = computed(() => store.getters["list/getTomato"]);
     return {
       items,
     };

@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { SideBarListItemType } from "@/store/sidebar";
+import { ListItemType } from "@/store/list";
 import { defineComponent, PropType } from "vue";
 
 import TomatoPageListItem from "./TomatoPageListItem.vue";
@@ -20,7 +20,7 @@ export default defineComponent({
   name: "PageList",
   props: {
     items: {
-      type: Object as PropType<SideBarListItemType[]>,
+      type: Object as PropType<ListItemType[]>,
       required: true,
     },
     themeColor: {

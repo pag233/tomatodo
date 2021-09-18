@@ -83,7 +83,7 @@ export default defineComponent({
   data() {
     return {
       BarWidthEmitType,
-      ...mapGetters("sidebar", ["getLists", "getUserCreateLists"]),
+      ...mapGetters("list", ["getLists", "getUserCreateLists"]),
     };
   },
 });
@@ -98,7 +98,7 @@ export default defineComponent({
   box-sizing: border-box;
   padding-top: 2rem;
   flex: 0 1;
-  border-radius: 8px 0 0 $border-radius;
+  border-radius: 8px 0 0 $corner-border-radius;
   @include ToTheme($theme-tomato) {
     color: $white;
     border: 0.5px solid #ffffff78;

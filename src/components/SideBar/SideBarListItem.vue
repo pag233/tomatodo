@@ -26,7 +26,7 @@ import Star from "./icons/Star.vue";
 import AlarmClock from "./icons/AlarmClock.vue";
 import List from "./icons/List.vue";
 
-import { SetItemCountType, ListsTypes } from "../../store/sidebar";
+import { SetItemCountType, ListsTypes } from "../../store/list";
 import { useStore } from "@/store";
 import { mapMutations } from "vuex";
 export default defineComponent({
@@ -50,16 +50,16 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapMutations("sidebar", ["setSelectName"]),
+    ...mapMutations("list", ["setSelectName"]),
   },
   setup(props) {
     const store = useStore();
     const itemCount = ref(0);
     const isActive = computed(
-      () => props.listType === store.state.sidebar.select.listType
+      () => props.listType === store.state.list.select.listType
     );
     onMounted(() => {
-      itemCount.value = props.setItemCount(store.state.sidebar.items);
+      itemCount.value = props.setItemCount(store.state.list.items);
     });
     return {
       itemCount,

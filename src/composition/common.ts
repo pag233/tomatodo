@@ -1,5 +1,5 @@
 import { useStore } from "@/store";
-import { ListsTypes } from "@/store/sidebar";
+import { ListsTypes } from "@/store/list";
 import {
   onMounted,
   onUnmounted,
@@ -68,6 +68,6 @@ export function useRef<T extends BaseStateType | BaseStateType[]>(
 
 export function useSelectListType(): ComputedRef<ListsTypes> {
   const store = useStore();
-  const selectListType = computed(() => store.state.sidebar.select.listType);
+  const selectListType = computed(() => store.state.list.select.listType);
   return selectListType
 }
