@@ -124,8 +124,6 @@ export default defineComponent({
 
 
 <style lang="scss" scoped>
-@import "@/scss/_common.scss";
-@import "@/scss/_colors.scss";
 .panel {
   position: absolute;
   margin: auto;

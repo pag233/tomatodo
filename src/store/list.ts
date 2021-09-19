@@ -23,13 +23,19 @@ const userCreateListSetItemCount = (items: ListItemType[], listType: string): nu
   items.filter(item => item.listType === listType).length
 )
 
-export interface ListItemType {
+export interface ListItemStepType {
   id: number,
   title: string,
+  isComplete?: boolean,
+}
+
+export interface ListItemType extends ListItemStepType {
+  // id: number,
+  // title: string,
+  // isComplete?: boolean,
   listType: ListsTypes,
   createdDate: Date,
-  step?: string[],
-  isComplete?: boolean,
+  steps: ListItemStepType[],
   isImportant?: boolean,
   isOnTomato?: boolean,
   remindDate?: Date,
@@ -45,7 +51,7 @@ interface selectType {
 
 export interface ListStateType {
   lists: SideBarListType[]
-  userCreateList: SideBarUserCreateListType[];
+  userCreateList: SideBarUserCreateListType[]
   items: ListItemType[]
   select: selectType
 }
@@ -108,29 +114,43 @@ export const ListState: ListStateType = {
   ],
   items: [
     {
-      id: 1,
+      id: 0,
       title: 'foo',
       listType: ListsTypes.tasks,
       createdDate: new Date(),
+      steps: [
+        {
+          id: 0,
+          isComplete: false,
+          title: 'step 1'
+        },
+        {
+          id: 1,
+          isComplete: true,
+          title: 'step 2'
+        }
+      ],
       isOnTomato: true,
-      isComplete: true,
+      // isComplete: true,
       isImportant: true,
       remindDate: new Date(),
       deadLine: new Date(),
       repeat: 'day',
     },
     {
-      id: 2,
+      id: 1,
       title: 'bar',
       listType: ListsTypes.tasks,
       createdDate: new Date(),
-      // isOnTomato: true,
+      steps: [],
+      isOnTomato: true,
     },
     {
-      id: 3,
+      id: 2,
       title: 'foobar',
       listType: ListsTypes.tasks,
       createdDate: new Date(),
+      steps: [],
       isOnTomato: true,
     },
   ],
@@ -140,11 +160,26 @@ export const ListState: ListStateType = {
   },
 }
 
-function getItemById(items: ListItemType[], id: number): ListItemType {
-  const result = items.find(item => item.id === id)
+function getItemById<T extends ListItemStepType | ListItemType>(items: T[], id: number): T {
+  const result = items.find((item) => item.id === id)
   if (!result) throw new Error("Can't find item while setting attribute")
   return result
 }
+
+function getSelectItem(state: ListStateType): ListItemType {
+  const selectItem = state.select.item
+  if (!selectItem) throw new Error('Store Error: mutation getSelectItem Failed. Null select item.')
+  return selectItem
+}
+
+const themeColors = {
+  [ListsTypes.tomato]: "#bf0a2b",
+  [ListsTypes.tasks]: "#bf0a2b",
+  [ListsTypes.important]: "#bf0a2b",
+  [ListsTypes.plains]: "#bf0a2b",
+  [ListsTypes.user]: "#bf0a2b",
+};
+
 export const ListStore: Module<ListStateType, RootStateType> = {
   namespaced: true,
   state() {
@@ -163,6 +198,9 @@ export const ListStore: Module<ListStateType, RootStateType> = {
     getSelectItem(state) {
       return state.select.item;
     },
+    getThemeColor(state) {
+      return themeColors[state.select.listType];
+    }
   },
   mutations: {
     setSelectName(state, payload) {
@@ -176,9 +214,18 @@ export const ListStore: Module<ListStateType, RootStateType> = {
       const item = getItemById(state.items, payload.id);
       item.isImportant = payload.isImportant;
     },
+    setItemStepComplete(state, payload) {
+      const selectItem = getSelectItem(state);
+      const step = getItemById(selectItem.steps, payload.id);
+      step.isComplete = payload.isComplete;
+    },
     setSelectItem(state, payload) {
       const item = getItemById(state.items, payload.id);
       state.select.item = item;
+    },
+    removeItemStep(state, payload) {
+      const selectItem = getSelectItem(state);
+      selectItem.steps = selectItem.steps.filter(step => step.id !== payload.id);
     },
   }
 }

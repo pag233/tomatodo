@@ -6,5 +6,5 @@ export type PanelBreakPointsType = {
 
 export const panelBreakPoints: PanelBreakPointsType = {
   sidebar: 360,
-  content: 540,
+  content: 610,
 }

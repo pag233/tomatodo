@@ -71,11 +71,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/scss/_common.scss";
-@import "@/scss/_colors.scss";
-
-@import "@/scss/sidebar.scss";
-
 .sidebar-list-item {
   @extend %sidebar-list-item;
 

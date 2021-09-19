@@ -31,9 +31,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/scss/_common.scss";
-@import "@/scss/_colors.scss";
-
 .sidebar-resize-bar {
   position: absolute;
   top: 0;

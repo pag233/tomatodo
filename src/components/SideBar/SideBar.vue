@@ -90,9 +90,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/scss/_common.scss";
-@import "@/scss/_colors.scss";
-
 .side-bar {
   position: relative;
   box-sizing: border-box;

@@ -40,8 +40,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/scss/_colors.scss";
-@import "@/scss/_common.scss";
 html {
   font-size: $rem-size * 1px;
 }

@@ -61,9 +61,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/scss/_common.scss";
-@import "@/scss/_colors.scss";
-
 .maximum-button {
   @include ToTheme($theme-tomato) {
     background-color: $orange;
