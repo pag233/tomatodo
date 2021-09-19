@@ -66,6 +66,20 @@ export function useRef<T extends BaseStateType | BaseStateType[]>(
   return [oldState, setState]
 }
 
+export function makeSetValueBetween(setValue: SetStateType<number>, min: number, max: number) {
+  return function (value: number): void {
+    if (value > min && value < max) {
+      setValue(value);
+      return;
+    }
+    if (value >= max) {
+      setValue(max)
+    } else {
+      setValue(min)
+    }
+  }
+}
+
 export function useSelectListType(): ComputedRef<ListsTypes> {
   const store = useStore();
   const selectListType = computed(() => store.state.list.select.listType);

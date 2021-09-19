@@ -3,15 +3,31 @@
     <main>
       <Panel>
         <template
-          #default="{ barWidth, setBarWidth, showDrawer, setShowDrawer }"
+          #default="{
+            barWidth,
+            setBarWidth,
+            minWidth,
+            drawerBreak,
+            drawerShow,
+            setDrawerShow,
+            drawerWidth,
+            setDrawerWidth,
+          }"
         >
           <FlexContainer>
             <SideBar :barWidth="barWidth" :setBarWidth="setBarWidth" />
             <ContentPage
-              :showDrawer="showDrawer"
-              :setShowDrawer="setShowDrawer"
+              :minWidth="minWidth"
+              :drawerShow="drawerShow"
+              :setDrawerShow="setDrawerShow"
             />
-            <Drawer :showDrawer="showDrawer" :setShowDrawer="setShowDrawer" />
+            <Drawer
+              v-if="!drawerBreak"
+              :drawerShow="drawerShow"
+              :setDrawerShow="setDrawerShow"
+              :drawerWidth="drawerWidth"
+              :setDrawerWidth="setDrawerWidth"
+            />
           </FlexContainer>
         </template>
       </Panel>
@@ -40,8 +56,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/scss/_colors.scss";
-@import "@/scss/_common.scss";
 html {
   font-size: $rem-size * 1px;
 }

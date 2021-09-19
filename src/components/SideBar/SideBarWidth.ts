@@ -1,13 +1,11 @@
-import { inject, Ref, ref } from '@vue/runtime-core';
-import { throttle } from 'lodash';
 import { EmitFnType } from '../../composition/types';
 import {
   makeMouseDownHandler,
   MouseDownHandlerType,
   MouseMoveHandlerType,
 } from "@/composition/dom";
-import { PanelPosLeftInjectKey } from '../Panel/thePanelPosInfo';
-
+import { PositionType, useInjectPanelPosInfo } from '../Panel/thePanelPosInfo';
+import { Ref } from '@vue/runtime-core';
 
 export enum BarWidthEmitType {
   update = "barWidth:update"
@@ -15,15 +13,13 @@ export enum BarWidthEmitType {
 
 function makeSideBarWidthMouseMoveHandler(
   emitFn: EmitFnType<number>,
-  posLeft: Ref<number>,
+  posInfo: Ref<PositionType>,
   emitType = BarWidthEmitType.update
 ) {
-  return throttle(
-    function (e: MouseEvent) {
-      const width = e.clientX - posLeft.value;
-      emitFn(emitType, width);
-    }
-    , 70);
+  return function (e: MouseEvent) {
+    const width = e.clientX - posInfo.value.left;
+    emitFn(emitType, width);
+  }
 }
 
 function makeSideBarWidthMouseDownHandler(
@@ -43,8 +39,8 @@ function makeSideBarWidthMouseDownHandler(
 export function getSideBarWidthMouseDownHandler(
   emitFn: EmitFnType<number>,
 ): MouseDownHandlerType {
-  const posLeft = inject(PanelPosLeftInjectKey, ref(0));
+  const posInfo = useInjectPanelPosInfo();
   return makeSideBarWidthMouseDownHandler(
-    makeSideBarWidthMouseMoveHandler(emitFn, posLeft)
+    makeSideBarWidthMouseMoveHandler(emitFn, posInfo)
   )
 }

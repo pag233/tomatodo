@@ -59,8 +59,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "@/scss/_common.scss";
-@import "@/scss/_colors.scss";
 .resize-bar {
   position: absolute;
   @include ToTheme($theme-tomato) {

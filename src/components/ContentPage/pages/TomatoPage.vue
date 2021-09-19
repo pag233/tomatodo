@@ -1,11 +1,6 @@
 <template>
-  <BasePage :themeColor="themeColor">
-    <TomatoPageList
-      :items="items"
-      :themeColor="themeColor"
-      :showDrawer="showDrawer"
-      :setShowDrawer="setShowDrawer"
-    />
+  <BasePage>
+    <TomatoPageListItem :items="tomatoItems" :setDrawerShow="setDrawerShow" />
   </BasePage>
 </template>
 
@@ -13,26 +8,25 @@
 import { useStore } from "@/store";
 import { computed, defineComponent, PropType } from "vue";
 import BasePage from "./BasePage.vue";
-import TomatoPageList from "./TomatoPageList.vue";
+import TomatoPageListItem from "./TomatoPageListItem.vue";
+
 export default defineComponent({
   name: "TomatoPage",
   components: {
     BasePage,
-    TomatoPageList,
+    TomatoPageListItem,
   },
   props: {
-    themeColor: String,
-    showDrawer: Boolean,
-    setShowDrawer: {
+    setDrawerShow: {
       type: Function as PropType<(value: boolean) => void>,
       required: true,
     },
   },
   setup() {
     const store = useStore();
-    const items = computed(() => store.getters["list/getTomato"]);
+    const tomatoItems = computed(() => store.getters["list/getTomato"]);
     return {
-      items,
+      tomatoItems,
     };
   },
 });

@@ -1,14 +1,16 @@
-import { ref, Ref, ComputedRef } from "vue";
-import { computed, watch, provide, readonly, inject } from "@vue/runtime-core";
-import { useRef } from "@/composition/common";
+import { computed, watch, provide, readonly, inject, Ref } from "@vue/runtime-core";
+import { useRef, makeSetValueBetween } from "@/composition/common";
 import { getDocElement, getRemSize } from '@/composition/dom';
-import { useWatchBreakPoint } from "@/composition/useWatchBreakPoint";
-
-import { panelBreakPoints } from "./thePanelBreakPoint";
-
 
 //Panel最大延伸位置
 export const BoxBoundryOffset: number = getRemSize();
+
+export enum Position {
+  left = 'left',
+  right = 'right',
+  top = 'top',
+  bottom = 'bottom',
+}
 
 export type PositionType = {
   top: number;
@@ -19,12 +21,6 @@ export type PositionType = {
 
 export type PositionKey = keyof PositionType
 
-export enum Position {
-  left = 'left',
-  right = 'right',
-  top = 'top',
-  bottom = 'bottom',
-}
 
 export enum PositionEmitType {
   update = "pos:update",
@@ -37,6 +33,26 @@ export enum MaximumEmitType {
 }
 
 const checkHorizontion = () => screen.orientation.type.includes('landscape')
+
+
+export const PanelPosInfoInjectKey = Symbol('posInfo');
+export const PanelBreakPointsInjectKey = Symbol('posBreakPoints');
+
+interface MinMax {
+  min: number
+  max: number
+}
+
+export interface BreakPointsType {
+  sidebar: MinMax
+  drawer: MinMax
+}
+
+export interface BreakPointsInjectType {
+  sideBarBreak: Ref<boolean>,
+  drawerBreak: Ref<boolean>,
+}
+
 /**
  * 初始化Panel大小，像素值
  * @param {number} width 初始宽度
@@ -44,41 +60,34 @@ const checkHorizontion = () => screen.orientation.type.includes('landscape')
  * @param {HTMLElement} root 父节点 
  * @returns 代表坐标的响应式对象
  */
-
-export type PanelPosInfo = ReturnType<typeof initPanelPosInfo>
-
-export const PanelWidthInjectKey = Symbol('posWidth');
-export const PanelPosLeftInjectKey = Symbol('posLeft');
-export const PanelPosRightInjectKey = Symbol('posRight');
-
 export function initPanelPosInfo(
   width: number,
   height: number,
+  breakPoints: BreakPointsType,
   root: HTMLElement = getDocElement(),
 ): typeof posInfo {
+  const mwFactor = 0.5;
+  const mhFactor = 0.5;
+  const minWidth = Math.floor(width * mwFactor);
+  const minHeight = Math.floor(height * mhFactor);
+
   const isHorizontion = checkHorizontion();
   if (isHorizontion) {
     [width, height] = [height, width];
   }
-  const isFit = height < root.clientHeight && width < root.clientWidth
-
-  const top = isFit ? Math.floor((root.clientHeight - height) / 2) : BoxBoundryOffset;
+  const isClientFit = height < root.clientHeight && width < root.clientWidth
+  const top = isClientFit ? Math.floor((root.clientHeight - height) / 2) : BoxBoundryOffset;
   const bottom = top;
-  const left = isFit ? Math.floor((root.clientWidth - width) / 2) : BoxBoundryOffset;
+  const left = isClientFit ? Math.floor((root.clientWidth - width) / 2) : BoxBoundryOffset;
   const right = left;
 
-  const pos = useRef<PositionType>({
+  const position = useRef<PositionType>({
     top,
     bottom,
     left,
     right,
   })
-
-  const [posState, setPos] = pos;
-
-  const maximum = useRef(!isFit);
-
-  const [maximumState, setMaximum] = maximum;
+  const [pos, setPos] = position;
 
   const [savedPos, setSavedPos] = useRef<PositionType>({
     top,
@@ -86,17 +95,17 @@ export function initPanelPosInfo(
     left,
     right,
   })
-
-  const savePos = () => setSavedPos(posState.value);
-
+  const savePos = () => setSavedPos(pos.value);
   const restorePos = () => {
     setMaximum(false);
     setPos(savedPos.value);
   }
 
-  watch(maximumState, () => {
+  const maximum = useRef(!isClientFit);
+  const [isMaximum, setMaximum] = maximum;
+  watch(isMaximum, () => {
     //当最大化时保存当前位置信息
-    if (maximumState.value) {
+    if (isMaximum.value) {
       savePos()
       setPos({
         top: BoxBoundryOffset,
@@ -107,115 +116,86 @@ export function initPanelPosInfo(
     }
   })
 
-  const panelWidth = computed(() => (getDocElement().clientWidth - posState.value.left - posState.value.right))
+  const panelWidth = computed(() => (getDocElement().clientWidth - pos.value.left - pos.value.right))
 
-  const posLeft = computed(() => posState.value.left);
-  const posRight = computed(() => posState.value.right);
+  const sideBarMinWidth = breakPoints.sidebar.min
+  const sideBarMaxWidth = breakPoints.sidebar.max
+
+  const [barWidth, setBWidth] = useRef(sideBarMinWidth as number);
+  const setBarWidth = makeSetValueBetween(setBWidth, sideBarMinWidth, sideBarMaxWidth);
+
+  const minDrawerWidth = breakPoints.drawer.min;
+  const maxDrawerWidth = breakPoints.drawer.max;
+
+  const [drawerWidth, setDWidth] = useRef(minDrawerWidth as number);
+  const setDrawerWidth = makeSetValueBetween(setDWidth, minDrawerWidth, maxDrawerWidth);
+
+  const [sideBarBreak, setSideBarBreak] = useRef(false as boolean);
+
+  const [drawerBreak, setDrawerBreak] = useRef(false as boolean);
+  const [drawerShow, setDrawerShow] = useRef(false as boolean);
+
+  watch(drawerBreak, () => {
+    if (drawerBreak.value) {
+      drawerShow.value = false;
+    }
+  });
+
+  watch(panelWidth, () => {
+    if (panelWidth.value <= sideBarMinWidth + minWidth) {
+      setSideBarBreak(true)
+    } else {
+      setSideBarBreak(false)
+    }
+    if (panelWidth.value <= sideBarMinWidth + minDrawerWidth + minWidth) {
+      setDrawerBreak(true);
+    } else {
+      setDrawerBreak(false);
+    }
+  })
+
+  provide(PanelPosInfoInjectKey, readonly(pos));
+  provide(PanelBreakPointsInjectKey, readonly({
+    sideBarBreak,
+    drawerBreak,
+  }))
 
   const posInfo = {
-    pos,
-    maximum,
-    savePos,
-    restorePos,
-    panelWidth,
+    position: {
+      pos,
+      setPos,
+      savePos,
+      restorePos,
+      minWidth,
+      minHeight,
+    },
+    maximum: {
+      isMaximum, setMaximum
+    },
+    sideBar: {
+      barWidth,
+      setBarWidth,
+    },
+    drawer: {
+      drawerBreak,
+      drawerShow,
+      setDrawerShow,
+      drawerWidth,
+      setDrawerWidth,
+    }
   }
-
-  provide(PanelWidthInjectKey, readonly(panelWidth));
-  provide(PanelPosLeftInjectKey, readonly(posLeft));
-  provide(PanelPosRightInjectKey, readonly(posRight));
-
 
   return posInfo
 }
 
-/**
- * 初始化Panel最小大小
- * @param width 初始宽
- * @param height 初始高
- * @param wfactor 相对于宽的缩小系数
- * @param hfactor 相对于高的缩小系数
- * @param root 父节点 
- */
-export function getMinWidthHeight(
-  width: number,
-  height: number,
-  wfactor = 0.5,
-  hfactor = 0.5,
-): {
-  minWidth: number,
-  minHeight: number,
-} {
-  return {
-    minWidth: Math.floor(width * wfactor),
-    minHeight: Math.floor(height * hfactor),
+function useInject<T>(key: symbol): () => T {
+  return function () {
+    const injectValue = inject<T>(key)
+    if (!injectValue) throw new Error('Provide value undefined using inject key: ' + key.description)
+    return injectValue;
   }
 }
 
-export const BarMinMaxWidthInjectkey = Symbol('barMinMaxWidth');
-/**
- * 调整左侧SideBar宽度，并设置最大最小调整范围
- */
-export function useSideBarWidth(initalWidth = 200, barMinWidth = 180, barMaxWidth = 600): [Ref<number>, (width: number) => void] {
-  provide(BarMinMaxWidthInjectkey, [barMinWidth, barMaxWidth]);
-  const [barWidth, setWidth] = useRef(initalWidth as number);
-  const setBarWidth = (width: number) => {
-    if (width < barMaxWidth && width > barMinWidth) {
-      setWidth(width);
-      return;
-    }
-    if (width > barMaxWidth) {
-      setWidth(barMaxWidth)
-    } else {
-      setWidth(barMinWidth)
-    }
-  }
-  return [
-    barWidth, setBarWidth
-  ]
-}
+export const useInjectPanelPosInfo = useInject<Readonly<Ref<PositionType>>>(PanelPosInfoInjectKey)
 
-export const ShowDrawerKey = Symbol('ShowDrawer');
-/**
- * 
- * @param panelWidth Panel宽度，以判断出Draewr何时折叠。
- * @returns 
- */
-export function initDrawerDisplayInfo(panelWidth: ComputedRef<number>): typeof drawerDisplayInfo {
-
-  const breakPoints = panelBreakPoints;
-
-  const drawerBreak = useWatchBreakPoint(
-    breakPoints.content,
-    panelWidth
-  );
-
-  provide(ShowDrawerKey, drawerBreak);
-
-  const showDrawer = ref(false);
-
-  function setShowDrawer(value: boolean) {
-    showDrawer.value = value;
-  }
-
-  watch(drawerBreak, () => {
-    if (drawerBreak.value) {
-      showDrawer.value = false;
-    }
-  });
-
-  const drawerDisplayInfo = {
-    showDrawer,
-    setShowDrawer,
-  }
-
-  return drawerDisplayInfo
-}
-/**
- * @param errMsg 当inject返回undefinded时抛出的错误信息
- * @returns {boolean} 返回drawer是否折叠
- */
-export function getInjectDrawerBreak(errMsg?: string): Ref<boolean> {
-  const drawerBreak = inject<Ref<boolean>>(ShowDrawerKey);
-  if (!drawerBreak) throw new Error(errMsg ? errMsg + " " : "" + 'component provide value undefined using key: ' + ShowDrawerKey.description);
-  return drawerBreak
-}
+export const useInjectPanelBreakPoints = useInject<Readonly<BreakPointsInjectType>>(PanelBreakPointsInjectKey);

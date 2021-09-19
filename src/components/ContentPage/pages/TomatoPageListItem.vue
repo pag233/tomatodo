@@ -1,23 +1,21 @@
 <template>
-  <BasePageListItem
-    v-for="(item, index) in items"
-    :key="index"
+  <BaseListItem
+    v-for="item in items"
+    :key="item.id"
     :item="item"
-    :themeColor="themeColor"
-    :showDrawer="showDrawer"
-    :setShowDrawer="setShowDrawer"
+    :setDrawerShow="setDrawerShow"
   >
     <template #tomato>
       {{ undefined }}
     </template>
-  </BasePageListItem>
+  </BaseListItem>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { ListItemType } from "@/store/list";
 
-import BasePageListItem from "./BasePageListItem.vue";
+import BaseListItem from "@/components/Common/BaseListItem.vue";
 
 export default defineComponent({
   name: "TomatoPageListItem",
@@ -26,18 +24,13 @@ export default defineComponent({
       type: Object as PropType<ListItemType[]>,
       required: true,
     },
-    themeColor: {
-      type: String,
-      required: true,
-    },
-    showDrawer: Boolean,
-    setShowDrawer: {
+    setDrawerShow: {
       type: Function as PropType<(value: boolean) => void>,
       required: true,
     },
   },
   components: {
-    BasePageListItem,
+    BaseListItem,
   },
 });
 </script>

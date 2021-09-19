@@ -1,11 +1,9 @@
 <template>
   <section
     class="side-bar"
-    v-show="!isBreak"
+    v-show="!breakPoints.sideBarBreak"
     :style="{
       flexBasis: barWidth + 'px',
-      minWidth: minBarWidth + 'px',
-      maxWidth: maxBarWidth + 'px',
     }"
   >
     <SideBarResizeBar @[BarWidthEmitType.update]="setBarWidth" />
@@ -34,11 +32,9 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, inject, PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 import { mapGetters } from "vuex";
 
-import { useWatchBreakPoint } from "../../composition/useWatchBreakPoint";
-import { panelBreakPoints } from "../Panel/thePanelBreakPoint";
 import { BarWidthEmitType } from "./SideBarWidth";
 
 import SideBarResizeBar from "./SideBarResizeBar.vue";
@@ -46,7 +42,7 @@ import SideBarListItem from "./SideBarListItem.vue";
 import SearchBox from "./SearchBox.vue";
 import SideBarFooter from "./SideBarFooter.vue";
 import SideBarFooterAddList from "./SideBarFooterAddList.vue";
-import { BarMinMaxWidthInjectkey } from "../Panel/thePanelPosInfo";
+import { useInjectPanelBreakPoints } from "../Panel/thePanelPosInfo";
 
 export default defineComponent({
   name: "SideBar",
@@ -58,6 +54,7 @@ export default defineComponent({
     },
     setBarWidth: {
       type: Function as PropType<(width: number) => void>,
+      required: true,
     },
   },
 
@@ -68,18 +65,12 @@ export default defineComponent({
     SideBarFooter,
     SideBarFooterAddList,
   },
-
   setup() {
-    const breakPoints = panelBreakPoints;
-    const isBreak = useWatchBreakPoint(breakPoints.sidebar);
-    const [minBarWidth, maxBarWidth] = inject(BarMinMaxWidthInjectkey, [0, 0]);
+    const breakPoints = useInjectPanelBreakPoints();
     return {
-      isBreak,
-      minBarWidth,
-      maxBarWidth,
+      breakPoints,
     };
   },
-
   data() {
     return {
       BarWidthEmitType,
@@ -90,27 +81,28 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/scss/_common.scss";
-@import "@/scss/_colors.scss";
-
 .side-bar {
-  position: relative;
-  box-sizing: border-box;
-  padding-top: 2rem;
-  flex: 0 1;
-  border-radius: 8px 0 0 $corner-border-radius;
+  @extend %left-bar-color;
+
   @include ToTheme($theme-tomato) {
     color: $white;
     border: 0.5px solid #ffffff78;
   }
-  @extend %left-bar-color;
+
+  border-radius: 8px 0 0 $corner-border-radius;
+  box-sizing: border-box;
+  padding-top: 2rem;
+
+  position: relative;
+
   .user-define-list-line {
-    width: 90%;
-    height: 1px;
-    margin: 10px auto;
     @include ToTheme($theme-tomato) {
       background-color: $opacity-white;
     }
+
+    width: 90%;
+    height: 1px;
+    margin: 10px auto;
   }
 }
 </style>

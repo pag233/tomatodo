@@ -1,0 +1,17 @@
+$theme-tomato: "theme-tomato";
+@mixin ToTheme($theme-name) {
+  .#{$theme-name} & {
+    @content;
+  }
+}
+
+@mixin WhenLandscape {
+  @media (orientation: landscape) {
+    @content;
+  }
+}
+@mixin WhenPortrait {
+  @media (orientation: portrait) {
+    @content;
+  }
+}

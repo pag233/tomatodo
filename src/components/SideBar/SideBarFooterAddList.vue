@@ -20,8 +20,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "@/scss/sidebar.scss";
-
 .sidebar-footer-add-list {
   @extend %sidebar-list-item;
   align-items: flex-start;
