@@ -2,15 +2,21 @@ import { Module } from 'vuex';
 import { RootStateType } from './index'
 
 const ThemeColors = {
-  tomato: '#bf0a2b',
+  tomato: '#cc6666',
   leaf: '#65bfaf',
-  yellow: '#c7aa57',
+  yellow: '#f2ac57',
   pink: '#f27983',
   blue: '#009dcf',
 }
 
+export type ThemeNameType = keyof typeof ThemeColors
+
 export interface ThemeStateType {
-  currentTheme: keyof typeof ThemeColors
+  currentTheme: ThemeNameType,
+}
+
+interface Payload {
+  theme: ThemeNameType,
 }
 
 export const ThemeState: ThemeStateType = {
@@ -23,12 +29,15 @@ export const ThemeStore: Module<ThemeStateType, RootStateType> = {
     return ThemeState
   },
   getters: {
-    getThemeColor(state) {
+    getCurrentThemeColor(state) {
       return ThemeColors[state.currentTheme];
+    },
+    getThemeColor() {
+      return (payload: Payload) => ThemeColors[payload.theme]
     }
   },
   mutations: {
-    setCurrentTheme(state, payload) {
+    setCurrentTheme(state, payload: Payload) {
       state.currentTheme = payload.theme
     }
   }

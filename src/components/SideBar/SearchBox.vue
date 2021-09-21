@@ -52,19 +52,19 @@ export default defineComponent({
     outline: none;
 
     border: none;
-    border-radius: 0.35 * $rem-size * 1px;
+    border-radius: 0.35 * $--rem-size * 1px;
 
-    text-indent: $text-indent * 1px;
+    text-indent: $--text-indent * 1px;
     font-weight: 400;
 
-    @include ToTheme("theme-tomato") {
-      background-color: $opacity-white-dim;
+    @include ToTheme("tomato") {
+      background-color: $--opacity-white-dim;
       color: white;
       border-bottom: 0.1px solid #ffffff9e;
     }
     &::placeholder {
       color: white;
-      text-indent: $text-indent * 1px;
+      text-indent: $--text-indent * 1px;
     }
   }
 }

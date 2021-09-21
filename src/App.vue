@@ -57,7 +57,7 @@ export default defineComponent({
 
 <style lang="scss">
 html {
-  font-size: $rem-size * 1px;
+  font-size: $--rem-size * 1px;
 }
 
 html,
@@ -75,8 +75,8 @@ main {
   position: relative;
   width: 100vw;
   height: 100vh;
-  @include ToTheme($theme-tomato) {
-    background-color: $leaf;
+  @include ToTheme("tomato") {
+    background-color: $--leaf;
   }
 }
 </style>

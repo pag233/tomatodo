@@ -1,6 +1,5 @@
-$theme-tomato: "theme-tomato";
 @mixin ToTheme($theme-name) {
-  .#{$theme-name} & {
+  .theme-#{$theme-name} & {
     @content;
   }
 }

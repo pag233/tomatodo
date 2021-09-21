@@ -34,14 +34,14 @@ export interface ListItemType extends ListItemStepType {
   // title: string,
   // isComplete?: boolean,
   listType: ListsTypes,
-  createdDate: Date,
+  createdDate: number,
   steps: ListItemStepType[],
   isImportant?: boolean,
   isOnTomato?: boolean,
-  remindDate?: Date,
-  deadLine?: Date,
+  remindDate?: number,
+  deadLine?: number,
   repeat?: "day" | "week" | "month" | "year" | "workday",
-  note?: Date,
+  note?: string,
 }
 
 interface selectType {
@@ -117,7 +117,7 @@ export const ListState: ListStateType = {
       id: 0,
       title: 'foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo',
       listType: ListsTypes.tasks,
-      createdDate: new Date(),
+      createdDate: Date.now(),
       steps: [
         {
           id: 0,
@@ -132,15 +132,15 @@ export const ListState: ListStateType = {
       ],
       isOnTomato: true,
       isImportant: true,
-      remindDate: new Date(),
-      deadLine: new Date(),
+      remindDate: Date.now(),
+      deadLine: Date.now(),
       repeat: 'day',
     },
     {
       id: 1,
       title: 'bar',
       listType: ListsTypes.tasks,
-      createdDate: new Date(),
+      createdDate: Date.now(),
       steps: [],
       isOnTomato: true,
     },
@@ -148,7 +148,7 @@ export const ListState: ListStateType = {
       id: 2,
       title: 'foobar',
       listType: ListsTypes.tasks,
-      createdDate: new Date(),
+      createdDate: Date.now(),
       steps: [],
       isOnTomato: true,
     },
@@ -194,6 +194,10 @@ export const ListStore: Module<ListStateType, RootStateType> = {
     setSelectName(state, payload) {
       state.select.listType = payload.listType
     },
+    setItemOnTomato(state, payload) {
+      const item = getItemById(state.items, payload.id);
+      item.isOnTomato = payload.isOnTomato;
+    },
     setItemComplete(state, payload) {
       const item = getItemById(state.items, payload.id);
       item.isComplete = payload.isComplete;
@@ -201,6 +205,10 @@ export const ListStore: Module<ListStateType, RootStateType> = {
     setItemImportant(state, payload) {
       const item = getItemById(state.items, payload.id);
       item.isImportant = payload.isImportant;
+    },
+    setItemRemindDate(state, payload) {
+      const item = getItemById(state.items, payload.id);
+      item.remindDate = payload.remindDate;
     },
     setItemStepComplete(state, payload) {
       const item = getSelectItem(state);

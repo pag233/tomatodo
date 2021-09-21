@@ -61,8 +61,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .resize-bar {
   position: absolute;
-  @include ToTheme($theme-tomato) {
-    background-color: $black;
+  @include ToTheme("tomato") {
+    background-color: $--black;
   }
   transition: opacity 0.2s ease-out;
   opacity: 0.3;

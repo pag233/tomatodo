@@ -74,7 +74,7 @@ export default defineComponent({
 .sidebar-list-item {
   @extend %sidebar-list-item;
 
-  @include ToTheme($theme-tomato) {
+  @include ToTheme("tomato") {
     color: white;
     &:hover {
       background: #26252327;
@@ -86,14 +86,14 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
     .item-count {
-      @include ToTheme($theme-tomato) {
-        color: $dim-yellow;
+      @include ToTheme("tomato") {
+        color: $--dim-yellow;
         font-size: 0.7rem;
       }
     }
   }
 }
 .sidebar-list-item-active {
-  background-color: $opacity-white-dim;
+  background-color: $--opacity-white-dim;
 }
 </style>

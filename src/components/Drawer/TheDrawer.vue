@@ -44,15 +44,15 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .drawer {
-  @include ToTheme($theme-tomato) {
-    background-color: $gray;
+  @include ToTheme("tomato") {
+    background-color: $--gray;
   }
 
   position: relative;
 
-  border-radius: 0 $corner-border-radius $corner-border-radius 0;
+  border-radius: 0 $--corner-border-radius $--corner-border-radius 0;
 
-  padding-top: 2rem;
+  padding: 2rem 0.5rem 0.5rem;
   min-width: 0;
 
   flex-grow: 0;

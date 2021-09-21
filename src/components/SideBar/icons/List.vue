@@ -1,14 +1,18 @@
 <template>
-  <ListIcon :size="18" fill="#009dcf" />
+  <ThemeIcon theme="blue" #default="{ themeColor }">
+    <ListIcon :fill="themeColor" size="18" />
+  </ThemeIcon>
 </template>
 
 <script>
+import { defineComponent } from "@vue/runtime-core";
 import { List as ListIcon } from "@icon-park/vue-next";
-
-export default {
+import ThemeIcon from "./ThemeIcon.vue";
+export default defineComponent({
   name: "List",
   components: {
     ListIcon,
+    ThemeIcon,
   },
-};
+});
 </script>

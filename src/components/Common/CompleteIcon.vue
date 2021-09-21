@@ -50,12 +50,12 @@ export default defineComponent({
   margin: auto;
   border-radius: 50%;
   box-sizing: border-box;
-  @include ToTheme($theme-tomato) {
-    border: 2px solid $opacity-white;
+  @include ToTheme("tomato") {
+    border: 2px solid $--opacity-white;
   }
 }
 .filled-round {
-  background-color: $white;
+  background-color: $--white;
 }
 .check-mark {
   display: block;
@@ -63,8 +63,8 @@ export default defineComponent({
   width: 100%;
   line-height: 100%;
   text-align: center;
-  @include ToTheme($theme-tomato) {
-    color: $black-dim;
+  @include ToTheme("tomato") {
+    color: $--black-dim;
   }
 }
 </style>

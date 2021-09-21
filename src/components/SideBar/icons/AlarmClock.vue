@@ -1,14 +1,18 @@
 <template>
-  <AlarmClockIcon :size="18" fill="#f27983" />
+  <ThemeIcon theme="leaf" #default="{ themeColor }">
+    <AlarmClockIcon :fill="themeColor" size="18" />
+  </ThemeIcon>
 </template>
 
 <script>
+import { defineComponent } from "@vue/runtime-core";
 import { AlarmClock as AlarmClockIcon } from "@icon-park/vue-next";
-
-export default {
+import ThemeIcon from "./ThemeIcon.vue";
+export default defineComponent({
   name: "AlarmClock",
   components: {
+    ThemeIcon,
     AlarmClockIcon,
   },
-};
+});
 </script>

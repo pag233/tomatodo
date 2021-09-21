@@ -1,26 +1,24 @@
 <template>
-  <BaseListItem
+  <BasePageListItem
     class="page-list-item"
     v-for="(item, idx) in items"
     :key="item.id"
     :item="item"
     :setDrawerShow="setDrawerShow"
-    :style="{
-      backgroundColor: idx === selectIdx ? activeBGColor : undefined,
-    }"
+    :class="idx === selectIdx && 'page-list-item--active'"
     @click="setSelectIdx(idx)"
   >
     <template #tomato>
       <slot name="tomato"> </slot>
     </template>
-  </BaseListItem>
+  </BasePageListItem>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { ListItemType } from "@/store/list";
 
-import BaseListItem from "@/components/Common/BaseListItem.vue";
+import BasePageListItem from "@/components/Common/BasePageListItem.vue";
 
 export default defineComponent({
   name: "BasePageList",
@@ -36,7 +34,7 @@ export default defineComponent({
     activeBGColor: String,
   },
   components: {
-    BaseListItem,
+    BasePageListItem,
   },
   methods: {
     setSelectIdx(idx: number) {
@@ -54,8 +52,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 .page-list-item {
   height: 3rem;
-  @include ToTheme($theme-tomato) {
-    background-color: $opacity-white-dim;
+  @include ToTheme("tomato") {
+    background-color: $--opacity-white-dim;
+  }
+}
+.page-list-item--active {
+  @include ToTheme("tomato") {
+    background-color: $--tomato-transparent;
   }
 }
 </style>

@@ -146,8 +146,8 @@ export default defineComponent({
   margin: auto;
   width: auto;
   height: auto;
-  border-radius: $corner-border-radius;
-  @include ToTheme($theme-tomato) {
+  border-radius: $--corner-border-radius;
+  @include ToTheme("tomato") {
     border: 1px solid black;
     box-shadow: 1px 1px 4px 0px;
   }
