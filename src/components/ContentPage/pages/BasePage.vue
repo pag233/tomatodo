@@ -27,7 +27,7 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    const themeColor = ref<string>(store.getters["list/getThemeColor"]);
+    const themeColor = ref<string>(store.getters["theme/getThemeColor"]);
     const selectListType = useSelectListType();
     return {
       selectListType,

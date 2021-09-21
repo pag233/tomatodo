@@ -1,24 +1,22 @@
 <template>
-  <BaseListItem
-    v-for="item in items"
-    :key="item.id"
-    :item="item"
+  <BasePageList
+    :items="items"
     :setDrawerShow="setDrawerShow"
+    :activeBGColor="'#fc93a731'"
   >
     <template #tomato>
       {{ undefined }}
     </template>
-  </BaseListItem>
+  </BasePageList>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { ListItemType } from "@/store/list";
-
-import BaseListItem from "@/components/Common/BaseListItem.vue";
+import BasePageList from "./BasePageList.vue";
 
 export default defineComponent({
-  name: "TomatoPageListItem",
+  name: "TomatoPageList",
   props: {
     items: {
       type: Object as PropType<ListItemType[]>,
@@ -30,7 +28,7 @@ export default defineComponent({
     },
   },
   components: {
-    BaseListItem,
+    BasePageList,
   },
 });
 </script>

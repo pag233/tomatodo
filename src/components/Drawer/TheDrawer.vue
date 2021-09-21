@@ -7,32 +7,21 @@
         flexBasis: drawerWidth + 'px',
       }"
     >
-      <div class="drawer-item-detail" v-if="selectItem"></div>
+      <slot></slot>
       <div class="drawer-move-bar" @mousedown="mouseDownHandler"></div>
     </div>
   </transition>
 </template>
 
 <script lang ='ts'>
-import { computed, defineComponent, PropType, ref } from "vue";
-import { mapMutations } from "vuex";
-
-import { useStore } from "@/store";
-import { ListItemType } from "@/store/list";
-
+import { defineComponent, PropType } from "vue";
 import { getDrawerMouseDownHandler } from "./Drawer";
-
-import { getRemSize } from "@/composition/dom";
 
 export default defineComponent({
   name: "Drawer",
   props: {
     drawerShow: {
       type: Boolean,
-      required: true,
-    },
-    setDrawerShow: {
-      type: Function as PropType<(value: boolean) => void>,
       required: true,
     },
     drawerWidth: {
@@ -45,28 +34,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useStore();
-
     const mouseDownHandler = getDrawerMouseDownHandler(props.setDrawerWidth);
-
-    const selectItem = computed<ListItemType | null>(
-      () => store.getters["list/getSelectItem"]
-    );
-
-    const themeColor = ref<string>(store.getters["list/getThemeColor"]);
-
     return {
       mouseDownHandler,
-      selectItem,
-      themeColor,
-    };
-  },
-  methods: {
-    ...mapMutations("list", ["setItemStepComplete", "removeItemStep"]),
-  },
-  data() {
-    return {
-      stepCompleteIconSize: getRemSize(),
     };
   },
 });
@@ -74,17 +44,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .drawer {
+  @include ToTheme($theme-tomato) {
+    background-color: $gray;
+  }
+
   position: relative;
 
   border-radius: 0 $corner-border-radius $corner-border-radius 0;
 
   padding-top: 2rem;
+  min-width: 0;
+
   flex-grow: 0;
   flex-shrink: 1;
 
-  @include ToTheme($theme-tomato) {
-    background-color: $gray;
-  }
   .drawer-move-bar {
     position: absolute;
     left: 0;

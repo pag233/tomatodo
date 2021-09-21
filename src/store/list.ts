@@ -60,7 +60,7 @@ export enum ListsTypes {
   tomato = 'tomato',
   tasks = 'tasks',
   important = 'important',
-  plains = 'plains',
+  plans = 'plans',
   user = 'user',
 }
 
@@ -97,8 +97,8 @@ export const ListState: ListStateType = {
       },
     },
     {
-      listType: ListsTypes.plains,
-      name: ListsTypes.plains,
+      listType: ListsTypes.plans,
+      name: ListsTypes.plans,
       setItemCount(items: ListItemType[]): number {
         return items.filter(item => item.remindDate || item.deadLine || item.repeat).length
       },
@@ -171,14 +171,6 @@ function getSelectItem(state: ListStateType): ListItemType {
   return selectItem
 }
 
-const themeColors = {
-  [ListsTypes.tomato]: "#bf0a2b",
-  [ListsTypes.tasks]: "#bf0a2b",
-  [ListsTypes.important]: "#bf0a2b",
-  [ListsTypes.plains]: "#bf0a2b",
-  [ListsTypes.user]: "#bf0a2b",
-};
-
 export const ListStore: Module<ListStateType, RootStateType> = {
   namespaced: true,
   state() {
@@ -197,9 +189,6 @@ export const ListStore: Module<ListStateType, RootStateType> = {
     getSelectItem(state) {
       return state.select.item;
     },
-    getThemeColor(state) {
-      return themeColors[state.select.listType];
-    }
   },
   mutations: {
     setSelectName(state, payload) {
@@ -214,9 +203,17 @@ export const ListStore: Module<ListStateType, RootStateType> = {
       item.isImportant = payload.isImportant;
     },
     setItemStepComplete(state, payload) {
-      const selectItem = getSelectItem(state);
-      const step = getItemById(selectItem.steps, payload.id);
+      const item = getSelectItem(state);
+      const step = getItemById(item.steps, payload.id);
       step.isComplete = payload.isComplete;
+    },
+    addItemStep(state, payload) {
+      const item = getSelectItem(state);
+      item.steps = [...item.steps, {
+        id: item.steps.length,
+        title: payload.title,
+        isComplete: false,
+      }]
     },
     setSelectItem(state, payload) {
       const item = getItemById(state.items, payload.id);

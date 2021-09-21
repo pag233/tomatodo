@@ -6,43 +6,49 @@
       </slot>
     </div>
     <div class="base-list-item-title">
-      <div class="item-info" @click="clickInfoHandler(item.id)">
-        <div
-          class="item-title"
-          :class="{
-            'item-complete': item.isComplete,
-          }"
-        >
-          {{ item.title }}
-        </div>
-        <div class="item-info-detail">
-          {{ item.listType }}
-
-          <slot name="tomato">
-            <Dot class="detail-spe-icon" size="10" v-if="item.isOnTomato"></Dot>
-            {{ item.isOnTomato && "OnTomato" }}
-          </slot>
-
+      <slot>
+        <div class="item-info" @click="clickInfoHandler(item.id)">
           <div
-            class="deadline"
-            :style="{
-              color: themeColor,
+            class="item-title"
+            :class="{
+              'item-complete': item.isComplete,
             }"
           >
-            <Dot size="10" class="detail-spe-icon" v-if="item.deadLine"></Dot>
-            <Plan size="14" v-if="item.deadLine" />
-            <div class="detail-text">
-              {{ dateToDay(item.deadLine) }}
-            </div>
-            <RotationHorizontal size="14" v-if="item.repeat" />
+            {{ item.title }}
           </div>
-          <Dot size="10" class="detail-spe-icon" v-if="item.remindDate"></Dot>
-          <Remind v-if="item.remindDate" size="12" />
-          <div class="detail-text">
-            {{ dateToDay(item.remindDate) }}
+          <div class="item-info-detail">
+            {{ item.listType }}
+
+            <slot name="tomato">
+              <Dot
+                class="detail-spe-icon"
+                size="10"
+                v-if="item.isOnTomato"
+              ></Dot>
+              {{ item.isOnTomato && "OnTomato" }}
+            </slot>
+
+            <div
+              class="deadline"
+              :style="{
+                color: themeColor,
+              }"
+            >
+              <Dot size="10" class="detail-spe-icon" v-if="item.deadLine"></Dot>
+              <Plan size="14" v-if="item.deadLine" />
+              <div class="detail-text">
+                {{ dateToDay(item.deadLine) }}
+              </div>
+              <RotationHorizontal size="14" v-if="item.repeat" />
+            </div>
+            <Dot size="10" class="detail-spe-icon" v-if="item.remindDate"></Dot>
+            <Remind v-if="item.remindDate" size="12" />
+            <div class="detail-text">
+              {{ dateToDay(item.remindDate) }}
+            </div>
           </div>
         </div>
-      </div>
+      </slot>
     </div>
     <div class="base-list-item-rear">
       <slot name="rear">
@@ -79,7 +85,6 @@ export default defineComponent({
     },
     setDrawerShow: {
       type: Function as PropType<(value: boolean) => void>,
-      required: true,
     },
   },
   components: {
@@ -91,20 +96,23 @@ export default defineComponent({
     Remind,
   },
   methods: {
-    ...mapMutations("list", ["setItemComplete", "setItemImportant"]),
     dateToDay,
+    ...mapMutations("list", ["setItemImportant", "setItemComplete"]),
   },
+
   setup(props) {
     const store = useStore();
 
     const breakPoints = useInjectPanelBreakPoints();
 
     function clickInfoHandler(id: number) {
-      !breakPoints.drawerBreak && props.setDrawerShow(true);
-      store.commit("list/setSelectItem", { id });
+      if (props.setDrawerShow) {
+        !breakPoints.drawerBreak && props.setDrawerShow(true);
+        store.commit("list/setSelectItem", { id });
+      }
     }
 
-    const themeColor = ref<string>(store.getters["list/getThemeColor"]);
+    const themeColor = ref<string>(store.getters["theme/getThemeColor"]);
 
     return {
       clickInfoHandler,
@@ -121,9 +129,6 @@ export default defineComponent({
   align-items: center;
   border-radius: 0.3rem;
   display: flex;
-  @include ToTheme($theme-tomato) {
-    background-color: $opacity-white-dim;
-  }
   .base-list-item-front {
     margin: auto;
     flex: 0 0 3rem;

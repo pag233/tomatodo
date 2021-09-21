@@ -51,7 +51,7 @@ export default defineComponent({
   border-radius: 50%;
   box-sizing: border-box;
   @include ToTheme($theme-tomato) {
-    border: 2px solid $white;
+    border: 2px solid $opacity-white;
   }
 }
 .filled-round {

@@ -45,7 +45,7 @@ export default defineComponent({
     [ListsTypes.tomato]: Tomato,
     [ListsTypes.tasks]: ViewList,
     [ListsTypes.important]: Star,
-    [ListsTypes.plains]: AlarmClock,
+    [ListsTypes.plans]: AlarmClock,
     [ListsTypes.user]: List,
   },
 
