@@ -132,8 +132,8 @@ export const ListState: ListStateType = {
       ],
       isOnTomato: true,
       isImportant: true,
-      remindDate: Date.now(),
-      deadLine: Date.now(),
+      remindDate: Date.now() + 10000,
+      deadLine: Date.now() + 10000,
       repeat: 'day',
     },
     {
@@ -167,7 +167,7 @@ function getItemById<T extends ListItemStepType | ListItemType>(items: T[], id: 
 
 function getSelectItem(state: ListStateType): ListItemType {
   const selectItem = state.select.item
-  if (!selectItem) throw new Error('Store Error: mutation getSelectItem Failed. Null select item.')
+  if (!selectItem) throw new Error('Store Error: mutation/action getSelectItem Failed. Null select item.')
   return selectItem
 }
 
@@ -189,6 +189,9 @@ export const ListStore: Module<ListStateType, RootStateType> = {
     getSelectItem(state) {
       return state.select.item;
     },
+    getRemindItem(state) {
+      return state.items.filter(item => item.remindDate)
+    }
   },
   mutations: {
     setSelectName(state, payload) {
@@ -231,5 +234,5 @@ export const ListStore: Module<ListStateType, RootStateType> = {
       const selectItem = getSelectItem(state);
       selectItem.steps = selectItem.steps.filter(step => step.id !== payload.id);
     },
-  }
+  },
 }

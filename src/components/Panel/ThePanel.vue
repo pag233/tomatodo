@@ -76,7 +76,7 @@ export default defineComponent({
         max: 600,
       },
       drawer: {
-        min: 200,
+        min: 250,
         max: 600,
       },
     };

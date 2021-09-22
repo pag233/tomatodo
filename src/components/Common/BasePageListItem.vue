@@ -15,23 +15,20 @@
           <Dot class="detail-spe-icon" size="10" v-if="item.isOnTomato"></Dot>
           {{ item.isOnTomato ? "OnTomato" : "" }}
         </slot>
-        <div
-          class="deadline"
-          :style="{
-            color: themeColor,
-          }"
-        >
-          <Dot size="10" class="detail-spe-icon" v-if="item.deadLine"></Dot>
-          <Plan size="14" v-if="item.deadLine" />
+        <div class="deadline" v-if="item.deadLine">
+          <Dot size="10" class="detail-spe-icon"></Dot>
+          <Plan size="14" />
           <div class="detail-text">
-            {{ dateToDay(item.deadLine) }}
+            {{ dateToDay(item.deadLine).day }}
           </div>
-          <RotationHorizontal size="14" v-if="item.repeat" />
         </div>
-        <Dot size="10" class="detail-spe-icon" v-if="item.remindDate"></Dot>
-        <Remind v-if="item.remindDate" size="12" />
-        <div class="detail-text">
-          {{ dateToDay(item.remindDate) }}
+        <RotationHorizontal class="repeat" size="14" v-if="item.repeat" />
+        <div class="remindDate" v-if="item.remindDate">
+          <Dot size="10" class="detail-spe-icon"></Dot>
+          <Remind size="12" />
+          <div class="detail-text">
+            {{ dateToDay(item.remindDate).day }}
+          </div>
         </div>
       </div>
     </div>
@@ -126,6 +123,7 @@ export default defineComponent({
     text-align: center;
   }
   .base-list-item-title {
+    height: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -164,6 +162,18 @@ export default defineComponent({
       margin: 0 6px;
     }
     .deadline {
+      @include ToTheme("tomato") {
+        color: $--tomato;
+      }
+      display: flex;
+      align-items: center;
+    }
+    .repeat {
+      @include ToTheme("tomato") {
+        color: $--tomato;
+      }
+    }
+    .remindDate {
       display: flex;
       align-items: center;
     }

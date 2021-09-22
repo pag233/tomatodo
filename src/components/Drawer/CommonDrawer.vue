@@ -46,7 +46,6 @@
         <template #front>
           <Plus
             size="20"
-            :fill="themeColor"
             class="drawer-item-theme-color"
             @click="addStep(newStep)"
           />
@@ -71,7 +70,7 @@
         <template #front>
           <Tomato
             size="16"
-            :fill="selectItem.isOnTomato ? themeColor : '#fff'"
+            :class="selectItem.isOnTomato && 'drawer-item-theme-color'"
           />
         </template>
         <div :class="selectItem.isOnTomato && 'drawer-item-theme-color'">
@@ -79,27 +78,39 @@
         </div>
       </BaseListItem>
 
-      <BaseListItem class="drawer-item drawer-item-sub-title">
+      <BaseListItem class="drawer-item drawer-item-title">
         <template #front>
           <AlarmClock
             size="16"
-            :fill="selectItem.remindDate ? themeColor : '#fff'"
+            :class="selectItem.remindDate && 'drawer-item-theme-color'"
           />
         </template>
-        <div :class="selectItem.remindDate && 'drawer-item-theme-color'">
-          {{
-            selectItem.remindDate
-              ? dateToDay(selectItem.remindDate)
-              : "remind me"
-          }}
-        </div>
+        <ElDatePicker
+          :editable="false"
+          :clearable="false"
+          class="theme-color"
+          placeholder="remind me"
+          prefix-icon="none"
+          type="datetime"
+          v-model="remindDate"
+          :format="dateToDay(remindDate).format"
+        ></ElDatePicker>
+        <template #rear>
+          <div
+            v-if="selectItem.remindDate"
+            class="drawer-item-rear-icon"
+            @click="remindDate = undefined"
+          >
+            𐄂
+          </div>
+        </template>
       </BaseListItem>
     </div>
   </Drawer>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref, watch } from "vue";
 
 import { mapMutations } from "vuex";
 import { useStore } from "@/store";
@@ -107,6 +118,7 @@ import { ListItemType } from "@/store/list";
 import { dateToDay } from "@/helper";
 
 import { Plus, Tomato, AlarmClock } from "@icon-park/vue-next";
+import { ElDatePicker } from "element-plus";
 
 import Drawer from "./TheDrawer.vue";
 import BaseListItem from "../Common/BaseListItem.vue";
@@ -122,6 +134,7 @@ export default defineComponent({
     BasePageListItem,
     CompeleteIcon,
     Drawer,
+    ElDatePicker,
     Plus,
     SlashTextWhen,
     Tomato,
@@ -159,10 +172,31 @@ export default defineComponent({
       });
     }
 
+    const remindDate = ref<Date | undefined>(undefined);
+
+    watch(selectItem, () => {
+      if (!selectItem.value) return;
+      remindDate.value = selectItem.value.remindDate
+        ? new Date(selectItem.value.remindDate)
+        : undefined;
+    });
+
+    // watch(remindDate, () => {
+    //   if (selectItem.value) {
+    //     store.dispatch("list/remind", {
+    //       id: selectItem.value.id,
+    //       remindDate: {
+    //         date: remindDate.value?.getTime(),
+    //       },
+    //     });
+    //   }
+    // });
+
     return {
       selectItem,
       themeColor,
       toggleToTomato,
+      remindDate,
     };
   },
   methods: {
@@ -231,5 +265,22 @@ export default defineComponent({
     outline: none;
     border: none;
   }
+  .theme-color {
+    color: $--tomato !important;
+  }
+}
+</style>
+
+<style lang="scss" scoped>
+.drawer-item::v-deep .el-date-editor.el-input,
+.el-date-editor.el-input__inner {
+  width: 100%;
+}
+.drawer-item::v-deep .el-input__inner {
+  color: $--white;
+  background-color: $--gray;
+  border: none;
+  height: 2rem;
+  padding: 0;
 }
 </style>

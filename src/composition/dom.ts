@@ -45,7 +45,7 @@ export function makeMouseDownHandler(
   registerCallback: (elem: HTMLElement) => void,
   clearCallback: (elem: HTMLElement) => void,
 ): () => void {
-  const throttleMouseMoveHandler = throttle(mouseMoveHandler, 70)
+  const throttleMouseMoveHandler = throttle(mouseMoveHandler, 32)
   const clearMouseMoveHandler = makeClearHandler((elem) => {
     elem.removeEventListener('mousemove', throttleMouseMoveHandler);
     elem.removeEventListener('mouseup', clearMouseMoveHandler);

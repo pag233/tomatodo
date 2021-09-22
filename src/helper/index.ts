@@ -56,15 +56,30 @@ export const applyReducers = <T>(
 )
 /* eslint-enable */
 
-export function dateToDay(time?: number): string | undefined {
-  if (!time) return undefined;
-  const date = new Date(time);
-  const now = new Date();
-  const day = now.getDate() - date.getDate();
-  if (day == 0) return 'today'
-  else if (day == 1) return 'tomorrow'
-  else if (day == 2) return 'day after tomorrow'
-  else return parseDateToDefaultDateString(date)
+export function dateToDay(time?: number | Date): { day?: string, format?: string } {
+  if (!time) return {};
+  const date = typeof time === 'number' ? new Date(time) : time;
+  const timeBetween = date.getDate() - new Date().getDate();
+  let day = '';
+
+  switch (timeBetween) {
+    case 0:
+      day = 'today'
+      break;
+    case 1:
+      day = 'tomorrow'
+      break;
+    case 2:
+      day = 'day after tomorrow'
+      break;
+    default:
+      day = parseDateToDefaultDateString(date);
+      break;
+  }
+
+  const format = `[${day}] h:mm:ss a`
+
+  return { day, format };
 }
 
 interface FilterFnType<T> {
@@ -78,13 +93,6 @@ export function join2Filters<T>(filterA: FilterFnType<T>): (filterB: FilterFnTyp
     }
   }
 }
-
-// interface LocaleDateStringFormat {
-//   date: string,
-//   month: string,
-//   year: string,
-//   day: string,
-// }
 
 interface getLocaleDateString {
   (day: Date): string

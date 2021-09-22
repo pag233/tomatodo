@@ -3,7 +3,6 @@
     @content;
   }
 }
-
 @mixin WhenLandscape {
   @media (orientation: landscape) {
     @content;
