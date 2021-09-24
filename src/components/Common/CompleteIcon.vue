@@ -50,9 +50,7 @@ export default defineComponent({
   margin: auto;
   border-radius: 50%;
   box-sizing: border-box;
-  @include ToTheme("tomato") {
-    border: 2px solid $--opacity-white;
-  }
+  border: 2px solid $--opacity-white;
 }
 .filled-round {
   background-color: $--white;
@@ -63,8 +61,6 @@ export default defineComponent({
   width: 100%;
   line-height: 100%;
   text-align: center;
-  @include ToTheme("tomato") {
-    color: $--black-dim;
-  }
+  color: $--black-dim;
 }
 </style>

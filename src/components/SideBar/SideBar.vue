@@ -82,11 +82,9 @@ export default defineComponent({
 
 <style lang="scss">
 .side-bar {
-  @include ToTheme("tomato") {
-    color: $--white;
-    border: 0.5px solid #ffffff78;
-    background-color: $--black;
-  }
+  color: $--white;
+  border: 0.5px solid #ffffff78;
+  background-color: $--black;
 
   border-radius: 8px 0 0 $--corner-border-radius;
   box-sizing: border-box;
@@ -95,10 +93,7 @@ export default defineComponent({
   position: relative;
 
   .user-define-list-line {
-    @include ToTheme("tomato") {
-      background-color: $--opacity-white;
-    }
-
+    background-color: $--opacity-white;
     width: 90%;
     height: 1px;
     margin: 10px auto;

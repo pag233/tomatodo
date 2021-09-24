@@ -56,8 +56,18 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-html {
+:root {
   font-size: $--rem-size * 1px;
+  //ui-colors
+  --primary-color: var(--color-tomato);
+  --secondary-color: var(--color-tomato-transparent);
+  //colors
+  --color-tomato: #cc6666;
+  --color-tomato-transparent: #fc93a731;
+  --color-leaf: #65bfaf;
+  --color-yellow: #c7aa57;
+  --color-pink: #f27983;
+  --color-blue: #009dcf;
 }
 
 html,
@@ -75,8 +85,6 @@ main {
   position: relative;
   width: 100vw;
   height: 100vh;
-  @include ToTheme("tomato") {
-    background-color: $--leaf;
-  }
+  background-color: var(--color-leaf);
 }
 </style>

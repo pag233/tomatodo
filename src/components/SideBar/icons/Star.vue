@@ -1,19 +1,20 @@
 
 <template>
-  <ThemeIcon theme="yellow" #default="{ themeColor }">
-    <StarIcon :fill="themeColor" size="18" />
-  </ThemeIcon>
+  <StarIcon class="star-icon" size="18" />
 </template>
 
 <script>
 import { defineComponent } from "@vue/runtime-core";
 import { Star as StarIcon } from "@icon-park/vue-next";
-import ThemeIcon from "./ThemeIcon.vue";
 export default defineComponent({
   name: "Star",
   components: {
     StarIcon,
-    ThemeIcon,
   },
 });
 </script>
+<style lang="scss" scoped>
+.star-icon {
+  color: $--yellow;
+}
+</style>

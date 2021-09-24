@@ -19,9 +19,7 @@ export default {
 
 <style lang="scss" scoped>
 .slash-text {
-  @include ToTheme("tomato") {
-    color: $--opacity-white;
-  }
+  color: $--opacity-white;
   text-decoration: line-through;
 }
 </style>

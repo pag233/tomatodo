@@ -33,17 +33,13 @@
       </div>
     </div>
     <template #rear>
-      <ImportantIcon
-        :item="item"
-        :setItemImportant="setItemImportant"
-        :themeColor="themeColor"
-      />
+      <ImportantIcon :item="item" :setItemImportant="setItemImportant" />
     </template>
   </BaseListItem>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { defineComponent, PropType } from "vue";
 import { mapMutations } from "vuex";
 
 import { useStore } from "@/store";
@@ -99,12 +95,8 @@ export default defineComponent({
         store.commit("list/setSelectItem", { id });
       }
     }
-
-    const themeColor = ref<string>(store.getters["theme/getCurrentThemeColor"]);
-
     return {
       clickInfoHandler,
-      themeColor,
     };
   },
 });
@@ -140,18 +132,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .item-info {
-  @include ToTheme("tomato") {
-    color: $--white;
-  }
+  color: $--white;
   .item-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .item-info-detail {
-    @include ToTheme("tomato") {
-      color: $--opacity-white;
-    }
+    color: $--opacity-white;
 
     font-size: 0.5rem;
 
@@ -162,16 +150,13 @@ export default defineComponent({
       margin: 0 6px;
     }
     .deadline {
-      @include ToTheme("tomato") {
-        color: $--tomato;
-      }
+      color: var(--primary-color);
+
       display: flex;
       align-items: center;
     }
     .repeat {
-      @include ToTheme("tomato") {
-        color: $--tomato;
-      }
+      color: var(--primary-color);
     }
     .remindDate {
       display: flex;

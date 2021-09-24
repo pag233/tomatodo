@@ -62,9 +62,7 @@ export default defineComponent({
 
 <style lang="scss">
 .maximum-button {
-  @include ToTheme("tomato") {
-    background-color: $--orange;
-  }
+  background-color: $--orange;
   &:hover {
     .icon {
       visibility: visible;

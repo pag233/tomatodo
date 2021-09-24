@@ -52,13 +52,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .page-list-item {
   height: 3rem;
-  @include ToTheme("tomato") {
-    background-color: $--opacity-white-dim;
-  }
+  background-color: $--opacity-white-dim;
 }
 .page-list-item--active {
-  @include ToTheme("tomato") {
-    background-color: $--tomato-transparent;
-  }
+  background-color: var(--secondary-color);
 }
 </style>

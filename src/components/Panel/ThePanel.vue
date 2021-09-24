@@ -147,10 +147,8 @@ export default defineComponent({
   width: auto;
   height: auto;
   border-radius: $--corner-border-radius;
-  @include ToTheme("tomato") {
-    border: 1px solid black;
-    box-shadow: 1px 1px 4px 0px;
-  }
+  border: 1px solid black;
+  box-shadow: 1px 1px 4px 0px;
   .btn-container {
     position: absolute;
     top: 0;

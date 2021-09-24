@@ -44,9 +44,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .drawer {
-  @include ToTheme("tomato") {
-    background-color: $--gray;
-  }
+  background-color: $--gray;
 
   position: relative;
 

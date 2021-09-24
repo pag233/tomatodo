@@ -1,18 +1,19 @@
 <template>
-  <ThemeIcon theme="tomato" #default="{ themeColor }">
-    <TomatoIcon :fill="themeColor" size="18" />
-  </ThemeIcon>
+  <TomatoIcon class="tomato-icon" size="18" />
 </template>
 
 <script>
 import { defineComponent } from "@vue/runtime-core";
 import { Tomato as TomatoIcon } from "@icon-park/vue-next";
-import ThemeIcon from "./ThemeIcon.vue";
 export default defineComponent({
   name: "Tomato",
   components: {
     TomatoIcon,
-    ThemeIcon,
   },
 });
 </script>
+<style lang="scss" scoped>
+.tomato-icon {
+  color: $--tomato;
+}
+</style>

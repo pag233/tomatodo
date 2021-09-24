@@ -46,37 +46,3 @@ export default defineComponent({
   }
 }
 </style>
-
-<style lang="scss" scoped>
-.item-info {
-  @include ToTheme("tomato") {
-    color: $--white;
-  }
-  .item-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .item-info-detail {
-    @include ToTheme("tomato") {
-      color: $--opacity-white;
-    }
-
-    font-size: 0.5rem;
-
-    display: flex;
-    align-items: center;
-
-    .detail-text {
-      margin: 0 6px;
-    }
-    .deadline {
-      display: flex;
-      align-items: center;
-    }
-    .detail-spe-icon {
-      margin: 0 0.5rem;
-    }
-  }
-}
-</style>

@@ -88,7 +88,7 @@
         <ElDatePicker
           :editable="false"
           :clearable="false"
-          class="theme-color"
+          :class="remindDate && 'theme-color'"
           placeholder="remind me"
           prefix-icon="none"
           type="datetime"
@@ -162,8 +162,6 @@ export default defineComponent({
     const selectItem = computed<ListItemType | null>(
       () => store.getters["list/getSelectItem"]
     );
-    const themeColor = ref<string>(store.getters["theme/getCurrentThemeColor"]);
-
     function toggleToTomato() {
       if (!selectItem.value) return;
       store.commit("list/setItemOnTomato", {
@@ -194,7 +192,6 @@ export default defineComponent({
 
     return {
       selectItem,
-      themeColor,
       toggleToTomato,
       remindDate,
     };
@@ -233,16 +230,8 @@ export default defineComponent({
   .drawer-item-sub-title {
     color: $--opacity-white;
   }
-  .step-item-complete {
-    @include ToTheme("tomato") {
-      color: $--opacity-white;
-    }
-    text-decoration: line-through $--white;
-  }
   .drawer-item-theme-color {
-    @include ToTheme("tomato") {
-      color: $--tomato;
-    }
+    color: var(--primary-color);
   }
   .drawer-item-rear-icon {
     color: $--opacity-white;
@@ -253,20 +242,15 @@ export default defineComponent({
     border-bottom: 1px solid #ffffff65;
   }
   .drawer-input-box {
-    @include ToTheme("tomato") {
-      background-color: $--gray;
-      color: $--tomato;
-      &::placeholder {
-        color: $--tomato;
-      }
+    color: var(--primary-color);
+    &::placeholder {
+      color: var(--primary-color);
     }
+    background-color: $--gray;
     width: 100%;
     font-size: 1.1rem;
     outline: none;
     border: none;
-  }
-  .theme-color {
-    color: $--tomato !important;
   }
 }
 </style>
@@ -277,10 +261,15 @@ export default defineComponent({
   width: 100%;
 }
 .drawer-item::v-deep .el-input__inner {
-  color: $--white;
   background-color: $--gray;
   border: none;
   height: 2rem;
   padding: 0;
+}
+</style>
+
+<style lang="scss">
+.theme-color .el-input__inner {
+  color: var(--primary-color);
 }
 </style>

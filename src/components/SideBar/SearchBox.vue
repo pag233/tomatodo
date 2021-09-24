@@ -57,11 +57,9 @@ export default defineComponent({
     text-indent: $--text-indent * 1px;
     font-weight: 400;
 
-    @include ToTheme("tomato") {
-      background-color: $--opacity-white-dim;
-      color: white;
-      border-bottom: 0.1px solid #ffffff9e;
-    }
+    background-color: $--opacity-white-dim;
+    color: white;
+    border-bottom: 0.1px solid #ffffff9e;
     &::placeholder {
       color: white;
       text-indent: $--text-indent * 1px;

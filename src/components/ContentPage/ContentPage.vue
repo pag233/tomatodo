@@ -57,14 +57,10 @@ export default defineComponent({
 
 <style lang="scss">
 .content-page {
-  @include ToTheme("tomato") {
-    background-color: $--black-dim;
-  }
-
+  background-color: $--black-dim;
   box-sizing: border-box;
   border-radius: 0 $--corner-border-radius $--corner-border-radius 0;
   padding: $--content-padding;
-
   flex: 1 0;
 }
 .not-round-corner {

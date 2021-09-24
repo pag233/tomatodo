@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="base-page"
-    :style="{
-      color: themeColor,
-    }"
-  >
+  <div class="base-page">
     <PageTitle :selectListType="selectListType" />
     <div class="page-list">
       <slot></slot>
@@ -13,8 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useStore } from "@/store";
+import { defineComponent } from "vue";
 import { useSelectListType } from "@/composition/common";
 
 import PageTitle from "./PageTitle.vue";
@@ -26,12 +20,9 @@ export default defineComponent({
   },
 
   setup() {
-    const store = useStore();
-    const themeColor = ref<string>(store.getters["theme/getCurrentThemeColor"]);
     const selectListType = useSelectListType();
     return {
       selectListType,
-      themeColor,
     };
   },
 });
