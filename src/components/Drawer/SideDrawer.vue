@@ -129,7 +129,7 @@ import SlashTextWhen from "../Common/SlashTextWhen.vue";
 import { TimeoutType } from "@/store/timeouts";
 
 export default defineComponent({
-  name: "CommonDrawer",
+  name: "SideDrawer",
   components: {
     AlarmClock,
     BaseListItem,

@@ -21,7 +21,7 @@
               :drawerShow="drawerShow"
               :setDrawerShow="setDrawerShow"
             />
-            <CommonDrawer
+            <SideDrawer
               v-if="!drawerBreak"
               :drawerShow="drawerShow"
               :setDrawerShow="setDrawerShow"
@@ -41,7 +41,7 @@ import Panel from "@/components/Panel/ThePanel.vue";
 import SideBar from "@/components/SideBar/SideBar.vue";
 import FlexContainer from "@/components/Container/FlexContainer.vue";
 import ContentPage from "@/components/ContentPage/ContentPage.vue";
-import CommonDrawer from "@/components/Drawer/CommonDrawer.vue";
+import SideDrawer from "@/components/Drawer/SideDrawer.vue";
 
 import { useStore } from "./store";
 
@@ -52,7 +52,7 @@ export default defineComponent({
     FlexContainer,
     SideBar,
     ContentPage,
-    CommonDrawer,
+    SideDrawer,
   },
   setup() {
     const store = useStore();
