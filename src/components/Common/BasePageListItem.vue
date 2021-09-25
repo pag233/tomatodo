@@ -1,9 +1,9 @@
 <template>
-  <BaseListItem>
+  <BaseListItem @click="clickInfoHandler(item.id)">
     <template #front>
       <CompeleteIcon :item="item" :setItemComplete="setItemComplete" />
     </template>
-    <div class="item-info" @click="clickInfoHandler(item.id)">
+    <div class="item-info">
       <div class="item-title">
         <SlashTextWhen :when="item.isComplete">
           {{ item.title }}
@@ -92,7 +92,7 @@ export default defineComponent({
     function clickInfoHandler(id: number) {
       if (props.setDrawerShow) {
         !breakPoints.drawerBreak && props.setDrawerShow(true);
-        store.commit("list/setSelectItem", { id });
+        store.commit("list/setSelectItemId", { id });
       }
     }
     return {

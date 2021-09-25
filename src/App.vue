@@ -36,12 +36,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import Panel from "@/components/Panel/ThePanel.vue";
 import SideBar from "@/components/SideBar/SideBar.vue";
 import FlexContainer from "@/components/Container/FlexContainer.vue";
 import ContentPage from "@/components/ContentPage/ContentPage.vue";
 import CommonDrawer from "@/components/Drawer/CommonDrawer.vue";
+
+import { useStore } from "./store";
 
 export default defineComponent({
   name: "App",
@@ -51,6 +53,12 @@ export default defineComponent({
     SideBar,
     ContentPage,
     CommonDrawer,
+  },
+  setup() {
+    const store = useStore();
+    onMounted(() => {
+      store.dispatch("timeouts/startAllRemind");
+    });
   },
 });
 </script>

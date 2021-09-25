@@ -32,7 +32,7 @@ export function useMountUnmount(setUp: SetUpType): void {
 /**
  * setState方法支持的基本数据类型
  */
-type BaseValueType = string | number | boolean
+type BaseValueType = string | number | boolean | number[]
 
 export type BaseStateType = {
   [index: string]: BaseValueType | BaseStateType

@@ -5,6 +5,7 @@ import { I18nState, I18nStore } from './i18n'
 import { SearchState, SearchStore } from './search'
 import { ListState, ListStore } from './list'
 import { ThemeState, ThemeStore } from './theme'
+import { TimeoutsState, TimeoutsStore } from './timeouts'
 
 export type RootStateType = typeof rootState
 
@@ -13,6 +14,7 @@ const rootState = {
   search: SearchState,
   list: ListState,
   theme: ThemeState,
+  timeouts: TimeoutsState,
 }
 
 export const key: InjectionKey<Store<RootStateType>> = Symbol('RootStoreKey')
@@ -23,6 +25,7 @@ export default createStore<RootStateType>({
     search: SearchStore,
     list: ListStore,
     theme: ThemeStore,
+    timeouts: TimeoutsStore,
   }
 })
 

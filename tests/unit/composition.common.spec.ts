@@ -1,4 +1,4 @@
-import { useRef, watchInjector } from '@/composition/common'
+import { useRef } from '@/composition/common'
 
 describe('useRef unit tests', () => {
 
@@ -32,22 +32,4 @@ describe('useRef unit tests', () => {
     }))
     expect(state3.value.key).toEqual(43);
   })
-})
-
-describe('watchInjector unit tests', () => {
-
-  // let age: number;
-  // let originSource: { name: string };
-
-  // beforeEach(() => {
-  //   age = 42;
-  //   originSource = { name: "John" };
-  // })
-
-  // test('executor could update outer source', () => {
-  // })
-
-  // test('executor should be called n times as we update source with n times', () => {
-  // })
-
 })

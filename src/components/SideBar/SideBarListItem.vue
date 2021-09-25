@@ -4,7 +4,7 @@
     :class="{
       'sidebar-list-item-active': isActive,
     }"
-    @click="setSelectName({ listType })"
+    @click="setSelectTypeList({ listType })"
   >
     <div class="sidebar-icon">
       <component :is="listType"></component>
@@ -50,7 +50,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapMutations("list", ["setSelectName"]),
+    ...mapMutations("list", ["setSelectTypeList"]),
   },
   setup(props) {
     const store = useStore();

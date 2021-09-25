@@ -1,6 +1,7 @@
 import { Module } from 'vuex'
 import { RootStateType } from './index'
 import { join2Filters } from '@/helper'
+import { getItemById } from '@/helper/store'
 
 interface SideBarListType {
   listType: ListsTypes,
@@ -30,9 +31,6 @@ export interface ListItemStepType {
 }
 
 export interface ListItemType extends ListItemStepType {
-  // id: number,
-  // title: string,
-  // isComplete?: boolean,
   listType: ListsTypes,
   createdDate: number,
   steps: ListItemStepType[],
@@ -46,7 +44,7 @@ export interface ListItemType extends ListItemStepType {
 
 interface selectType {
   listType: ListsTypes,
-  item: ListItemType | null,
+  itemId: number
 }
 
 export interface ListStateType {
@@ -71,7 +69,6 @@ const withNoCompleteFiter = join2Filters(noCompleteFilter);
 
 const getTomatoItems = (items: ListItemType[]) =>
   items.filter(withNoCompleteFiter(item => item.isOnTomato ? true : false))
-
 
 export const ListState: ListStateType = {
   lists: [
@@ -155,20 +152,14 @@ export const ListState: ListStateType = {
   ],
   select: {
     listType: ListsTypes.tomato,
-    item: null,
+    itemId: -1,
   },
 }
 
-function getItemById<T extends ListItemStepType | ListItemType>(items: T[], id: number): T {
-  const result = items.find((item) => item.id === id)
-  if (!result) throw new Error("Can't find item while setting attribute")
-  return result
-}
-
-function getSelectItem(state: ListStateType): ListItemType {
-  const selectItem = state.select.item
-  if (!selectItem) throw new Error('Store Error: mutation/action getSelectItem Failed. Null select item.')
-  return selectItem
+const sharedGetters = {
+  getSelectItem(state: ListStateType): ListItemType | undefined {
+    return state.items.find(item => item.id == state.select.itemId);
+  }
 }
 
 export const ListStore: Module<ListStateType, RootStateType> = {
@@ -186,16 +177,17 @@ export const ListStore: Module<ListStateType, RootStateType> = {
     getTomato(state) {
       return getTomatoItems(state.items);
     },
-    getSelectItem(state) {
-      return state.select.item;
-    },
-    getRemindItem(state) {
+    getRemindDateItems(state) {
       return state.items.filter(item => item.remindDate)
-    }
+    },
+    ...sharedGetters,
   },
   mutations: {
-    setSelectName(state, payload) {
+    setSelectTypeList(state, payload) {
       state.select.listType = payload.listType
+    },
+    setSelectItemId(state, payload) {
+      state.select.itemId = payload.id;
     },
     setItemOnTomato(state, payload) {
       const item = getItemById(state.items, payload.id);
@@ -214,25 +206,24 @@ export const ListStore: Module<ListStateType, RootStateType> = {
       item.remindDate = payload.remindDate;
     },
     setItemStepComplete(state, payload) {
-      const item = getSelectItem(state);
-      const step = getItemById(item.steps, payload.id);
+      const item = sharedGetters.getSelectItem(state);
+      if (!item) return;
+      const step = getItemById<ListItemStepType>(item.steps, payload.id);
       step.isComplete = payload.isComplete;
     },
     addItemStep(state, payload) {
-      const item = getSelectItem(state);
-      item.steps = [...item.steps, {
+      const item = sharedGetters.getSelectItem(state);
+      if (!item) return;
+      item.steps.push({
         id: item.steps.length,
         title: payload.title,
         isComplete: false,
-      }]
-    },
-    setSelectItem(state, payload) {
-      const item = getItemById(state.items, payload.id);
-      state.select.item = item;
+      })
     },
     removeItemStep(state, payload) {
-      const selectItem = getSelectItem(state);
-      selectItem.steps = selectItem.steps.filter(step => step.id !== payload.id);
+      const item = sharedGetters.getSelectItem(state);
+      if (!item) return;
+      item.steps = item.steps.filter(step => step.id !== payload.id);
     },
   },
 }
