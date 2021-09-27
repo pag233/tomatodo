@@ -11,8 +11,8 @@
     <SideBarListItem
       v-for="(list, key) in getLists()"
       :key="key"
+      :listName="list.name"
       :listType="list.listType"
-      :setItemCount="list.setItemCount"
     >
       {{ list.name }}
     </SideBarListItem>
@@ -20,8 +20,8 @@
     <SideBarListItem
       v-for="(list, key) in getUserCreateLists()"
       :key="key"
+      :listName="list.name"
       :listType="list.listType"
-      :setItemCount="list.setItemCount"
     >
       {{ list.name }}
     </SideBarListItem>

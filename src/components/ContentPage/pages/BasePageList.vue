@@ -1,12 +1,11 @@
 <template>
   <BasePageListItem
     class="page-list-item"
-    v-for="(item, idx) in items"
-    :key="item.id"
+    :class="item.id === getSelectItemId && 'page-list-item--active'"
     :item="item"
+    :key="item.id"
     :setDrawerShow="setDrawerShow"
-    :class="idx === selectIdx && 'page-list-item--active'"
-    @click="setSelectIdx(idx)"
+    v-for="item in items"
   >
     <template #tomato>
       <slot name="tomato"> </slot>
@@ -19,6 +18,7 @@ import { defineComponent, PropType } from "vue";
 import { ListItemType } from "@/store/list";
 
 import BasePageListItem from "@/components/Common/BasePageListItem.vue";
+import { mapGetters } from "vuex";
 
 export default defineComponent({
   name: "BasePageList",
@@ -31,20 +31,12 @@ export default defineComponent({
       type: Function as PropType<(value: boolean) => void>,
       required: true,
     },
-    activeBGColor: String,
   },
   components: {
     BasePageListItem,
   },
-  methods: {
-    setSelectIdx(idx: number) {
-      this.selectIdx = idx;
-    },
-  },
-  data() {
-    return {
-      selectIdx: -1,
-    };
+  computed: {
+    ...mapGetters("list", ["getSelectItemId"]),
   },
 });
 </script>

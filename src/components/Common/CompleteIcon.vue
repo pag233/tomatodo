@@ -1,10 +1,6 @@
 <template>
   <div
     class="round"
-    :style="{
-      width: size + 'px',
-      height: size + 'px',
-    }"
     :class="{
       'filled-round': item.isComplete,
     }"
@@ -14,6 +10,10 @@
         isComplete: !item.isComplete,
       })
     "
+    :style="{
+      width: size + 'px',
+      height: size + 'px',
+    }"
   >
     <span class="check-mark" v-if="item.isComplete">✓</span>
   </div>

@@ -19,7 +19,7 @@ interface Payload {
   theme: ThemeNameType,
 }
 
-export const ThemeState: ThemeStateType = {
+const ThemeState: ThemeStateType = {
   currentTheme: 'tomato'
 }
 

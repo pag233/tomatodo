@@ -2,27 +2,43 @@ import { Module } from 'vuex'
 import { RootStateType } from './index'
 import { join2Filters } from '@/helper'
 import { getItemById } from '@/helper/store'
+import { useLocalStorage } from '@vueuse/core'
+import { Ref } from 'vue-demi'
 
-interface SideBarListType {
-  listType: ListsTypes,
-  name: string,
-  setItemCount: SetItemCountType,
+export enum ListType {
+  tomato = 'tomato',
+  tasks = 'tasks',
+  important = 'important',
+  plans = 'plans',
 }
 
-export interface SetItemCountType {
-  (items: ListItemType[]): number
+export const UserCreateListType = 'user'
+
+interface SideBarListType {
+  listType: ListType,
+  name: string,
 }
 
 interface SideBarUserCreateListType {
-  listType: ListsTypes.user,
+  listType: typeof UserCreateListType,
   name: string,
-  setItemCount: typeof userCreateListSetItemCount,
-  isDeletable: true
+  isDeletable: true,
 }
 
-const userCreateListSetItemCount = (items: ListItemType[], listType: string): number => (
-  items.filter(item => item.listType === listType).length
-)
+const getItemCountMap = {
+  [ListType.tomato](items: ListItemType[]): number {
+    return getTomatoItems(items).length
+  },
+  [ListType.tasks](items: ListItemType[]): number {
+    return items.length
+  },
+  [ListType.important](items: ListItemType[]): number {
+    return items.filter(item => item.isImportant).length
+  },
+  [ListType.plans](items: ListItemType[]): number {
+    return items.filter(item => item.remindDate || item.deadLine || item.repeat).length
+  },
+}
 
 export interface ListItemStepType {
   id: number,
@@ -31,19 +47,19 @@ export interface ListItemStepType {
 }
 
 export interface ListItemType extends ListItemStepType {
-  listType: ListsTypes,
-  createdDate: number,
-  steps: ListItemStepType[],
-  isImportant?: boolean,
-  isOnTomato?: boolean,
-  remindDate?: number,
-  deadLine?: number,
-  repeat?: "day" | "week" | "month" | "year" | "workday",
-  note?: string,
+  name: ListType
+  createdDate: number
+  steps: ListItemStepType[]
+  isImportant?: boolean
+  isOnTomato?: boolean
+  remindDate?: number
+  deadLine?: number
+  repeat?: RepeatDate
+  note?: string
 }
 
 interface selectType {
-  listType: ListsTypes,
+  listName: ListType | 'user'
   itemId: number
 }
 
@@ -54,12 +70,12 @@ export interface ListStateType {
   select: selectType
 }
 
-export enum ListsTypes {
-  tomato = 'tomato',
-  tasks = 'tasks',
-  important = 'important',
-  plans = 'plans',
-  user = 'user',
+export enum RepeatDate {
+  daily = "daily",
+  week = "weekly",
+  month = "monthly",
+  year = "annually",
+  workday = "workday",
 }
 
 function noCompleteFilter(item: ListItemType): boolean {
@@ -70,42 +86,29 @@ const withNoCompleteFiter = join2Filters(noCompleteFilter);
 const getTomatoItems = (items: ListItemType[]) =>
   items.filter(withNoCompleteFiter(item => item.isOnTomato ? true : false))
 
-export const ListState: ListStateType = {
+const ListState: ListStateType = {
   lists: [
     {
-      listType: ListsTypes.tomato,
-      name: ListsTypes.tomato,
-      setItemCount(items: ListItemType[]): number {
-        return getTomatoItems(items).length
-      },
+      listType: ListType.tomato,
+      name: ListType.tomato,
     },
     {
-      listType: ListsTypes.tasks,
-      name: ListsTypes.tasks,
-      setItemCount(items: ListItemType[]): number {
-        return items.length
-      },
+      listType: ListType.tasks,
+      name: ListType.tasks,
     },
     {
-      listType: ListsTypes.important,
-      name: ListsTypes.important,
-      setItemCount(items: ListItemType[]): number {
-        return items.filter(item => item.isImportant).length
-      },
+      listType: ListType.important,
+      name: ListType.important,
     },
     {
-      listType: ListsTypes.plans,
-      name: ListsTypes.plans,
-      setItemCount(items: ListItemType[]): number {
-        return items.filter(item => item.remindDate || item.deadLine || item.repeat).length
-      },
+      listType: ListType.plans,
+      name: ListType.plans,
     },
   ],
   userCreateList: [
     {
-      listType: ListsTypes.user,
+      listType: 'user',
       name: 'foobar',
-      setItemCount: userCreateListSetItemCount,
       isDeletable: true,
     }
   ],
@@ -113,7 +116,7 @@ export const ListState: ListStateType = {
     {
       id: 0,
       title: 'foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo',
-      listType: ListsTypes.tasks,
+      name: ListType.tasks,
       createdDate: Date.now(),
       steps: [
         {
@@ -129,14 +132,14 @@ export const ListState: ListStateType = {
       ],
       isOnTomato: true,
       isImportant: true,
-      remindDate: Date.now() + 10000,
-      deadLine: Date.now() + 10000,
-      repeat: 'day',
+      remindDate: Date.now() + 1000000,
+      deadLine: Date.now() - 10000,
+      repeat: RepeatDate.daily,
     },
     {
       id: 1,
       title: 'bar',
-      listType: ListsTypes.tasks,
+      name: ListType.tasks,
       createdDate: Date.now(),
       steps: [],
       isOnTomato: true,
@@ -144,14 +147,14 @@ export const ListState: ListStateType = {
     {
       id: 2,
       title: 'foobar',
-      listType: ListsTypes.tasks,
+      name: ListType.tasks,
       createdDate: Date.now(),
       steps: [],
       isOnTomato: true,
     },
   ],
   select: {
-    listType: ListsTypes.tomato,
+    listName: ListType.tomato,
     itemId: -1,
   },
 }
@@ -165,7 +168,8 @@ const sharedGetters = {
 export const ListStore: Module<ListStateType, RootStateType> = {
   namespaced: true,
   state() {
-    return ListState
+    const state = useLocalStorage('tomatodoList', ListState) as Ref<ListStateType>
+    return state.value
   },
   getters: {
     getLists(state) {
@@ -180,11 +184,20 @@ export const ListStore: Module<ListStateType, RootStateType> = {
     getRemindDateItems(state) {
       return state.items.filter(item => item.remindDate)
     },
+    getSelectItemId(state) {
+      return state.select.itemId
+    },
+    getListItemCount(state) {
+      return (listType: ListType) => getItemCountMap[listType](state.items)
+    },
+    getUserListItemCount(state) {
+      return (name: string) => state.items.filter(item => item.name === name)
+    },
     ...sharedGetters,
   },
   mutations: {
-    setSelectTypeList(state, payload) {
-      state.select.listType = payload.listType
+    setSelectListName(state, payload) {
+      state.select.listName = payload.listName
     },
     setSelectItemId(state, payload) {
       state.select.itemId = payload.id;
@@ -200,10 +213,6 @@ export const ListStore: Module<ListStateType, RootStateType> = {
     setItemImportant(state, payload) {
       const item = getItemById(state.items, payload.id);
       item.isImportant = payload.isImportant;
-    },
-    setItemRemindDate(state, payload) {
-      const item = getItemById(state.items, payload.id);
-      item.remindDate = payload.remindDate;
     },
     setItemStepComplete(state, payload) {
       const item = sharedGetters.getSelectItem(state);
@@ -225,5 +234,17 @@ export const ListStore: Module<ListStateType, RootStateType> = {
       if (!item) return;
       item.steps = item.steps.filter(step => step.id !== payload.id);
     },
+    setItemRemindDate(state, payload) {
+      const item = getItemById(state.items, payload.id);
+      item.remindDate = payload.remindDate;
+    },
+    setItemDeadLineDate(state, payload) {
+      const item = getItemById(state.items, payload.id);
+      item.deadLine = payload.deadLine
+    },
+    setItemRepeatDate(state, payload) {
+      const item = getItemById(state.items, payload.id);
+      item.repeat = payload.repeat
+    }
   },
 }

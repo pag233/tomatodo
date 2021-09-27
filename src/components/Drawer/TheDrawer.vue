@@ -2,10 +2,10 @@
   <transition name="drawer-slide">
     <div
       class="drawer"
-      v-show="drawerShow"
       :style="{
         flexBasis: drawerWidth + 'px',
       }"
+      v-show="drawerShow"
     >
       <slot></slot>
       <div class="drawer-move-bar" @mousedown="mouseDownHandler"></div>

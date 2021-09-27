@@ -15,7 +15,7 @@ export interface TimeoutsStateType {
   deadline: TimeoutType[],
 }
 
-export const TimeoutsState: TimeoutsStateType = {
+const TimeoutsState: TimeoutsStateType = {
   remind: [],
   deadline: [],
 }

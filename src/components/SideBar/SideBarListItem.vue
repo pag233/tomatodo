@@ -4,7 +4,7 @@
     :class="{
       'sidebar-list-item-active': isActive,
     }"
-    @click="setSelectTypeList({ listType })"
+    @click="setSelectListName({ listName })"
   >
     <div class="sidebar-icon">
       <component :is="listType"></component>
@@ -19,51 +19,62 @@
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import Tomato from "./icons/Tomato.vue";
 import ViewList from "./icons/ViewList.vue";
 import Star from "./icons/Star.vue";
 import AlarmClock from "./icons/AlarmClock.vue";
 import List from "./icons/List.vue";
 
-import { SetItemCountType, ListsTypes } from "../../store/list";
+import { ListType, UserCreateListType } from "../../store/list";
 import { useStore } from "@/store";
 import { mapMutations } from "vuex";
 export default defineComponent({
   name: "SideBarListItem",
+
   props: {
     listType: {
       type: String,
       required: true,
     },
-    setItemCount: {
-      type: Function as PropType<SetItemCountType>,
+    listName: {
+      type: String,
       required: true,
     },
   },
+
   components: {
-    [ListsTypes.tomato]: Tomato,
-    [ListsTypes.tasks]: ViewList,
-    [ListsTypes.important]: Star,
-    [ListsTypes.plans]: AlarmClock,
-    [ListsTypes.user]: List,
+    [ListType.tomato]: Tomato,
+    [ListType.tasks]: ViewList,
+    [ListType.important]: Star,
+    [ListType.plans]: AlarmClock,
+    [UserCreateListType]: List,
   },
 
   methods: {
-    ...mapMutations("list", ["setSelectTypeList"]),
+    ...mapMutations("list", ["setSelectListName"]),
   },
+
   setup(props) {
     const store = useStore();
     const itemCount = ref(0);
     const isActive = computed(
-      () => props.listType === store.state.list.select.listType
+      () => props.listName === store.state.list.select.listName
     );
     onMounted(() => {
-      itemCount.value = props.setItemCount(store.state.list.items);
+      if (props.listType !== "user") {
+        itemCount.value = store.getters["list/getListItemCount"](
+          props.listType
+        );
+      } else {
+        itemCount.value = store.getters["list/getUserListItemCount"](
+          props.listName
+        );
+      }
     });
     return {
       itemCount,
-      ListsTypes,
+      ListType,
       isActive,
     };
   },

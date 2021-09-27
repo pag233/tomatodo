@@ -6,8 +6,8 @@
   >
     <div class="drawer-item-detail" v-if="selectItem">
       <BasePageListItem
-        :item="selectItem"
         class="drawer-item"
+        :item="selectItem"
         :showInfo="false"
       >
         {{ selectItem.title }}
@@ -15,8 +15,8 @@
 
       <BaseListItem
         class="drawer-item"
-        v-for="step in selectItem.steps"
         :key="step.id"
+        v-for="step in selectItem.steps"
       >
         <template #front>
           <CompeleteIcon :item="step" :setItemComplete="setItemStepComplete" />
@@ -41,17 +41,17 @@
       <BaseListItem class="drawer-item separate-line">
         <template #front>
           <Plus
-            size="20"
             class="drawer-item-theme-color"
+            size="20"
             @click="addStep(newStep)"
           />
         </template>
         <input
+          @change="addStep(newStep)"
           class="drawer-input-box"
           type="text"
-          v-model="newStep"
           :placeholder="selectItem.steps.length == 0 ? 'new step' : 'next step'"
-          @change="addStep(newStep)"
+          v-model="newStep"
         />
       </BaseListItem>
 
@@ -61,8 +61,8 @@
       >
         <template #front>
           <Tomato
-            size="16"
             :class="selectItem.isOnTomato && 'drawer-item-theme-color'"
+            size="16"
           />
         </template>
         <div :class="selectItem.isOnTomato && 'drawer-item-theme-color'">
@@ -74,26 +74,101 @@
         <template #front>
           <AlarmClock
             size="16"
-            :class="!isOutDate && remindDate && 'drawer-item-theme-color'"
+            :class="!isRemindOutDate && remindDate && 'drawer-item-theme-color'"
           />
         </template>
         <ElDatePicker
-          :editable="false"
+          @change="onRemindDatePickerChange"
+          :class="!isRemindOutDate && remindDate && 'theme-color'"
           :clearable="false"
-          :class="!isOutDate && remindDate && 'theme-color'"
+          :editable="false"
+          :disabledDate="datePickDisabledDate"
+          :format="dateToDay(remindDate).format"
           placeholder="remind me"
           prefix-icon="none"
           type="datetime"
           v-model="remindDate"
-          :disabledDate="datePickDisabledDate"
-          :format="dateToDay(remindDate).format"
-          @change="onDatePickerChange"
-        ></ElDatePicker>
+        />
         <template #rear>
           <div
-            v-if="remindDate"
             class="drawer-item-rear-icon"
-            @click="onClearDatePicker"
+            @click="onRemindDatePickerClear"
+            v-if="remindDate"
+          >
+            𐄂
+          </div>
+        </template>
+      </BaseListItem>
+
+      <BaseListItem class="drawer-item drawer-item-color-dim">
+        <template #front>
+          <Calendar
+            :class="!isDeadlineOutDate && deadline && 'drawer-item-theme-color'"
+            size="16"
+          />
+        </template>
+        <ElDatePicker
+          @change="onDeadLineDatePickerChange"
+          :class="!isDeadlineOutDate && deadline && 'theme-color'"
+          :clearable="false"
+          :disabledDate="datePickDisabledDate"
+          :editable="false"
+          :format="`before [${dateToDay(deadline).day}]`"
+          type="date"
+          placeholder="deadline"
+          prefix-icon="none"
+          v-model="deadline"
+        />
+        <template #rear>
+          <div
+            @click="onDeadLineDatePickerClear"
+            class="drawer-item-rear-icon"
+            v-if="deadline"
+          >
+            𐄂
+          </div>
+        </template>
+      </BaseListItem>
+
+      <BaseListItem class="drawer-item drawer-item-color-dim">
+        <template #front>
+          <LoopOnce
+            :class="selectItem.repeat && 'drawer-item-theme-color'"
+            size="16"
+          />
+        </template>
+        <ElPopover
+          transition="none"
+          trigger="click"
+          placement="right"
+          popper-class="draewr-repeat-popover"
+          :show-arrow="false"
+          v-model:visible="repeatShow"
+        >
+          <div class="repeat">
+            <div
+              class="repeat-item"
+              @click="setItemRepeatDate(date)"
+              :key="idx"
+              v-for="(date, idx) in RepeatDate"
+            >
+              {{ date }}
+            </div>
+          </div>
+          <template #reference>
+            <span @click="repeatShow = true">
+              <span v-if="selectItem.repeat" class="drawer-item-theme-color">
+                {{ selectItem.repeat }}
+              </span>
+              <span v-else>repeat</span>
+            </span>
+          </template>
+        </ElPopover>
+        <template #rear>
+          <div
+            @click="onRepeatClear"
+            class="drawer-item-rear-icon"
+            v-if="selectItem.repeat"
           >
             𐄂
           </div>
@@ -115,11 +190,18 @@ import {
 
 import { mapMutations } from "vuex";
 import { useStore } from "@/store";
-import { ListItemType } from "@/store/list";
+import { ListItemType, RepeatDate } from "@/store/list";
 import { dateToDay } from "@/helper";
 
-import { Plus, Tomato, AlarmClock } from "@icon-park/vue-next";
-import { ElDatePicker } from "element-plus";
+import {
+  Plus,
+  Tomato,
+  AlarmClock,
+  Calendar,
+  LoopOnce,
+} from "@icon-park/vue-next";
+
+import { ElDatePicker, ElPopover } from "element-plus";
 
 import Drawer from "./TheDrawer.vue";
 import BaseListItem from "../Common/BaseListItem.vue";
@@ -134,9 +216,12 @@ export default defineComponent({
     AlarmClock,
     BaseListItem,
     BasePageListItem,
+    Calendar,
     CompeleteIcon,
     Drawer,
     ElDatePicker,
+    ElPopover,
+    LoopOnce,
     Plus,
     SlashTextWhen,
     Tomato,
@@ -164,11 +249,12 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const selectItem = computed<ListItemType>(
+    const selectItem = computed<ListItemType | undefined>(
       () => store.getters["list/getSelectItem"]
     );
 
     function toggleToTomato() {
+      if (!selectItem.value) return;
       store.commit("list/setItemOnTomato", {
         id: selectItem.value.id,
         isOnTomato: !selectItem.value.isOnTomato,
@@ -176,14 +262,33 @@ export default defineComponent({
     }
 
     const remindDate = ref<Date | undefined>();
+    const deadline = ref<Date | undefined>();
 
-    const isOutDate = ref(true);
+    const isRemindOutDate = ref(true);
+    const isDeadlineOutDate = ref(true);
+
+    const repeatShow = ref(false);
 
     watch(selectItem, () => {
+      if (!selectItem.value) return;
       remindDate.value = selectItem.value.remindDate
         ? new Date(selectItem.value.remindDate)
         : undefined;
+
+      deadline.value = selectItem.value.deadLine
+        ? new Date(selectItem.value.deadLine)
+        : undefined;
     });
+
+    watch(deadline, () => {
+      if (!deadline.value) return;
+      if (deadline.value.getTime() < Date.now() - 86400000) {
+        isDeadlineOutDate.value = true;
+      } else {
+        isDeadlineOutDate.value = false;
+      }
+    });
+
     //监控是否超时，当日期超过时限或没有设定提醒日期时Timeout状态对象中的clearId为-1
     watchEffect(() => {
       if (selectItem.value) {
@@ -191,14 +296,15 @@ export default defineComponent({
           selectItem.value.id
         ) as TimeoutType;
         if (remindTimeout.clearId === -1) {
-          isOutDate.value = true;
+          isRemindOutDate.value = true;
         } else {
-          isOutDate.value = false;
+          isRemindOutDate.value = false;
         }
       }
     });
 
-    function onDatePickerChange(date: Date) {
+    function onRemindDatePickerChange(date: Date) {
+      if (!selectItem.value) return;
       store.commit("list/setItemRemindDate", {
         id: selectItem.value.id,
         remindDate: date.getTime(),
@@ -209,7 +315,8 @@ export default defineComponent({
       });
     }
 
-    function onClearDatePicker() {
+    function onRemindDatePickerClear() {
+      if (!selectItem.value) return;
       remindDate.value = undefined;
       store.commit("list/setItemRemindDate", {
         id: selectItem.value.id,
@@ -220,13 +327,58 @@ export default defineComponent({
       });
     }
 
+    function onDeadLineDatePickerChange(date: Date) {
+      if (!selectItem.value) return;
+      store.commit("list/setItemDeadLineDate", {
+        id: selectItem.value.id,
+        deadLine: date.getTime(),
+      });
+    }
+
+    function onDeadLineDatePickerClear() {
+      if (!selectItem.value) return;
+      deadline.value = undefined;
+      store.commit("list/setItemDeadLineDate", {
+        id: selectItem.value.id,
+        deadLine: undefined,
+      });
+      store.commit("list/setItemRepeatDate", {
+        id: selectItem.value.id,
+        repeat: undefined,
+      });
+    }
+
+    function onRepeatClear() {
+      if (!selectItem.value) return;
+      store.commit("list/setItemRepeatDate", {
+        id: selectItem.value.id,
+        repeat: undefined,
+      });
+    }
+
+    function setItemRepeatDate(repeat: string) {
+      if (!selectItem.value) return;
+      repeatShow.value = false;
+      store.commit("list/setItemRepeatDate", {
+        id: selectItem.value.id,
+        repeat,
+      });
+    }
+
     return {
-      selectItem,
       toggleToTomato,
+      selectItem,
       remindDate,
-      onDatePickerChange,
-      onClearDatePicker,
-      isOutDate,
+      isRemindOutDate,
+      onRemindDatePickerChange,
+      onRemindDatePickerClear,
+      deadline,
+      isDeadlineOutDate,
+      onDeadLineDatePickerClear,
+      onDeadLineDatePickerChange,
+      repeatShow,
+      setItemRepeatDate,
+      onRepeatClear,
     };
   },
 
@@ -252,6 +404,7 @@ export default defineComponent({
   data() {
     return {
       newStep: "",
+      RepeatDate,
     };
   },
 });
@@ -291,18 +444,41 @@ export default defineComponent({
 }
 </style>
 <style lang="scss" scoped>
-.drawer-item::v-deep .el-date-editor.el-input,
-.el-date-editor.el-input__inner {
+.drawer-item:v-deep(.el-date-editor.el-input, .el-date-editor.el-input__inner) {
   width: 100%;
 }
-.drawer-item::v-deep .el-input .el-input__inner {
+.drawer-item:v-deep(.el-input .el-input__inner) {
   color: $--opacity-white;
+  cursor: default;
   background-color: $--gray;
   border: none;
   height: 2rem;
   padding: 0;
 }
-.drawer-item::v-deep .theme-color.el-input .el-input__inner {
+.drawer-item:v-deep(.theme-color.el-input .el-input__inner) {
   color: var(--primary-color);
+}
+</style>
+
+<style lang="scss">
+.draewr-repeat-popover {
+  --el-text-color-regular: white;
+  background-color: #343238 !important;
+  border: 0.5px solid $--black !important;
+  padding: 0 !important;
+  .repeat {
+    border: 0.5px solid $--opacity-white;
+    border-radius: inherit;
+    padding: 4px;
+    .repeat-item {
+      text-align: center;
+      height: 1.5rem;
+      line-height: 1.5rem;
+      border-radius: inherit;
+      &:hover {
+        background-color: var(--primary-color);
+      }
+    }
+  }
 }
 </style>

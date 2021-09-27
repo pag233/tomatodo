@@ -1,6 +1,6 @@
 <template>
   <div class="base-page">
-    <PageTitle :selectListType="selectListType" />
+    <PageTitle :selectListType="selectListName" />
     <div class="page-list">
       <slot></slot>
     </div>
@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useSelectListType } from "@/composition/common";
+import { useSelectListName } from "@/composition/common";
 
 import PageTitle from "./PageTitle.vue";
 
@@ -20,9 +20,9 @@ export default defineComponent({
   },
 
   setup() {
-    const selectListType = useSelectListType();
+    const selectListName = useSelectListName();
     return {
-      selectListType,
+      selectListName,
     };
   },
 });

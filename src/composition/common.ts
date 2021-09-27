@@ -1,5 +1,4 @@
 import { useStore } from "@/store";
-import { ListsTypes } from "@/store/list";
 import {
   onMounted,
   onUnmounted,
@@ -80,8 +79,8 @@ export function makeSetValueBetween(setValue: SetStateType<number>, min: number,
   }
 }
 
-export function useSelectListType(): ComputedRef<ListsTypes> {
+export function useSelectListName(): ComputedRef<string> {
   const store = useStore();
-  const selectListType = computed(() => store.state.list.select.listType);
+  const selectListType = computed(() => store.state.list.select.listName);
   return selectListType
 }

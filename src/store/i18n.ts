@@ -5,7 +5,7 @@ import { RootStateType } from './index'
 export interface I18nStateType {
   currentLocale: 'en-us' | 'zh-cn' | 'zh-tw',
 }
-export const I18nState: I18nStateType = {
+const I18nState: I18nStateType = {
   currentLocale: 'en-us'
 }
 

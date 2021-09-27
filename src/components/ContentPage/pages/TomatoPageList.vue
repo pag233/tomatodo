@@ -1,9 +1,5 @@
 <template>
-  <BasePageList
-    :items="items"
-    :setDrawerShow="setDrawerShow"
-    :activeBGColor="'#fc93a731'"
-  >
+  <BasePageList :items="items" :setDrawerShow="setDrawerShow">
     <template #tomato>
       {{ undefined }}
     </template>

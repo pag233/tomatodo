@@ -56,7 +56,7 @@ export const applyReducers = <T>(
 )
 /* eslint-enable */
 
-export function dateToDay(time?: number | Date): { day?: string, format?: string } {
+export function dateToDay(time?: number | Date, dateFormat = 'h:mm:ss a'): { day?: string, format?: string } {
   if (!time) return {};
   const date = typeof time === 'number' ? new Date(time) : time;
   const timeBetween = date.getDate() - new Date().getDate();
@@ -77,7 +77,7 @@ export function dateToDay(time?: number | Date): { day?: string, format?: string
       break;
   }
 
-  const format = `[${day}] h:mm:ss a`
+  const format = `[${day}] ${dateFormat}`
 
   return { day, format };
 }

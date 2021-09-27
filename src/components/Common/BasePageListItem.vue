@@ -10,7 +10,7 @@
         </SlashTextWhen>
       </div>
       <div class="item-info-detail" v-if="showInfo">
-        {{ item.listType }}
+        {{ item.name }}
         <slot name="tomato">
           <Dot class="detail-spe-icon" size="10" v-if="item.isOnTomato"></Dot>
           {{ item.isOnTomato ? "OnTomato" : "" }}
@@ -24,7 +24,7 @@
         </div>
         <RotationHorizontal class="repeat" size="14" v-if="item.repeat" />
         <div class="remindDate" v-if="item.remindDate">
-          <Dot size="10" class="detail-spe-icon"></Dot>
+          <Dot class="detail-spe-icon" size="10"></Dot>
           <Remind size="12" />
           <div class="detail-text">
             {{ dateToDay(item.remindDate).day }}
