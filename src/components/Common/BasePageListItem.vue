@@ -92,7 +92,7 @@ export default defineComponent({
     function clickInfoHandler(id: number) {
       if (props.setDrawerShow) {
         !breakPoints.drawerBreak && props.setDrawerShow(true);
-        store.commit("list/setSelectItemId", { id });
+        store.commit("select/setSelectItemId", { id });
       }
     }
     return {

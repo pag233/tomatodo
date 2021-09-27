@@ -19,7 +19,16 @@
         v-for="step in selectItem.steps"
       >
         <template #front>
-          <CompeleteIcon :item="step" :setItemComplete="setItemStepComplete" />
+          <CompeleteIcon
+            :item="step"
+            :setItemComplete="
+              setItemStepComplete({
+                item: selectItem,
+                id: step.id,
+                isComplete: !step.isComplete,
+              })
+            "
+          />
         </template>
         <SlashTextWhen :when="step.isComplete">
           {{ step.title }}
@@ -29,6 +38,7 @@
             class="drawer-item-rear-icon"
             @click="
               removeItemStep({
+                item: selectItem,
                 id: step.id,
               })
             "
@@ -250,7 +260,7 @@ export default defineComponent({
     const store = useStore();
 
     const selectItem = computed<ListItemType | undefined>(
-      () => store.getters["list/getSelectItem"]
+      () => store.getters["select/getSelectItem"]
     );
 
     function toggleToTomato() {
@@ -365,7 +375,19 @@ export default defineComponent({
       });
     }
 
+    const newStep = ref("");
+    function addStep(title: string) {
+      if (newStep.value === "" || !selectItem.value) return;
+      store.commit("list/addItemStep", {
+        item: selectItem,
+        title,
+      });
+      newStep.value = "";
+    }
+
     return {
+      newStep,
+      addStep,
       toggleToTomato,
       selectItem,
       remindDate,
@@ -383,18 +405,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapMutations("list", [
-      "setItemStepComplete",
-      "removeItemStep",
-      "addItemStep",
-    ]),
-    addStep(title: string) {
-      if (this.newStep === "") return;
-      this.addItemStep({
-        title,
-      });
-      this.newStep = "";
-    },
+    ...mapMutations("list", ["setItemStepComplete", "removeItemStep"]),
     dateToDay,
     datePickDisabledDate(date: Date) {
       return date.getTime() < Date.now() - 86400000;
@@ -403,7 +414,6 @@ export default defineComponent({
 
   data() {
     return {
-      newStep: "",
       RepeatDate,
     };
   },
@@ -444,10 +454,10 @@ export default defineComponent({
 }
 </style>
 <style lang="scss" scoped>
-.drawer-item:v-deep(.el-date-editor.el-input, .el-date-editor.el-input__inner) {
+.drawer-item::v-deep(.el-date-editor.el-input, .el-date-editor.el-input__inner) {
   width: 100%;
 }
-.drawer-item:v-deep(.el-input .el-input__inner) {
+.drawer-item::v-deep(.el-input .el-input__inner) {
   color: $--opacity-white;
   cursor: default;
   background-color: $--gray;
@@ -455,7 +465,7 @@ export default defineComponent({
   height: 2rem;
   padding: 0;
 }
-.drawer-item:v-deep(.theme-color.el-input .el-input__inner) {
+.drawer-item::v-deep(.theme-color.el-input .el-input__inner) {
   color: var(--primary-color);
 }
 </style>

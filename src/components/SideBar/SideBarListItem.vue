@@ -59,7 +59,7 @@ export default defineComponent({
     const store = useStore();
     const itemCount = ref(0);
     const isActive = computed(
-      () => props.listName === store.state.list.select.listName
+      () => props.listName === store.state.select.listName
     );
     onMounted(() => {
       if (props.listType !== "user") {

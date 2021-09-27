@@ -58,16 +58,10 @@ export interface ListItemType extends ListItemStepType {
   note?: string
 }
 
-interface selectType {
-  listName: ListType | 'user'
-  itemId: number
-}
-
 export interface ListStateType {
   lists: SideBarListType[]
   userCreateList: SideBarUserCreateListType[]
   items: ListItemType[]
-  select: selectType
 }
 
 export enum RepeatDate {
@@ -81,7 +75,7 @@ export enum RepeatDate {
 function noCompleteFilter(item: ListItemType): boolean {
   return !item.isComplete
 }
-const withNoCompleteFiter = join2Filters(noCompleteFilter);
+const withNoCompleteFiter = join2Filters(noCompleteFilter)
 
 const getTomatoItems = (items: ListItemType[]) =>
   items.filter(withNoCompleteFiter(item => item.isOnTomato ? true : false))
@@ -153,16 +147,6 @@ const ListState: ListStateType = {
       isOnTomato: true,
     },
   ],
-  select: {
-    listName: ListType.tomato,
-    itemId: -1,
-  },
-}
-
-const sharedGetters = {
-  getSelectItem(state: ListStateType): ListItemType | undefined {
-    return state.items.find(item => item.id == state.select.itemId);
-  }
 }
 
 export const ListStore: Module<ListStateType, RootStateType> = {
@@ -173,19 +157,16 @@ export const ListStore: Module<ListStateType, RootStateType> = {
   },
   getters: {
     getLists(state) {
-      return state.lists;
+      return state.lists
     },
     getUserCreateLists(state) {
-      return state.userCreateList;
+      return state.userCreateList
     },
     getTomato(state) {
-      return getTomatoItems(state.items);
+      return getTomatoItems(state.items)
     },
     getRemindDateItems(state) {
       return state.items.filter(item => item.remindDate)
-    },
-    getSelectItemId(state) {
-      return state.select.itemId
     },
     getListItemCount(state) {
       return (listType: ListType) => getItemCountMap[listType](state.items)
@@ -193,36 +174,29 @@ export const ListStore: Module<ListStateType, RootStateType> = {
     getUserListItemCount(state) {
       return (name: string) => state.items.filter(item => item.name === name)
     },
-    ...sharedGetters,
   },
   mutations: {
-    setSelectListName(state, payload) {
-      state.select.listName = payload.listName
-    },
-    setSelectItemId(state, payload) {
-      state.select.itemId = payload.id;
-    },
     setItemOnTomato(state, payload) {
-      const item = getItemById(state.items, payload.id);
-      item.isOnTomato = payload.isOnTomato;
+      const item = getItemById(state.items, payload.id)
+      item.isOnTomato = payload.isOnTomato
     },
     setItemComplete(state, payload) {
-      const item = getItemById(state.items, payload.id);
-      item.isComplete = payload.isComplete;
+      const item = getItemById(state.items, payload.id)
+      item.isComplete = payload.isComplete
     },
     setItemImportant(state, payload) {
-      const item = getItemById(state.items, payload.id);
-      item.isImportant = payload.isImportant;
+      const item = getItemById(state.items, payload.id)
+      item.isImportant = payload.isImportant
     },
     setItemStepComplete(state, payload) {
-      const item = sharedGetters.getSelectItem(state);
-      if (!item) return;
-      const step = getItemById<ListItemStepType>(item.steps, payload.id);
-      step.isComplete = payload.isComplete;
+      const item = payload.item
+      if (!item) return
+      const step = getItemById<ListItemStepType>(item.steps, payload.id)
+      step.isComplete = payload.isComplete
     },
     addItemStep(state, payload) {
-      const item = sharedGetters.getSelectItem(state);
-      if (!item) return;
+      const item = payload.item
+      if (!item) return
       item.steps.push({
         id: item.steps.length,
         title: payload.title,
@@ -230,20 +204,20 @@ export const ListStore: Module<ListStateType, RootStateType> = {
       })
     },
     removeItemStep(state, payload) {
-      const item = sharedGetters.getSelectItem(state);
-      if (!item) return;
-      item.steps = item.steps.filter(step => step.id !== payload.id);
+      const item = payload.item as ListItemType
+      if (!item) return
+      item.steps = item.steps.filter(step => step.id !== payload.id)
     },
     setItemRemindDate(state, payload) {
-      const item = getItemById(state.items, payload.id);
-      item.remindDate = payload.remindDate;
+      const item = getItemById(state.items, payload.id)
+      item.remindDate = payload.remindDate
     },
     setItemDeadLineDate(state, payload) {
-      const item = getItemById(state.items, payload.id);
+      const item = getItemById(state.items, payload.id)
       item.deadLine = payload.deadLine
     },
     setItemRepeatDate(state, payload) {
-      const item = getItemById(state.items, payload.id);
+      const item = getItemById(state.items, payload.id)
       item.repeat = payload.repeat
     }
   },

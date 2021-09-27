@@ -36,7 +36,7 @@ export default defineComponent({
     BasePageListItem,
   },
   computed: {
-    ...mapGetters("list", ["getSelectItemId"]),
+    ...mapGetters("select", ["getSelectItemId"]),
   },
 });
 </script>

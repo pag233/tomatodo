@@ -52,7 +52,7 @@ export default defineComponent({
 
     function onClickPageSelf() {
       props.setDrawerShow(false);
-      store.commit("list/setSelectItemId", {
+      store.commit("select/setSelectItemId", {
         id: -1,
       });
     }

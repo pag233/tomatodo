@@ -81,6 +81,6 @@ export function makeSetValueBetween(setValue: SetStateType<number>, min: number,
 
 export function useSelectListName(): ComputedRef<string> {
   const store = useStore();
-  const selectListType = computed(() => store.state.list.select.listName);
+  const selectListType = computed(() => store.state.select.listName);
   return selectListType
 }
