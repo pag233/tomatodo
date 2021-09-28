@@ -177,11 +177,11 @@ export const ListStore: Module<ListStateType, RootStateType> = {
   },
   mutations: {
     setItemOnTomato(state, payload) {
-      const item = getItemById(state.items, payload.id)
+      const item = payload.item
       item.isOnTomato = payload.isOnTomato
     },
     setItemComplete(state, payload) {
-      const item = getItemById(state.items, payload.id)
+      const item = payload.item
       item.isComplete = payload.isComplete
     },
     setItemImportant(state, payload) {
@@ -209,15 +209,15 @@ export const ListStore: Module<ListStateType, RootStateType> = {
       item.steps = item.steps.filter(step => step.id !== payload.id)
     },
     setItemRemindDate(state, payload) {
-      const item = getItemById(state.items, payload.id)
+      const item = payload.item
       item.remindDate = payload.remindDate
     },
     setItemDeadLineDate(state, payload) {
-      const item = getItemById(state.items, payload.id)
+      const item = payload.item
       item.deadLine = payload.deadLine
     },
     setItemRepeatDate(state, payload) {
-      const item = getItemById(state.items, payload.id)
+      const item = payload.item
       item.repeat = payload.repeat
     }
   },

@@ -2,7 +2,7 @@
   <span
     @click="
       setItemImportant({
-        id: item.id,
+        item,
         isImportant: !item.isImportant,
       })
     "
@@ -30,7 +30,7 @@ export default defineComponent({
     },
     setItemImportant: {
       type: Function as PropType<
-        (payload: { id: number; isImportant: boolean }) => void
+        (payload: { item: ListItemType; isImportant: boolean }) => void
       >,
       required: true,
     },

@@ -6,7 +6,7 @@
         @click="
           setItemComplete({
             item,
-            isImportant: !item.isImportant,
+            isComplete: !item.isComplete,
           })
         "
       />

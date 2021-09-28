@@ -267,7 +267,7 @@ export default defineComponent({
     function toggleToTomato() {
       if (!selectItem.value) return;
       store.commit("list/setItemOnTomato", {
-        id: selectItem.value.id,
+        item: selectItem.value,
         isOnTomato: !selectItem.value.isOnTomato,
       });
     }
@@ -317,11 +317,11 @@ export default defineComponent({
     function onRemindDatePickerChange(date: Date) {
       if (!selectItem.value) return;
       store.commit("list/setItemRemindDate", {
-        id: selectItem.value.id,
+        item: selectItem.value,
         remindDate: date.getTime(),
       });
       store.dispatch("timeouts/startRemind", {
-        id: selectItem.value.id,
+        item: selectItem.value,
         remindDate: date.getTime(),
       });
     }
@@ -330,18 +330,18 @@ export default defineComponent({
       if (!selectItem.value) return;
       remindDate.value = undefined;
       store.commit("list/setItemRemindDate", {
-        id: selectItem.value.id,
+        item: selectItem.value,
         remindDate: undefined,
       });
       store.commit("timeouts/clearRemind", {
-        id: selectItem.value.id,
+        item: selectItem.value,
       });
     }
 
     function onDeadLineDatePickerChange(date: Date) {
       if (!selectItem.value) return;
       store.commit("list/setItemDeadLineDate", {
-        id: selectItem.value.id,
+        item: selectItem.value,
         deadLine: date.getTime(),
       });
     }
@@ -350,11 +350,11 @@ export default defineComponent({
       if (!selectItem.value) return;
       deadline.value = undefined;
       store.commit("list/setItemDeadLineDate", {
-        id: selectItem.value.id,
+        item: selectItem.value,
         deadLine: undefined,
       });
       store.commit("list/setItemRepeatDate", {
-        id: selectItem.value.id,
+        item: selectItem.value,
         repeat: undefined,
       });
     }
@@ -362,7 +362,7 @@ export default defineComponent({
     function onRepeatClear() {
       if (!selectItem.value) return;
       store.commit("list/setItemRepeatDate", {
-        id: selectItem.value.id,
+        item: selectItem.value,
         repeat: undefined,
       });
     }
@@ -371,7 +371,7 @@ export default defineComponent({
       if (!selectItem.value) return;
       repeatShow.value = false;
       store.commit("list/setItemRepeatDate", {
-        id: selectItem.value.id,
+        item: selectItem.value,
         repeat,
       });
     }
@@ -380,7 +380,7 @@ export default defineComponent({
     function addStep(title: string) {
       if (newStep.value === "" || !selectItem.value) return;
       store.commit("list/addItemStep", {
-        item: selectItem,
+        item: selectItem.value,
         title,
       });
       newStep.value = "";
@@ -469,11 +469,11 @@ export default defineComponent({
   height: 2rem;
   padding: 0;
 }
-.drawer-item::v-deep(.el-input .el-input__inner::placeholder) {
-  color: $--opacity-white;
-}
 .drawer-item::v-deep(.theme-color.el-input .el-input__inner) {
   color: var(--primary-color);
+}
+.drawer-item::v-deep(.el-input .el-input__inner::placeholder) {
+  color: $--opacity-white;
 }
 </style>
 
