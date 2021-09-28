@@ -185,7 +185,7 @@ export const ListStore: Module<ListStateType, RootStateType> = {
       item.isComplete = payload.isComplete
     },
     setItemImportant(state, payload) {
-      const item = getItemById(state.items, payload.id)
+      const item = payload.item
       item.isImportant = payload.isImportant
     },
     setItemStepComplete(state, payload) {

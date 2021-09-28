@@ -4,12 +4,6 @@
     :class="{
       'filled-round': item.isComplete,
     }"
-    @click="
-      setItemComplete({
-        id: item.id,
-        isComplete: !item.isComplete,
-      })
-    "
     :style="{
       width: size + 'px',
       height: size + 'px',
@@ -29,12 +23,6 @@ export default defineComponent({
   props: {
     item: {
       type: Object as PropType<ListItemStepType | ListItemType>,
-      required: true,
-    },
-    setItemComplete: {
-      type: Function as PropType<
-        (payload: { id: number; isComplete: boolean }) => void
-      >,
       required: true,
     },
     size: {

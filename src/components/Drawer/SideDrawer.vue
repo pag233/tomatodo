@@ -21,7 +21,7 @@
         <template #front>
           <CompeleteIcon
             :item="step"
-            :setItemComplete="
+            @click="
               setItemStepComplete({
                 item: selectItem,
                 id: step.id,
@@ -95,6 +95,7 @@
           :disabledDate="datePickDisabledDate"
           :format="dateToDay(remindDate).format"
           placeholder="remind me"
+          popper-class="drawer-datepicker-popper"
           prefix-icon="none"
           type="datetime"
           v-model="remindDate"
@@ -126,6 +127,7 @@
           :format="`before [${dateToDay(deadline).day}]`"
           type="date"
           placeholder="deadline"
+          popper-class="drawer-datepicker-popper"
           prefix-icon="none"
           v-model="deadline"
         />
@@ -150,9 +152,8 @@
         <ElPopover
           transition="none"
           trigger="click"
-          placement="right"
+          placement="bottom"
           popper-class="draewr-repeat-popover"
-          :show-arrow="false"
           v-model:visible="repeatShow"
         >
           <div class="repeat">
@@ -166,12 +167,12 @@
             </div>
           </div>
           <template #reference>
-            <span @click="repeatShow = true">
+            <div @click="repeatShow = true">
               <span v-if="selectItem.repeat" class="drawer-item-theme-color">
                 {{ selectItem.repeat }}
               </span>
-              <span v-else>repeat</span>
-            </span>
+              <span class="drawer-repeat-select" v-else>repeat</span>
+            </div>
           </template>
         </ElPopover>
         <template #rear>
@@ -451,6 +452,9 @@ export default defineComponent({
     outline: none;
     border: none;
   }
+  .drawer-repeat-select {
+    font-size: 14px;
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -465,6 +469,9 @@ export default defineComponent({
   height: 2rem;
   padding: 0;
 }
+.drawer-item::v-deep(.el-input .el-input__inner::placeholder) {
+  color: $--opacity-white;
+}
 .drawer-item::v-deep(.theme-color.el-input .el-input__inner) {
   color: var(--primary-color);
 }
@@ -472,8 +479,7 @@ export default defineComponent({
 
 <style lang="scss">
 .draewr-repeat-popover {
-  --el-text-color-regular: white;
-  background-color: #343238 !important;
+  --el-text-color-regular: $--gray;
   border: 0.5px solid $--black !important;
   padding: 0 !important;
   .repeat {
@@ -486,7 +492,7 @@ export default defineComponent({
       line-height: 1.5rem;
       border-radius: inherit;
       &:hover {
-        background-color: var(--primary-color);
+        cursor: pointer;
       }
     }
   }

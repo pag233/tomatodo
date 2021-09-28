@@ -1,7 +1,15 @@
 <template>
   <BaseListItem @click="clickInfoHandler(item.id)">
     <template #front>
-      <CompeleteIcon :item="item" :setItemComplete="setItemComplete" />
+      <CompeleteIcon
+        :item="item"
+        @click="
+          setItemComplete({
+            item,
+            isImportant: !item.isImportant,
+          })
+        "
+      />
     </template>
     <div class="item-info">
       <div class="item-title">
