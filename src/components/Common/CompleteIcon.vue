@@ -1,19 +1,13 @@
 <template>
   <div
     class="round"
+    :class="{
+      'filled-round': item.isComplete,
+    }"
     :style="{
       width: size + 'px',
       height: size + 'px',
     }"
-    :class="{
-      'filled-round': item.isComplete,
-    }"
-    @click="
-      setItemComplete({
-        id: item.id,
-        isComplete: !item.isComplete,
-      })
-    "
   >
     <span class="check-mark" v-if="item.isComplete">✓</span>
   </div>
@@ -31,12 +25,6 @@ export default defineComponent({
       type: Object as PropType<ListItemStepType | ListItemType>,
       required: true,
     },
-    setItemComplete: {
-      type: Function as PropType<
-        (payload: { id: number; isComplete: boolean }) => void
-      >,
-      required: true,
-    },
     size: {
       type: Number,
       default: 1.2 * getRemSize(),
@@ -50,12 +38,10 @@ export default defineComponent({
   margin: auto;
   border-radius: 50%;
   box-sizing: border-box;
-  @include ToTheme($theme-tomato) {
-    border: 2px solid $white;
-  }
+  border: 2px solid $--opacity-white;
 }
 .filled-round {
-  background-color: $white;
+  background-color: $--white;
 }
 .check-mark {
   display: block;
@@ -63,8 +49,6 @@ export default defineComponent({
   width: 100%;
   line-height: 100%;
   text-align: center;
-  @include ToTheme($theme-tomato) {
-    color: $black-dim;
-  }
+  color: $--black-dim;
 }
 </style>

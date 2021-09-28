@@ -3,19 +3,19 @@
     <button v-if="!isMaximum" class="maximum-button" @click="maximumPanel">
       <ExpandTextInput
         class="icon"
-        theme="outline"
-        size="14"
         fill="#f1f2d8"
+        size="14"
         :strokeWidth="6"
+        theme="outline"
       />
     </button>
     <button v-else class="maximum-button" @click="restorePanel">
       <CollapseTextInput
         class="icon"
-        theme="outline"
-        size="14"
         fill="#f1f2d8"
+        size="14"
         :strokeWidth="6"
+        theme="outline"
       />
     </button>
   </PanelButton>
@@ -62,9 +62,7 @@ export default defineComponent({
 
 <style lang="scss">
 .maximum-button {
-  @include ToTheme($theme-tomato) {
-    background-color: $orange;
-  }
+  background-color: $--orange;
   &:hover {
     .icon {
       visibility: visible;

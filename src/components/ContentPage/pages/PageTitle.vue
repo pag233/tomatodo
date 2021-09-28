@@ -28,6 +28,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .page-header {
+  color: var(--primary-color);
   margin-bottom: 1rem;
 
   .page-title,

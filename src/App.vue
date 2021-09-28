@@ -3,15 +3,31 @@
     <main>
       <Panel>
         <template
-          #default="{ barWidth, setBarWidth, showDrawer, setShowDrawer }"
+          #default="{
+            barWidth,
+            setBarWidth,
+            minWidth,
+            drawerBreak,
+            drawerShow,
+            setDrawerShow,
+            drawerWidth,
+            setDrawerWidth,
+          }"
         >
           <FlexContainer>
             <SideBar :barWidth="barWidth" :setBarWidth="setBarWidth" />
             <ContentPage
-              :showDrawer="showDrawer"
-              :setShowDrawer="setShowDrawer"
+              :minWidth="minWidth"
+              :drawerShow="drawerShow"
+              :setDrawerShow="setDrawerShow"
             />
-            <Drawer :showDrawer="showDrawer" :setShowDrawer="setShowDrawer" />
+            <SideDrawer
+              v-if="!drawerBreak"
+              :drawerShow="drawerShow"
+              :setDrawerShow="setDrawerShow"
+              :drawerWidth="drawerWidth"
+              :setDrawerWidth="setDrawerWidth"
+            />
           </FlexContainer>
         </template>
       </Panel>
@@ -20,12 +36,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import Panel from "@/components/Panel/ThePanel.vue";
 import SideBar from "@/components/SideBar/SideBar.vue";
 import FlexContainer from "@/components/Container/FlexContainer.vue";
 import ContentPage from "@/components/ContentPage/ContentPage.vue";
-import Drawer from "@/components/Drawer/Drawer.vue";
+import SideDrawer from "@/components/Drawer/SideDrawer.vue";
+
+import { useStore } from "./store";
 
 export default defineComponent({
   name: "App",
@@ -34,14 +52,30 @@ export default defineComponent({
     FlexContainer,
     SideBar,
     ContentPage,
-    Drawer,
+    SideDrawer,
+  },
+  setup() {
+    const store = useStore();
+    onMounted(() => {
+      store.dispatch("timeouts/startAllRemind");
+    });
   },
 });
 </script>
 
 <style lang="scss">
-html {
-  font-size: $rem-size * 1px;
+:root {
+  font-size: $--rem-size * 1px;
+  //ui-colors
+  --primary-color: var(--color-tomato);
+  --secondary-color: var(--color-tomato-transparent);
+  //colors
+  --color-tomato: #cc6666;
+  --color-tomato-transparent: #fc93a731;
+  --color-leaf: #65bfaf;
+  --color-yellow: #c7aa57;
+  --color-pink: #f27983;
+  --color-blue: #009dcf;
 }
 
 html,
@@ -59,8 +93,6 @@ main {
   position: relative;
   width: 100vw;
   height: 100vh;
-  @include ToTheme($theme-tomato) {
-    background-color: $leaf;
-  }
+  background-color: var(--color-leaf);
 }
 </style>

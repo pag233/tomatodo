@@ -1,36 +1,23 @@
 import { getDocElement, makeMouseDownHandler } from '@/composition/dom';
-import { ComputedRef, inject, Ref } from '@vue/runtime-core';
-import { throttle } from 'lodash';
-import { PanelPosRightInjectKey } from '../Panel/thePanelPosInfo';
+import { useInjectPanelPosInfo } from '../Panel/thePanelPosInfo';
 
 function makeDrawerMouseMoveHandler(
   setWidth: (e: MouseEvent, clientWidth: number) => void,
   rootElem = getDocElement(),
 ) {
-  return throttle(
-    function (e: MouseEvent) {
-      setWidth(e, rootElem.clientWidth);
-    }
-    , 70)
+  return function (e: MouseEvent) {
+    setWidth(e, rootElem.clientWidth);
+  }
 }
 
 export function getDrawerMouseDownHandler(
-  width: Ref<number>,
-  minWidth: number,
-  maxWidth: number,
+  setDrawerWidth: (value: number) => void,
 ): () => void {
-  const panelRight = inject(PanelPosRightInjectKey) as ComputedRef<number>
-  if (!panelRight) throw new Error('Provider value not found, key name: ' + PanelPosRightInjectKey.description)
+  const panelInfo = useInjectPanelPosInfo()
   const makeDrawerMouseDownHandler = makeMouseDownHandler(
     makeDrawerMouseMoveHandler((e, clientWidth) => {
-      const newWidth = clientWidth - panelRight.value - e.clientX;
-      if (newWidth < maxWidth && newWidth > minWidth) {
-        width.value = newWidth;
-      } else if (newWidth >= maxWidth) {
-        width.value = maxWidth
-      } else {
-        width.value = minWidth
-      }
+      const newWidth = clientWidth - panelInfo.value.right - e.clientX;
+      setDrawerWidth(newWidth);
     }),
     (elem) => {
       elem.style.cursor = "ew-resize"

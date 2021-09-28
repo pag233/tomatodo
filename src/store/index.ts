@@ -1,16 +1,20 @@
 import { InjectionKey } from 'vue'
 import { createStore, Store, useStore as useBaseStore } from 'vuex'
 
-import { I18nState, I18nStore } from './i18n'
-import { SearchState, SearchStore } from './search'
-import { ListState, ListStore } from './list'
+import { I18nStateType, I18nStore } from './i18n'
+import { SearchStateType, SearchStore } from './search'
+import { ListStateType, ListStore } from './list'
+import { ThemeStateType, ThemeStore } from './theme'
+import { TimeoutsStateType, TimeoutsStore } from './timeouts'
+import { SelectStateType, SelectStore } from './select'
 
-export type RootStateType = typeof rootState
-
-const rootState = {
-  i18n: I18nState,
-  search: SearchState,
-  list: ListState,
+export interface RootStateType {
+  i18n: I18nStateType
+  search: SearchStateType
+  list: ListStateType
+  theme: ThemeStateType
+  timeouts: TimeoutsStateType
+  select: SelectStateType
 }
 
 export const key: InjectionKey<Store<RootStateType>> = Symbol('RootStoreKey')
@@ -20,6 +24,9 @@ export default createStore<RootStateType>({
     i18n: I18nStore,
     search: SearchStore,
     list: ListStore,
+    theme: ThemeStore,
+    timeouts: TimeoutsStore,
+    select: SelectStore,
   }
 })
 

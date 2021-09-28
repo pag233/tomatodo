@@ -10,6 +10,15 @@ module.exports = {
   // },
   configureWebpack: {
     devtool: 'source-map',
+    module: {
+      rules: [
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: "javascript/auto"
+        }
+      ]
+    }
   },
   css: {
     loaderOptions: {

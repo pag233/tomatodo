@@ -56,14 +56,30 @@ export const applyReducers = <T>(
 )
 /* eslint-enable */
 
-export function dateToDay(date?: Date): string | undefined {
-  if (!date) return undefined
-  const now = new Date();
-  const day = now.getDate() - date.getDate();
-  if (day == 0) return 'today'
-  else if (day == 1) return 'tomorrow'
-  else if (day == 2) return 'day after tomorrow'
-  else return new Date(date).toLocaleDateString()
+export function dateToDay(time?: number | Date, dateFormat = 'h:mm:ss a'): { day?: string, format?: string } {
+  if (!time) return {};
+  const date = typeof time === 'number' ? new Date(time) : time;
+  const timeBetween = date.getDate() - new Date().getDate();
+  let day = '';
+
+  switch (timeBetween) {
+    case 0:
+      day = 'today'
+      break;
+    case 1:
+      day = 'tomorrow'
+      break;
+    case 2:
+      day = 'day after tomorrow'
+      break;
+    default:
+      day = parseDateToDefaultDateString(date);
+      break;
+  }
+
+  const format = `[${day}] ${dateFormat}`
+
+  return { day, format };
 }
 
 interface FilterFnType<T> {
@@ -78,25 +94,18 @@ export function join2Filters<T>(filterA: FilterFnType<T>): (filterB: FilterFnTyp
   }
 }
 
-// interface LocaleDateStringFormat {
-//   date: string,
-//   month: string,
-//   year: string,
-//   day: string,
-// }
-
 interface getLocaleDateString {
   (day: Date): string
 }
 
 const getDefaultLocaleDateString: getLocaleDateString = (date) => {
   const dayToString = ['Sun', 'Mon', 'Tue', 'Wen', "Thu", "Fri", "Sat"];
-  return date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + dayToString[date.getDay()]
+  return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + dayToString[date.getDay()]
 }
 
 const getZhCnLocaleDateString: getLocaleDateString = (date) => {
   const dayToString = ['日', '一', '二', '三', "四", "五", "六"];
-  return `${date.getFullYear()}年${date.getMonth()}月${date.getDate()}日 星期${dayToString[date.getDay()]}`
+  return `${date.getFullYear()}年${(date.getMonth() + 1)}月${date.getDate()}日 星期${dayToString[date.getDay()]}`
 }
 
 function parseDateToLocaleDateString(date: Date, getDateString: getLocaleDateString): string {

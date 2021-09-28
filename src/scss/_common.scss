@@ -1,34 +1,37 @@
-//colors
-$tomato: #bf0a2b;
-$leaf: #65bfaf;
-$white: #f1f2d8;
-$opacity-white: #ffffff65;
-$opacity-white-dim: #ffffff36;
-$black: #26252380;
-$black-dim: #272727;
-$gray: #555555;
-$yellow: #c7aa57;
-$orange: #f2ac57;
-$dim-yellow: #b2b3a0;
-$pink: #f27983;
-$blue: #009dcf;
-%left-bar-color {
-  @include ToTheme($theme-tomato) {
-    background-color: $black;
-  }
-}
-//colors-end
+//theme-colors
+//theme-colors-tomato
+$--tomato: #cc6666;
+$--tomato-transparent: #fc93a731;
+//theme-colors-tasks
+$--leaf: #65bfaf;
+//theme-colors-important
+$--yellow: #c7aa57;
+//theme-colors-plans
+$--pink: #f27983;
+//theme-colors-user
+$--blue: #009dcf;
+//end-theme-colors
+
+//ui-colors
+$--white: #f1f2d8;
+$--opacity-white: #ffffff65;
+$--opacity-white-dim: #ffffff36;
+$--black: #26252380;
+$--black-dim: #282828;
+$--gray: #444444;
+$--gray-dim: #343238;
+$--orange: #f2ac57;
+$--dim-yellow: #b2b3a0;
+//end-ui-colors
 
 //vars
-$rem-size: 16;
-$corner-border-radius: 0.5rem;
-$content-padding: 2rem 1rem 1rem 1rem;
-//vars-end
+$--rem-size: 16;
+$--corner-border-radius: 0.5rem;
+$--content-padding: 2rem 1rem 1rem 1rem;
+//end-vars
 
 //sidebar
-$text-indent: 30;
-$icon-top-offset: 6;
-$icon-left-offset: 8;
+$--text-indent: 30;
 %sidebar-list-item {
   padding: 6px 12px;
   display: flex;
@@ -43,4 +46,4 @@ $icon-left-offset: 8;
     white-space: nowrap;
   }
 }
-//sidebar-end
+//end-sidebar

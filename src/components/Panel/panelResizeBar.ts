@@ -67,7 +67,6 @@ function makeResizeBarMouseDownHandler(
       elem.style.cursor = 'grabbing'
     },
     (elem) => {
-      mouseMoveHandler.cancel();
       elem.style.cursor = 'default'
     },
   )

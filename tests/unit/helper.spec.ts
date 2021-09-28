@@ -5,6 +5,8 @@ import {
   makeCheckRange,
 } from '@/helper'
 
+import { getItemById } from '@/helper/store'
+
 test('test applyReducers along with consponding methods', () => {
   const arr = [1, 2, 3, 4, 5];
   const double = (num: number) => num * 2
@@ -33,4 +35,11 @@ test('makeCheckRange method should return a function which could check whether a
   expect(isInZeroToHundred(100)).toBe(true);
   expect(isInZeroToHundred(-1)).toBe(false);
   expect(isInZeroToHundred(101)).toBe(false);
+})
+
+test('method getItemById should throw an error when item not exist', () => {
+  const items = [
+    { id: 0 },
+  ]
+  expect(() => getItemById(items, 1)).toThrow()
 })

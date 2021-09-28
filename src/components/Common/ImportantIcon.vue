@@ -10,7 +10,7 @@
     <Star
       :theme="item.isImportant ? 'filled' : 'outline'"
       :size="size"
-      :fill="themeColor"
+      class="star-icon"
     />
   </span>
 </template>
@@ -38,13 +38,15 @@ export default defineComponent({
       type: Number,
       default: 18,
     },
-    themeColor: {
-      type: String,
-      required: true,
-    },
   },
   components: {
     Star,
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.star-icon {
+  color: var(--primary-color);
+}
+</style>

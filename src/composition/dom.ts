@@ -1,7 +1,7 @@
 import { onUnmounted } from "@vue/runtime-dom";
-import { DebouncedFunc } from "lodash";
+import { throttle } from "lodash";
 
-export type MouseMoveHandlerType = DebouncedFunc<(e: MouseEvent) => void>
+export type MouseMoveHandlerType = (e: MouseEvent) => void
 export type MouseDownHandlerType = () => void
 
 /**
@@ -45,16 +45,18 @@ export function makeMouseDownHandler(
   registerCallback: (elem: HTMLElement) => void,
   clearCallback: (elem: HTMLElement) => void,
 ): () => void {
+  const throttleMouseMoveHandler = throttle(mouseMoveHandler, 32)
   const clearMouseMoveHandler = makeClearHandler((elem) => {
-    elem.removeEventListener('mousemove', mouseMoveHandler);
+    elem.removeEventListener('mousemove', throttleMouseMoveHandler);
     elem.removeEventListener('mouseup', clearMouseMoveHandler);
     elem.removeEventListener('mouseleave', clearMouseMoveHandler);
   }, (elem) => {
     clearCallback(elem);
+    throttleMouseMoveHandler.cancel();
   });
 
   return makeHandler((elem) => {
-    elem.addEventListener('mousemove', mouseMoveHandler);
+    elem.addEventListener('mousemove', throttleMouseMoveHandler);
     elem.addEventListener('mouseup', clearMouseMoveHandler);
     elem.addEventListener('mouseleave', clearMouseMoveHandler);
     registerCallback(elem);

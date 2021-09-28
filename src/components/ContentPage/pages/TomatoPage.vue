@@ -1,10 +1,6 @@
 <template>
   <BasePage>
-    <TomatoPageListItem
-      :items="tomatoItems"
-      :showDrawer="showDrawer"
-      :setShowDrawer="setShowDrawer"
-    />
+    <TomatoPageList :items="tomatoItems" :setDrawerShow="setDrawerShow" />
   </BasePage>
 </template>
 
@@ -12,17 +8,16 @@
 import { useStore } from "@/store";
 import { computed, defineComponent, PropType } from "vue";
 import BasePage from "./BasePage.vue";
-import TomatoPageListItem from "./TomatoPageListItem.vue";
+import TomatoPageList from "./TomatoPageList.vue";
 
 export default defineComponent({
   name: "TomatoPage",
   components: {
     BasePage,
-    TomatoPageListItem,
+    TomatoPageList,
   },
   props: {
-    showDrawer: Boolean,
-    setShowDrawer: {
+    setDrawerShow: {
       type: Function as PropType<(value: boolean) => void>,
       required: true,
     },

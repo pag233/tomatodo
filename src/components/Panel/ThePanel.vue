@@ -18,14 +18,18 @@
         :isMaximum="isMaximum"
         @[PositionEmitType.update]="setPos"
         @[MaximumEmitType.update]="setMaximum(true)"
-        @[PositionEmitType.restore]="resotrePos"
+        @[PositionEmitType.restore]="restorePos"
       />
     </div>
     <slot
       :barWidth="barWidth"
       :setBarWidth="setBarWidth"
-      :showDrawer="showDrawer"
-      :setShowDrawer="setShowDrawer"
+      :minWidth="minWidth"
+      :drawerBreak="drawerBreak"
+      :drawerShow="drawerShow"
+      :setDrawerShow="setDrawerShow"
+      :drawerWidth="drawerWidth"
+      :setDrawerWidth="setDrawerWidth"
     ></slot>
   </div>
 </template>
@@ -34,11 +38,9 @@
 import { computed, defineComponent } from "vue";
 import {
   initPanelPosInfo,
-  getMinWidthHeight,
   PositionEmitType,
   MaximumEmitType,
-  useSideBarWidth,
-  initDrawerDisplayInfo,
+  BreakPointsType,
 } from "./thePanelPosInfo";
 
 import { gtZero } from "@/helper";
@@ -68,20 +70,32 @@ export default defineComponent({
   },
 
   setup(props) {
-    const posInfo = initPanelPosInfo(props.width, props.height);
-    const [pos, setPos] = posInfo.pos;
-    const [isMaximum, setMaximum] = posInfo.maximum;
+    const breakPoints: BreakPointsType = {
+      sidebar: {
+        min: 180,
+        max: 600,
+      },
+      drawer: {
+        min: 250,
+        max: 600,
+      },
+    };
+    const posInfo = initPanelPosInfo(props.width, props.height, breakPoints);
 
-    const { minWidth, minHeight } = getMinWidthHeight(
-      props.width,
-      props.height
-    );
+    const { pos, setPos, minWidth, minHeight, savePos, restorePos } =
+      posInfo.position;
 
-    const [barWidth, setBarWidth] = useSideBarWidth();
+    const { isMaximum, setMaximum } = posInfo.maximum;
 
-    const { showDrawer, setShowDrawer } = initDrawerDisplayInfo(
-      posInfo.panelWidth
-    );
+    const { barWidth, setBarWidth } = posInfo.sideBar;
+
+    const {
+      drawerShow,
+      setDrawerShow,
+      drawerBreak,
+      drawerWidth,
+      setDrawerWidth,
+    } = posInfo.drawer;
 
     return {
       position: computed(() => ({
@@ -91,16 +105,19 @@ export default defineComponent({
         bottom: pos.value.bottom + "px",
       })),
       setPos,
-      minWidth,
-      minHeight,
       isMaximum,
       setMaximum,
-      savePos: posInfo.savePos,
-      resotrePos: posInfo.restorePos,
+      minWidth,
+      minHeight,
+      savePos,
+      restorePos,
       barWidth,
       setBarWidth,
-      showDrawer,
-      setShowDrawer,
+      drawerShow,
+      setDrawerShow,
+      drawerBreak,
+      drawerWidth,
+      setDrawerWidth,
     };
   },
 
@@ -129,11 +146,9 @@ export default defineComponent({
   margin: auto;
   width: auto;
   height: auto;
-  border-radius: $corner-border-radius;
-  @include ToTheme($theme-tomato) {
-    border: 1px solid black;
-    box-shadow: 1px 1px 4px 0px;
-  }
+  border-radius: $--corner-border-radius;
+  border: 1px solid black;
+  box-shadow: 1px 1px 4px 0px;
   .btn-container {
     position: absolute;
     top: 0;

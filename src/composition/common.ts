@@ -1,5 +1,4 @@
 import { useStore } from "@/store";
-import { ListsTypes } from "@/store/list";
 import {
   onMounted,
   onUnmounted,
@@ -32,7 +31,7 @@ export function useMountUnmount(setUp: SetUpType): void {
 /**
  * setState方法支持的基本数据类型
  */
-type BaseValueType = string | number | boolean
+type BaseValueType = string | number | boolean | number[]
 
 export type BaseStateType = {
   [index: string]: BaseValueType | BaseStateType
@@ -66,8 +65,22 @@ export function useRef<T extends BaseStateType | BaseStateType[]>(
   return [oldState, setState]
 }
 
-export function useSelectListType(): ComputedRef<ListsTypes> {
+export function makeSetValueBetween(setValue: SetStateType<number>, min: number, max: number) {
+  return function (value: number): void {
+    if (value > min && value < max) {
+      setValue(value);
+      return;
+    }
+    if (value >= max) {
+      setValue(max)
+    } else {
+      setValue(min)
+    }
+  }
+}
+
+export function useSelectListName(): ComputedRef<string> {
   const store = useStore();
-  const selectListType = computed(() => store.state.list.select.listType);
+  const selectListType = computed(() => store.state.select.listName);
   return selectListType
 }
