@@ -150,7 +150,6 @@
           />
         </template>
         <ElPopover
-          transition="none"
           trigger="click"
           placement="bottom"
           popper-class="draewr-repeat-popover"
@@ -168,10 +167,10 @@
           </div>
           <template #reference>
             <div @click="repeatShow = true">
-              <span v-if="selectItem.repeat" class="drawer-item-theme-color">
+              <span class="drawer-item-theme-color" v-if="selectItem.repeat">
                 {{ selectItem.repeat }}
               </span>
-              <span class="drawer-repeat-select" v-else>repeat</span>
+              <span v-else>repeat</span>
             </div>
           </template>
         </ElPopover>
@@ -321,7 +320,7 @@ export default defineComponent({
         remindDate: date.getTime(),
       });
       store.dispatch("timeouts/startRemind", {
-        item: selectItem.value,
+        id: selectItem.value.id,
         remindDate: date.getTime(),
       });
     }
@@ -334,7 +333,7 @@ export default defineComponent({
         remindDate: undefined,
       });
       store.commit("timeouts/clearRemind", {
-        item: selectItem.value,
+        id: selectItem.value,
       });
     }
 
@@ -374,6 +373,15 @@ export default defineComponent({
         item: selectItem.value,
         repeat,
       });
+      if (!deadline.value) {
+        deadline.value = selectItem.value.remindDate
+          ? new Date(selectItem.value.remindDate)
+          : new Date();
+        store.commit("list/setItemDeadLineDate", {
+          item: selectItem.value,
+          deadLine: deadline.value.getTime(),
+        });
+      }
     }
 
     const newStep = ref("");
@@ -452,9 +460,6 @@ export default defineComponent({
     outline: none;
     border: none;
   }
-  .drawer-repeat-select {
-    font-size: 14px;
-  }
 }
 </style>
 <style lang="scss" scoped>
@@ -463,6 +468,7 @@ export default defineComponent({
 }
 .drawer-item::v-deep(.el-input .el-input__inner) {
   color: $--opacity-white;
+  font-size: 16px;
   cursor: default;
   background-color: $--gray;
   border: none;

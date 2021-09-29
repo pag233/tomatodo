@@ -52,7 +52,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapMutations("list", ["setSelectListName"]),
+    ...mapMutations("select", ["setSelectListName"]),
   },
 
   setup(props) {

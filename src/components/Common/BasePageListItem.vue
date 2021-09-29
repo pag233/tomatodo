@@ -1,37 +1,39 @@
 <template>
   <BaseListItem @click="clickInfoHandler(item.id)">
     <template #front>
-      <CompeleteIcon
-        :item="item"
-        @click="
-          setItemComplete({
-            item,
-            isComplete: !item.isComplete,
-          })
-        "
-      />
+      <CompeleteIcon :item="item" @click="setItemComplete" />
     </template>
-    <div class="item-info">
-      <div class="item-title">
+    <div class="task-info">
+      <div class="task-title">
         <SlashTextWhen :when="item.isComplete">
           {{ item.title }}
         </SlashTextWhen>
       </div>
-      <div class="item-info-detail" v-if="showInfo">
+      <div class="task-detail" v-if="showInfo">
         {{ item.name }}
         <slot name="tomato">
           <Dot class="detail-spe-icon" size="10" v-if="item.isOnTomato"></Dot>
           {{ item.isOnTomato ? "OnTomato" : "" }}
         </slot>
-        <div class="deadline" v-if="item.deadLine">
+        <div class="detail-item" v-if="item.steps.length > 0">
+          <Dot size="10" class="detail-spe-icon"></Dot>
+          <div class="detail-text">
+            {{ `${completeStepCount}/${item.steps.length}` }}
+          </div>
+        </div>
+        <div class="detail-item detail-item-primary-color" v-if="item.deadLine">
           <Dot size="10" class="detail-spe-icon"></Dot>
           <Plan size="14" />
           <div class="detail-text">
             {{ dateToDay(item.deadLine).day }}
           </div>
         </div>
-        <RotationHorizontal class="repeat" size="14" v-if="item.repeat" />
-        <div class="remindDate" v-if="item.remindDate">
+        <RotationHorizontal
+          class="detail-item-primary-color"
+          size="14"
+          v-if="item.repeat"
+        />
+        <div class="detail-item" v-if="item.remindDate">
           <Dot class="detail-spe-icon" size="10"></Dot>
           <Remind size="12" />
           <div class="detail-text">
@@ -47,11 +49,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 import { mapMutations } from "vuex";
+import { cloneDeep } from "lodash";
+import dayjs from "dayjs";
 
 import { useStore } from "@/store";
-import { ListItemType } from "@/store/list";
+import { ListItemType, RepeatDate } from "@/store/list";
 import { dateToDay } from "@/helper";
 
 import BaseListItem from "./BaseListItem.vue";
@@ -89,7 +93,7 @@ export default defineComponent({
   },
   methods: {
     dateToDay,
-    ...mapMutations("list", ["setItemImportant", "setItemComplete"]),
+    ...mapMutations("list", ["setItemImportant"]),
   },
 
   setup(props) {
@@ -103,8 +107,46 @@ export default defineComponent({
         store.commit("select/setSelectItemId", { id });
       }
     }
+
+    function setItemComplete() {
+      store.commit("list/setItemComplete", {
+        item: props.item,
+        isComplete: !props.item.isComplete,
+      });
+      if (props.item.repeat) {
+        const repeatItem = cloneDeep(props.item);
+        repeatItem.id = store.getters["list/getLastItemId"] + 1;
+        repeatItem.isComplete = false;
+        if (props.item.repeat === RepeatDate.daily) {
+          const nextDay = dayjs(repeatItem.deadLine).add(1, "day").valueOf();
+          repeatItem.deadLine = nextDay;
+
+          if (props.item.remindDate) {
+            repeatItem.remindDate = nextDay;
+            store.commit("timeouts/clearRemind", {
+              item: repeatItem,
+            });
+            store.dispatch("timeouts/startRemind", {
+              id: repeatItem.id,
+              title: repeatItem.title,
+              remindDate: repeatItem.remindDate,
+            });
+          }
+        }
+        store.commit("list/addItem", {
+          item: repeatItem,
+        });
+      }
+    }
+
+    const completeStepCount = computed(
+      () => props.item.steps.filter((step) => step.isComplete).length
+    );
+
     return {
       clickInfoHandler,
+      setItemComplete,
+      completeStepCount,
     };
   },
 });
@@ -139,14 +181,14 @@ export default defineComponent({
 </style>
 
 <style lang="scss" scoped>
-.item-info {
+.task-info {
   color: $--white;
-  .item-title {
+  .task-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .item-info-detail {
+  .task-detail {
     color: $--opacity-white;
 
     font-size: 0.5rem;
@@ -154,23 +196,18 @@ export default defineComponent({
     display: flex;
     align-items: center;
 
+    .detail-item {
+      display: flex;
+      align-items: center;
+    }
+    .detail-item-primary-color {
+      color: var(--primary-color);
+    }
     .detail-text {
       margin: 0 6px;
     }
-    .deadline {
-      color: var(--primary-color);
-
-      display: flex;
-      align-items: center;
-    }
-    .repeat {
-      color: var(--primary-color);
-    }
-    .remindDate {
-      display: flex;
-      align-items: center;
-    }
     .detail-spe-icon {
+      color: $--opacity-white;
       margin: 0 0.5rem;
     }
   }

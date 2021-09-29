@@ -4,6 +4,8 @@ import { throttle } from "lodash";
 export type MouseMoveHandlerType = (e: MouseEvent) => void
 export type MouseDownHandlerType = () => void
 
+const throttleWait = 20;
+
 /**
  * 向父元素注册回调
  */
@@ -45,7 +47,7 @@ export function makeMouseDownHandler(
   registerCallback: (elem: HTMLElement) => void,
   clearCallback: (elem: HTMLElement) => void,
 ): () => void {
-  const throttleMouseMoveHandler = throttle(mouseMoveHandler, 32)
+  const throttleMouseMoveHandler = throttle(mouseMoveHandler, throttleWait)
   const clearMouseMoveHandler = makeClearHandler((elem) => {
     elem.removeEventListener('mousemove', throttleMouseMoveHandler);
     elem.removeEventListener('mouseup', clearMouseMoveHandler);
